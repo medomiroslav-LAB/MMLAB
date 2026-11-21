@@ -45,7 +45,7 @@
 <body class="min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
 
     <!-- BANNER AUTOMATICKÉHO UPDATE APLIKÁCIE -->
-    <div id="app-update-banner" class="hidden bg-amber-400 text-zinc-950 px-4 py-2 text-xs font-extrabold flex items-center justify-between gap-2 z-40">
+    <div id="app-update-banner" style="display: none;" class="bg-amber-400 text-zinc-950 px-4 py-2 text-xs font-extrabold flex items-center justify-between gap-2 z-40">
         <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.1.0</span>) je pripravená</span>
         <button type="button" onclick="applyAppUpdateNow()" class="px-3 py-1 rounded-lg bg-zinc-950 text-amber-300 font-black text-[11px] shrink-0">Aktualizovať</button>
     </div>
@@ -83,7 +83,7 @@
             <div class="flex items-center gap-1.5 shrink-0">
                 <button onclick="openLabFeedModal()" title="Tipy & Oznamy" class="relative w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 text-zinc-300 hover:text-white border border-zinc-800 flex items-center justify-center transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    <span id="feed-unread-badge" class="hidden absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center">1</span>
+                    <span id="feed-unread-badge" style="display: none;" class="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center">1</span>
                 </button>
                 <button onclick="openFeedbackModal()" title="Správa & Podpora" class="w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 text-zinc-300 hover:text-amber-300 border border-zinc-800 flex items-center justify-center transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
@@ -117,7 +117,7 @@
                     <span>Doplnky</span>
                     <span id="domain-supp-badge" class="text-[9px] font-black px-1.5 rounded bg-zinc-800 text-zinc-300">0</span>
                 </button>
-                <button onclick="switchAppDomain('cockpit')" id="domain-btn-cockpit" class="hidden py-1.5 px-2 rounded-lg text-[11px] sm:text-xs font-extrabold flex items-center justify-center gap-1.5 text-amber-300 hover:text-white transition">
+                <button onclick="switchAppDomain('cockpit')" id="domain-btn-cockpit" style="display: none;" class="py-1.5 px-2 rounded-lg text-[11px] sm:text-xs font-extrabold flex items-center justify-center gap-1.5 text-amber-300 hover:text-white transition">
                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
                     <span>Kokpit</span>
                 </button>
@@ -536,6 +536,7 @@
                 <div id="cockpit-admin-group-filters" class="flex gap-1.5 overflow-x-auto no-scrollbar">
                     <button type="button" onclick="setCockpitUserFilter('ALL')" id="cockpit-filter-ALL" class="px-2.5 py-1 rounded-lg text-[10.5px] font-extrabold bg-amber-400 text-zinc-950 whitespace-nowrap">Všetci</button>
                     <button type="button" onclick="setCockpitUserFilter('MY_CLIENTS')" id="cockpit-filter-MY_CLIENTS" class="px-2.5 py-1 rounded-lg text-[10.5px] font-extrabold bg-dark-850 text-zinc-400 border border-zinc-800 whitespace-nowrap">Moji klienti</button>
+                    <button type="button" onclick="setCockpitUserFilter('TRAINERS')" id="cockpit-filter-TRAINERS" class="px-2.5 py-1 rounded-lg text-[10.5px] font-extrabold bg-dark-850 text-zinc-400 border border-zinc-800 whitespace-nowrap">Tréneri</button>
                     <button type="button" onclick="setCockpitUserFilter('SOLO')" id="cockpit-filter-SOLO" class="px-2.5 py-1 rounded-lg text-[10.5px] font-extrabold bg-dark-850 text-zinc-400 border border-zinc-800 whitespace-nowrap">Solo používatelia</button>
                 </div>
 
@@ -804,7 +805,7 @@
                             <div class="col-span-5"><select id="builder-cat1-select" onchange="populateBuilderExerciseSelect(1)" class="w-full bg-dark-900 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-brand-400"></select></div>
                             <div class="col-span-7"><select id="builder-ex1-select" class="w-full bg-dark-900 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-semibold text-white"></select></div>
                         </div>
-                        <div id="builder-ex2-wrapper" class="hidden grid grid-cols-12 gap-2 pt-1">
+                        <div id="builder-ex2-wrapper" style="display: none;" class="grid grid-cols-12 gap-2 pt-1">
                             <div class="col-span-5"><select id="builder-cat2-select" onchange="populateBuilderExerciseSelect(2)" class="w-full bg-dark-900 border border-purple-500/40 rounded-xl px-2.5 py-2 text-xs font-bold text-purple-300"></select></div>
                             <div class="col-span-7"><select id="builder-ex2-select" class="w-full bg-dark-900 border border-purple-500/40 rounded-xl px-2.5 py-2 text-xs font-semibold text-white"></select></div>
                         </div>
@@ -1144,11 +1145,17 @@
 
             if (addSec) addSec.classList.toggle('hidden', !coach);
             if (soloBox) soloBox.classList.toggle('hidden', !solo);
-            if (cockpitTabBtn) cockpitTabBtn.classList.toggle('hidden', !coach);
+            if (cockpitTabBtn) {
+                cockpitTabBtn.style.display = coach ? 'flex' : 'none';
+                cockpitTabBtn.classList.toggle('hidden', !coach);
+            }
             if (topGrid) topGrid.className = coach
                 ? 'grid grid-cols-4 gap-1 bg-dark-950 p-1 rounded-xl border border-zinc-800/90'
                 : 'grid grid-cols-3 gap-1 bg-dark-950 p-1 rounded-xl border border-zinc-800/90';
             if (sendMpBtn) sendMpBtn.classList.toggle('hidden', !coach);
+            if (!coach && activeDomain === 'cockpit') {
+                switchAppDomain('training');
+            }
             if (!coach && activeProfileId !== 'me') {
                 activeProfileId = 'me';
                 saveState(false);
@@ -1162,7 +1169,8 @@
                 const remoteVer = rows?.[0]?.value;
                 if (remoteVer && remoteVer !== APP_VERSION) {
                     document.getElementById('remote-version-badge').textContent = remoteVer;
-                    document.getElementById('app-update-banner').classList.remove('hidden');
+                    const banner = document.getElementById('app-update-banner');
+                    if (banner) { banner.style.display = 'flex'; banner.classList.remove('hidden'); }
                 }
             } catch (e) {}
         }
@@ -1439,6 +1447,7 @@
         }
 
         function switchAppDomain(domain) {
+            if (domain === 'cockpit' && !isTrainerOrAdmin()) return;
             activeDomain = domain;
             const btns = {
                 training: document.getElementById('domain-btn-training'),
@@ -1567,8 +1576,8 @@
                 const unreadCount = cachedFeedPosts.filter(p => !readIds.has(p.id)).length;
                 const badge = document.getElementById('feed-unread-badge');
                 if (badge) {
-                    if (unreadCount > 0) { badge.textContent = unreadCount; badge.classList.remove('hidden'); }
-                    else { badge.classList.add('hidden'); }
+                    if (unreadCount > 0) { badge.textContent = unreadCount; badge.style.display = 'flex'; badge.classList.remove('hidden'); }
+                    else { badge.style.display = 'none'; badge.classList.add('hidden'); }
                 }
 
                 const banner = document.getElementById('latest-lab-tip-banner');
@@ -1595,7 +1604,7 @@
             cachedFeedPosts.forEach(p => readIds.add(p.id));
             localStorage.setItem('fitlog_read_feed_ids', JSON.stringify([...readIds]));
             const badge = document.getElementById('feed-unread-badge');
-            if (badge) badge.classList.add('hidden');
+            if (badge) { badge.style.display = 'none'; badge.classList.add('hidden'); }
 
             const listEl = document.getElementById('lab-feed-modal-list');
             if (cachedFeedPosts.length === 0) {
@@ -1653,7 +1662,7 @@
 
         function setCockpitUserFilter(filter) {
             cockpitUserFilter = filter;
-            ['ALL', 'MY_CLIENTS', 'SOLO'].forEach(f => {
+            ['ALL', 'MY_CLIENTS', 'TRAINERS', 'SOLO'].forEach(f => {
                 const btn = document.getElementById(`cockpit-filter-${f}`);
                 if (!btn) return;
                 btn.className = f === filter
@@ -1677,6 +1686,7 @@
                 if (!isSuperAdmin()) return (t.trainer_code || '').toUpperCase() === myCode;
                 const role = (t.role || 'client').toLowerCase();
                 if (cockpitUserFilter === 'MY_CLIENTS') return role === 'client' && (t.trainer_code || 'MIRO-ADMIN').toUpperCase() === 'MIRO-ADMIN';
+                if (cockpitUserFilter === 'TRAINERS') return role === 'trainer';
                 if (cockpitUserFilter === 'SOLO') return role === 'solo';
                 return true;
             });
@@ -1788,6 +1798,37 @@
 
                 body.innerHTML = `
                     ${isSuperAdmin() ? `
+                        <div class="card-surface border-brand-500/40 p-3.5 space-y-2.5">
+                            <div class="text-xs font-extrabold text-brand-400">Pridať trénera, klienta alebo solo účet</div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="new-acc-name" placeholder="Meno (napr. Tréner Martin)" class="bg-dark-850 border border-zinc-800 rounded-xl px-2.5 py-2 text-xs font-bold text-white">
+                                <input type="text" id="new-acc-code" placeholder="Kód (napr. TR-MARTIN)" class="bg-dark-850 border border-zinc-800 rounded-xl px-2.5 py-2 text-xs font-black uppercase text-white">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <select id="new-acc-role" onchange="document.getElementById('new-acc-trainer').disabled = (this.value !== 'client')" class="bg-dark-850 border border-zinc-800 rounded-xl px-2.5 py-2 text-xs font-bold text-white">
+                                    <option value="client">Rola: Klient trénera</option>
+                                    <option value="trainer">Rola: Tréner (má vlastných ľudí)</option>
+                                    <option value="solo">Rola: Solo používateľ</option>
+                                </select>
+                                <select id="new-acc-trainer" class="bg-dark-850 border border-zinc-800 rounded-xl px-2.5 py-2 text-xs font-bold text-white">
+                                    <option value="MIRO-ADMIN">Tréner: Miro (MIRO-ADMIN)</option>
+                                    ${cockpitTestersCache.filter(t => t.role === 'trainer').map(tr => `<option value="${tr.code}">Tréner: ${tr.name} (${tr.code})</option>`).join('')}
+                                </select>
+                            </div>
+                            <button type="button" onclick="createNewBetaAccountFromCockpit()" class="w-full py-2.5 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-xs">Vytvoriť prístupový kód ✓</button>
+                            <div class="space-y-1.5 pt-1 max-h-40 overflow-y-auto">
+                                ${cockpitTestersCache.filter(t => t.code !== 'MIRO-ADMIN').map(acc => `
+                                    <div class="subcard-surface px-2.5 py-1.5 flex items-center justify-between gap-2 text-[11px]">
+                                        <div class="min-w-0 truncate">
+                                            <strong class="text-white">${acc.name}</strong> <span class="text-zinc-400">(${acc.code})</span>
+                                            <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-dark-900 text-amber-300 ml-1">${acc.role === 'trainer' ? 'TRÉNER' : (acc.role === 'solo' ? 'SOLO' : 'KLIENT → ' + (acc.trainer_code || 'MIRO'))}</span>
+                                        </div>
+                                        <button type="button" onclick="toggleBetaAccountActive('${acc.code}', ${acc.is_active})" class="px-2 py-0.5 rounded text-[10px] font-extrabold shrink-0 ${acc.is_active ? 'bg-brand-500/20 text-brand-400' : 'bg-rose-500/20 text-rose-300'}">${acc.is_active ? 'Aktívny' : 'Vypnutý'}</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
                         <div class="card-surface p-3.5 space-y-2.5">
                             <div class="text-xs font-extrabold text-amber-300">Publikovať tip / oznam do MM LAB Feedu</div>
                             <div class="grid grid-cols-2 gap-2">
@@ -1858,14 +1899,20 @@
                         const targets = st.nutritionDataByProfile?.me?.targets || {};
                         const wCount = (st.workoutHistory || []).length;
                         const lastSync = cockpitUserStatesCache[u.code]?.updated_at ? new Date(cockpitUserStatesCache[u.code].updated_at).toLocaleDateString('sk-SK') : '—';
+                        const roleBadge = u.role === 'trainer'
+                            ? `<span class="text-[9.5px] font-extrabold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">TRÉNER</span>`
+                            : (u.role === 'solo'
+                                ? `<span class="text-[9.5px] font-extrabold px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300">SOLO</span>`
+                                : `<span class="text-[9.5px] font-extrabold px-1.5 py-0.5 rounded bg-brand-500/15 text-brand-400">Tréner: ${u.trainer_code || 'MIRO'}</span>`);
                         return `
                             <div onclick="document.getElementById('cockpit-client-select').value='${u.code}'; renderCoachCockpitContent();" class="cursor-pointer card-surface hover:border-zinc-700 p-3.5 space-y-2.5 transition">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
+                                <div class="flex items-center justify-between gap-2">
+                                    <div class="flex items-center gap-1.5 flex-wrap min-w-0">
                                         <span class="text-xs font-extrabold text-white">${u.name}</span>
                                         <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-dark-850 text-zinc-400">${u.code}</span>
+                                        ${roleBadge}
                                     </div>
-                                    <span class="text-[11px] font-extrabold text-brand-400">Otvoriť →</span>
+                                    <span class="text-[11px] font-extrabold text-brand-400 shrink-0">Otvoriť →</span>
                                 </div>
                                 <div class="grid grid-cols-4 gap-1.5 text-center text-[10.5px]">
                                     <div class="subcard-surface p-1.5"><span class="text-zinc-500 block text-[9px]">Vek / Výška</span><strong class="text-zinc-200">${bio.age || '—'}r / ${bio.height || '—'}cm</strong></div>
@@ -1999,6 +2046,41 @@
                 });
                 showToast(`Verzia ${ver} aktivovaná ✓`);
             } catch (e) { showToast('Chyba ukladania verzie'); }
+        }
+
+        async function createNewBetaAccountFromCockpit() {
+            if (!isSuperAdmin()) return;
+            const name = (document.getElementById('new-acc-name')?.value || '').trim();
+            const code = (document.getElementById('new-acc-code')?.value || '').trim().toUpperCase();
+            const role = document.getElementById('new-acc-role')?.value || 'client';
+            const trainerCode = role === 'client' ? (document.getElementById('new-acc-trainer')?.value || 'MIRO-ADMIN') : null;
+            if (!name || !code) { showToast('Zadaj meno aj kód'); return; }
+            try {
+                await supabaseFetch('beta_testers', {
+                    method: 'POST',
+                    headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+                    body: JSON.stringify({ code, name, role, trainer_code: trainerCode, is_active: true })
+                });
+                document.getElementById('new-acc-name').value = '';
+                document.getElementById('new-acc-code').value = '';
+                await loadCoachCockpitData(false);
+                showToast(`Účet ${name} (${code}) vytvorený ✓`);
+            } catch (e) {
+                showToast('Povoľ zápis v Supabase (pozri návod) alebo pridaj v Table Editor');
+            }
+        }
+
+        async function toggleBetaAccountActive(code, currentActive) {
+            if (!isSuperAdmin()) return;
+            try {
+                await supabaseFetch(`beta_testers?code=eq.${encodeURIComponent(code)}`, {
+                    method: 'PATCH',
+                    headers: { 'Prefer': 'return=minimal' },
+                    body: JSON.stringify({ is_active: !currentActive })
+                });
+                await loadCoachCockpitData(false);
+                showToast(!currentActive ? `Kód ${code} aktivovaný ✓` : `Kód ${code} vypnutý`);
+            } catch (e) { showToast('Chyba zmeny stavu'); }
         }
 
         // =====================================================================
@@ -3686,7 +3768,11 @@
         function closeSplitBuilderModal() { document.getElementById('modal-split-builder').classList.add('hidden'); }
         function setSplitBuilderMode(mode) {
             builderMode = mode;
-            document.getElementById('builder-ex2-wrapper').classList.toggle('hidden', mode !== 'superset');
+            const ex2Wrap = document.getElementById('builder-ex2-wrapper');
+            if (ex2Wrap) {
+                ex2Wrap.style.display = mode === 'superset' ? 'grid' : 'none';
+                ex2Wrap.classList.toggle('hidden', mode !== 'superset');
+            }
             document.getElementById('builder-mode-superset').className = mode === 'superset' ? 'px-2.5 py-1 rounded-md text-[11px] font-bold bg-purple-600 text-white' : 'px-2.5 py-1 rounded-md text-[11px] font-bold text-zinc-400';
             document.getElementById('builder-mode-single').className = mode === 'single' ? 'px-2.5 py-1 rounded-md text-[11px] font-bold bg-zinc-700 text-white' : 'px-2.5 py-1 rounded-md text-[11px] font-bold text-zinc-400';
         }
