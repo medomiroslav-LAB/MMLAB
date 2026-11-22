@@ -28,6 +28,7 @@
         }
     </script>
     <style>
+        html, body { max-width: 100%; overflow-x: hidden; }
         body { background-color: #09090b; color: #f4f4f5; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; font-variant-numeric: tabular-nums; }
         .safe-area-top { padding-top: calc(env(safe-area-inset-top, 0px) + 0.75rem); }
         .safe-area-bottom { padding-bottom: max(0.6rem, env(safe-area-inset-bottom, 0px)); }
@@ -291,16 +292,16 @@
             <!-- PODZÁLOŽKA 2A: DENNÁ STRAVA -->
             <div id="nutri-view-food" class="space-y-3.5">
                 <!-- KALENDÁR STRAVY (PREPÍNANIE DNÍ & PLÁNOVANIE DOPREDU) -->
-                <div class="card-surface p-2.5 flex items-center justify-between gap-2">
+                <div class="card-surface p-2 flex items-center justify-between gap-1.5">
                     <button type="button" onclick="shiftNutritionDate(-1)" title="Predchádzajúci deň" class="w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-200 font-black text-sm flex items-center justify-center shrink-0 transition">◀</button>
-                    <div class="flex items-center gap-2 min-w-0">
-                        <label class="relative cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-700/80 transition">
+                    <div class="flex items-center justify-center gap-1.5 min-w-0 flex-1">
+                        <label class="relative cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-700/80 min-w-0 transition">
                             <svg class="w-3.5 h-3.5 text-brand-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            <span id="nutri-date-label" class="text-xs font-extrabold text-white whitespace-nowrap">Dnes</span>
-                            <span id="nutri-date-badge" class="text-[9.5px] font-black uppercase px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-400">Dnes</span>
+                            <span id="nutri-date-label" class="text-xs font-extrabold text-white truncate">Dnes</span>
+                            <span id="nutri-date-badge" class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-400 shrink-0">Dnes</span>
                             <input type="date" id="nutri-date-picker" onchange="setNutritionDate(this.value)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
                         </label>
-                        <button type="button" id="nutri-jump-today-btn" onclick="setNutritionDate(getTodayISO())" class="hidden px-2.5 py-1.5 rounded-xl bg-brand-500/15 border border-brand-500/35 text-brand-400 text-[10.5px] font-extrabold shrink-0">Dnes</button>
+                        <button type="button" id="nutri-jump-today-btn" onclick="setNutritionDate(getTodayISO())" class="hidden px-2 py-1.5 rounded-xl bg-brand-500/15 border border-brand-500/35 text-brand-400 text-[10.5px] font-extrabold shrink-0">Dnes</button>
                     </div>
                     <button type="button" onclick="shiftNutritionDate(1)" title="Nasledujúci deň" class="w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-200 font-black text-sm flex items-center justify-center shrink-0 transition">▶</button>
                 </div>
@@ -314,24 +315,28 @@
                     <div id="shared-trainer-mealplans-list" class="space-y-2"></div>
                 </div>
 
-                <!-- NEPREHLIADNUTEĽNÉ HLAVNÉ TLAČIDLO PRE PRIDANIE JEDLA -->
-                <div class="card-surface border-brand-500/40 p-3.5 flex items-center justify-between gap-3">
-                    <button type="button" onclick="openMealBuilderModal(false)" class="flex-1 flex items-center gap-3 text-left group">
-                        <div class="w-11 h-11 rounded-2xl bg-brand-500 text-zinc-950 flex items-center justify-center shrink-0 shadow-lg shadow-brand-500/20 group-hover:scale-105 transition">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                <!-- HLAVNÉ AKCIE STRAVY: PRIDAŤ JEDLO + INŠPIRÁCIE + SKENOVAŤ EAN -->
+                <div class="card-surface border-brand-500/40 p-3 space-y-2.5">
+                    <button type="button" onclick="openMealBuilderModal(false)" class="w-full flex items-center justify-between gap-3 text-left group min-w-0">
+                        <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <div class="w-10 h-10 rounded-xl bg-brand-500 text-zinc-950 flex items-center justify-center shrink-0 shadow-lg shadow-brand-500/20 group-hover:scale-105 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="text-sm font-black text-white truncate">Pridať jedlo do dňa</div>
+                                <div class="text-[11px] text-zinc-400 truncate">Vyskladaj zo surovín (ks / ml / g)</div>
+                            </div>
                         </div>
-                        <div class="min-w-0">
-                            <div class="text-sm font-black text-white">Pridať jedlo do dňa</div>
-                            <div class="text-[11px] text-zinc-400 truncate">Vyber chod, suroviny (ks / ml / g) alebo EAN</div>
-                        </div>
+                        <span class="text-xs font-black text-brand-400 shrink-0 px-1">→</span>
                     </button>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button type="button" onclick="openMealInspirationsModal()" title="Slovenské jedlá a vzorové dni" class="h-11 px-2.5 rounded-2xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/35 text-amber-300 flex items-center gap-1 text-[11px] font-extrabold shrink-0 transition">
-                            <span>Inšpirácie</span>
+                    <div class="grid grid-cols-2 gap-2 pt-2.5 border-t border-zinc-800/80">
+                        <button type="button" onclick="openMealInspirationsModal()" class="py-2.5 px-3 rounded-xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/35 text-amber-300 flex items-center justify-center gap-1.5 text-xs font-extrabold transition">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                            <span class="truncate">Inšpirácie & Dni</span>
                         </button>
-                        <button type="button" onclick="openMealBuilderModal(true)" title="Skenovať čiarový kód EAN" class="h-11 px-2.5 rounded-2xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-sky-400 flex items-center gap-1 text-xs font-extrabold shrink-0 transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2M7 12h10"/></svg>
-                            <span>EAN</span>
+                        <button type="button" onclick="openMealBuilderModal(true)" class="py-2.5 px-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/35 text-sky-300 flex items-center justify-center gap-1.5 text-xs font-extrabold transition">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2M7 12h10"/></svg>
+                            <span class="truncate">Skenovať EAN</span>
                         </button>
                     </div>
                 </div>
@@ -823,22 +828,22 @@
                 <!-- SKENER ČIAROVÝCH KÓDOV -->
                 <div class="subcard-surface border-sky-500/35 p-3 space-y-2.5">
                     <div class="flex items-center justify-between gap-2">
-                        <span class="text-xs font-extrabold text-sky-300">Skener čiarových kódov (EAN)</span>
-                        <button type="button" onclick="toggleBarcodeCameraScanner()" class="px-3 py-1.5 rounded-lg bg-sky-500 text-zinc-950 font-extrabold text-[11px]">Otvoriť kameru</button>
+                        <span class="text-xs font-extrabold text-sky-300 truncate">Skener čiarových kódov (EAN)</span>
+                        <button type="button" onclick="toggleBarcodeCameraScanner()" class="px-3 py-1.5 rounded-lg bg-sky-500 text-zinc-950 font-extrabold text-[11px] shrink-0">Kamera</button>
                     </div>
                     <div id="ean-camera-wrapper" class="hidden space-y-2">
                         <div id="ean-qr-reader" class="w-full rounded-xl overflow-hidden bg-black"></div>
                         <button type="button" onclick="stopBarcodeCameraScanner()" class="w-full py-1.5 rounded-lg bg-rose-500/20 text-rose-300 text-xs font-bold">Zastaviť kameru</button>
                     </div>
-                    <div class="flex gap-1.5">
-                        <input type="text" id="ean-manual-input" inputmode="numeric" placeholder="Zadaj číslo EAN kódu (napr. 858...)" class="flex-1 bg-dark-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:border-sky-400 focus:outline-none">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                        <input type="text" id="ean-manual-input" inputmode="numeric" placeholder="Zadaj EAN kód (napr. 858...)" class="flex-1 min-w-0 bg-dark-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:border-sky-400 focus:outline-none">
                         <button type="button" onclick="lookupBarcodeProduct()" class="px-3 py-2 rounded-xl bg-sky-500/20 border border-sky-500/40 text-sky-300 font-extrabold text-xs shrink-0">Hľadať</button>
                     </div>
-                    <div id="ean-status-box" class="hidden text-xs rounded-xl p-2.5"></div>
+                    <div id="ean-status-box" class="hidden text-xs rounded-xl p-2.5 break-words"></div>
                     <div id="ean-new-product-form" class="hidden bg-dark-900 border border-amber-400/40 rounded-xl p-3 space-y-2">
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="text-[11px] font-extrabold text-amber-300">Nový produkt (EAN: <span id="ean-new-code-label"></span>)</span>
-                            <select id="ean-new-unit" class="bg-dark-850 border border-zinc-700 rounded-lg px-2 py-1 text-[10.5px] font-bold text-white">
+                        <div class="flex items-center justify-between gap-2 flex-wrap">
+                            <span class="text-[11px] font-extrabold text-amber-300 min-w-0">Nový produkt (<span id="ean-new-code-label"></span>)</span>
+                            <select id="ean-new-unit" class="bg-dark-850 border border-zinc-700 rounded-lg px-2 py-1 text-[10.5px] font-bold text-white shrink-0">
                                 <option value="g">na 100 g</option>
                                 <option value="ml">na 100 ml</option>
                             </select>
@@ -858,10 +863,10 @@
                     <input type="text" id="mb-food-search" oninput="renderMealBuilderFoodSelect()" placeholder="Hľadať surovinu (kuracie, ryža, vajcia, mlieko...)" class="w-full bg-dark-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:border-brand-500 focus:outline-none">
                     <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1" id="mb-food-cat-pills"></div>
                     <select id="mb-food-select" onchange="onMealBuilderFoodChange()" class="w-full bg-dark-900 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white"></select>
-                    <div class="flex items-center gap-2">
-                        <input type="number" id="mb-food-grams" value="100" min="0.5" step="any" oninput="updateMealBuilderUnitHint()" placeholder="Množstvo" class="w-24 bg-dark-900 border border-zinc-700 rounded-xl px-2.5 py-2 text-center text-xs font-extrabold text-white">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <input type="number" id="mb-food-grams" value="100" min="0.5" step="any" oninput="updateMealBuilderUnitHint()" placeholder="Množstvo" class="w-20 sm:w-24 min-w-0 bg-dark-900 border border-zinc-700 rounded-xl px-2 py-2 text-center text-xs font-extrabold text-white">
                         <div id="mb-unit-pills" class="inline-flex rounded-xl bg-dark-900 p-1 border border-zinc-700 shrink-0"></div>
-                        <span id="mb-unit-hint" class="text-[11px] text-zinc-400 truncate"></span>
+                        <span id="mb-unit-hint" class="text-[11px] text-zinc-400 truncate min-w-0"></span>
                     </div>
                     <button type="button" onclick="addIngredientToMealBuilder()" class="w-full py-2 rounded-xl bg-brand-500/20 border border-brand-500/40 text-brand-400 font-extrabold text-xs">+ Pridať surovinu na tanier</button>
                 </div>
@@ -3907,21 +3912,21 @@
                 const slotName = MEAL_SLOTS.find(s => s.id === m.slot)?.name || 'Jedlo';
                 const ingText = calc.resolvedItems.map(i => `${i.name.split('(')[0].trim()} (${i.unit === 'ks' ? i.qty + ' ks' : i.grams + i.unit})`).join(', ');
                 return `
-                    <div class="subcard-surface p-3.5 space-y-2">
+                    <div class="subcard-surface p-3.5 space-y-2.5">
                         <div class="flex items-start justify-between gap-2">
-                            <div>
-                                <span class="text-[9.5px] font-black uppercase px-2 py-0.5 rounded bg-amber-400/15 text-amber-300">${slotName}</span>
-                                <h4 class="text-xs sm:text-sm font-extrabold text-white mt-1">${m.title}</h4>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="text-[9.5px] font-black uppercase px-2 py-0.5 rounded bg-amber-400/15 text-amber-300">${slotName}</span>
+                                    <span class="text-[10px] font-bold text-zinc-400">B:${calc.p}g • S:${calc.c}g • T:${calc.f}g</span>
+                                </div>
+                                <h4 class="text-xs sm:text-sm font-extrabold text-white mt-1.5 leading-snug">${m.title}</h4>
                             </div>
                             <span class="text-xs font-black text-brand-400 shrink-0">${calc.kcal} kcal</span>
                         </div>
                         <p class="text-[11px] text-zinc-400 leading-relaxed">${ingText}</p>
-                        <div class="flex items-center justify-between pt-1.5 border-t border-zinc-800/80 gap-2">
-                            <span class="text-[10.5px] font-bold text-zinc-300">B:${calc.p}g • S:${calc.c}g • T:${calc.f}g</span>
-                            <div class="flex items-center gap-1.5">
-                                <button type="button" onclick="openSampleMealInBuilder('${m.id}')" class="px-2.5 py-1.5 rounded-lg bg-dark-900 hover:bg-dark-800 border border-zinc-700 text-amber-300 text-[11px] font-bold">Upraviť gramáže</button>
-                                <button type="button" onclick="addSampleMealDirectly('${m.id}')" class="px-2.5 py-1.5 rounded-lg bg-brand-500 text-zinc-950 text-[11px] font-extrabold">+ Pridať</button>
-                            </div>
+                        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-zinc-800/80">
+                            <button type="button" onclick="openSampleMealInBuilder('${m.id}')" class="py-2 px-2.5 rounded-xl bg-dark-900 hover:bg-dark-800 border border-zinc-700 text-amber-300 text-[11px] font-bold text-center">Upraviť gramáže</button>
+                            <button type="button" onclick="addSampleMealDirectly('${m.id}')" class="py-2 px-2.5 rounded-xl bg-brand-500 text-zinc-950 text-[11px] font-extrabold text-center">+ Pridať do dňa</button>
                         </div>
                     </div>
                 `;
@@ -3975,8 +3980,8 @@
                         </div>
                         <div class="space-y-1 bg-dark-950/70 border border-zinc-800/80 rounded-xl p-2.5">${rows}</div>
                         <div class="grid grid-cols-2 gap-2 pt-1">
-                            <button type="button" onclick="applySampleDayToSelectedDate('${day.id}', false)" class="py-2 px-2.5 rounded-xl bg-dark-900 border border-zinc-700 text-zinc-200 font-bold text-[11px]">Vložiť pôvodné</button>
-                            <button type="button" onclick="applySampleDayToSelectedDate('${day.id}', true)" class="py-2 px-2.5 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-[11px]">Prispôsobiť (${userTargetKcal} kcal)</button>
+                            <button type="button" onclick="applySampleDayToSelectedDate('${day.id}', false)" class="py-2 px-2 rounded-xl bg-dark-900 border border-zinc-700 text-zinc-200 font-bold text-[11px] text-center truncate">Vložiť pôvodné</button>
+                            <button type="button" onclick="applySampleDayToSelectedDate('${day.id}', true)" class="py-2 px-2 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-[11px] text-center truncate">Na cieľ (${userTargetKcal} kcal)</button>
                         </div>
                     </div>
                 `;
