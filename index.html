@@ -46,7 +46,7 @@
 
     <!-- BANNER AUTOMATICKÉHO UPDATE APLIKÁCIE -->
     <div id="app-update-banner" style="display: none;" class="bg-amber-400 text-zinc-950 px-4 py-2 text-xs font-extrabold flex items-center justify-between gap-2 z-40">
-        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.3.0</span>) je pripravená</span>
+        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.4.0</span>) je pripravená</span>
         <button type="button" onclick="applyAppUpdateNow()" class="px-3 py-1 rounded-lg bg-zinc-950 text-amber-300 font-black text-[11px] shrink-0">Aktualizovať</button>
     </div>
 
@@ -225,13 +225,27 @@
             <div class="flex items-center justify-between gap-2">
                 <div>
                     <h2 class="text-base font-extrabold text-white">Tréningové splity</h2>
-                    <p class="text-[11px] text-zinc-400">Tréningové plány a pripomienky do kalendára</p>
+                    <p class="text-[11px] text-zinc-400">Zbalené plány podľa typu • ťukni pre rozbalenie</p>
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0">
-                    <button onclick="openTrainingReminderModal()" class="bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-sky-300 font-bold text-xs px-3 py-2 rounded-xl transition">Kalendár</button>
-                    <button onclick="openSplitBuilderModal()" class="bg-brand-500 hover:bg-brand-600 text-zinc-950 font-extrabold text-xs px-3 py-2 rounded-xl transition">+ Split</button>
+                    <button type="button" onclick="toggleSplitGuideBox()" class="bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-amber-300 font-bold text-xs px-2.5 py-2 rounded-xl transition">Ktorý?</button>
+                    <button type="button" onclick="openTrainingReminderModal()" class="bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-sky-300 font-bold text-xs px-2.5 py-2 rounded-xl transition">Kalendár</button>
+                    <button type="button" onclick="openSplitBuilderModal()" class="bg-brand-500 hover:bg-brand-600 text-zinc-950 font-extrabold text-xs px-3 py-2 rounded-xl transition">+ Split</button>
                 </div>
             </div>
+
+            <div id="split-guide-box" class="hidden card-surface border-amber-400/35 p-3.5 text-[11px] text-zinc-300 space-y-1.5 leading-relaxed">
+                <div class="flex items-center justify-between">
+                    <strong class="text-xs text-amber-300">Ako si vybrať vhodný split?</strong>
+                    <button type="button" onclick="toggleSplitGuideBox()" class="text-zinc-500 hover:text-white">✕</button>
+                </div>
+                <div>• <strong class="text-white">Fullbody (A/B):</strong> 2–3× týždenne. Precvičí celé telo v jednom tréningu, ideálne pre začiatočníkov aj pri nabitom týždni.</div>
+                <div>• <strong class="text-white">Upper / Lower (A/B):</strong> 4× týždenne (Vrch / Spodok). Výborný pomer objemu práce a regenerácie.</div>
+                <div>• <strong class="text-white">PPL (Push / Pull / Legs):</strong> 3× alebo 6× týždenne. Rozdelenie na tlakové, ťahové cviky a nohy.</div>
+                <div>• <strong class="text-white">Atletika & Doma:</strong> Doplnková sila pre bežcov alebo tréning s vlastnou váhou / jednoručkami.</div>
+            </div>
+
+            <div id="split-filter-pills" class="flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5"></div>
 
             <div id="shared-trainer-splits-box" class="hidden card-surface border-amber-400/40 p-3.5 space-y-2.5">
                 <div class="flex items-center justify-between gap-2">
@@ -241,7 +255,7 @@
                 <div id="shared-trainer-splits-list" class="space-y-2"></div>
             </div>
 
-            <div id="splits-list" class="space-y-3"></div>
+            <div id="splits-list" class="space-y-2.5"></div>
         </section>
 
         <!-- ZÁLOŽKA 1.3: DATABÁZA CVIKOV -->
@@ -262,10 +276,11 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-base font-extrabold text-white">História tréningov</h2>
-                    <p class="text-[11px] text-zinc-400">Odcvičené tréningy, objem a reporty</p>
+                    <p class="text-[11px] text-zinc-400">Osobné rekordy (PR), zopakovanie tréningu a reporty</p>
                 </div>
                 <span id="history-count-badge" class="text-xs bg-dark-900 text-zinc-300 px-2.5 py-1 rounded-lg border border-zinc-800">0</span>
             </div>
+            <div id="history-pr-summary" class="hidden card-surface p-3.5 space-y-2.5"></div>
             <div id="history-list" class="space-y-3"></div>
         </section>
 
@@ -310,10 +325,15 @@
                             <div class="text-[11px] text-zinc-400 truncate">Vyber chod, suroviny (ks / ml / g) alebo EAN</div>
                         </div>
                     </button>
-                    <button type="button" onclick="openMealBuilderModal(true)" title="Skenovať čiarový kód EAN" class="h-11 px-3 rounded-2xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-sky-400 flex items-center gap-1.5 text-xs font-extrabold shrink-0 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2M7 12h10"/></svg>
-                        <span>EAN</span>
-                    </button>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="openMealInspirationsModal()" title="Slovenské jedlá a vzorové dni" class="h-11 px-2.5 rounded-2xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/35 text-amber-300 flex items-center gap-1 text-[11px] font-extrabold shrink-0 transition">
+                            <span>Inšpirácie</span>
+                        </button>
+                        <button type="button" onclick="openMealBuilderModal(true)" title="Skenovať čiarový kód EAN" class="h-11 px-2.5 rounded-2xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-sky-400 flex items-center gap-1 text-xs font-extrabold shrink-0 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2M7 12h10"/></svg>
+                            <span>EAN</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- PREHĽAD KALÓRIÍ, MAKIER A VODY -->
@@ -328,7 +348,8 @@
                         </div>
                         <div class="flex items-center gap-1.5">
                             <button id="trainer-send-mealplan-btn" onclick="openSendMealPlanModal()" class="hidden px-2.5 py-1.5 rounded-xl bg-amber-400 text-zinc-950 font-extrabold text-[11px]">Poslať klientom</button>
-                            <button onclick="openMacroCalcModal('calc')" class="px-3 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-zinc-200 font-bold text-[11px] transition">Nastaviť ciele</button>
+                            <button type="button" onclick="openMacroCalcModal('guide')" class="px-2.5 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-sky-300 font-bold text-[11px] transition">Ako na makrá?</button>
+                            <button type="button" onclick="openMacroCalcModal('calc')" class="px-3 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-zinc-200 font-bold text-[11px] transition">Ciele</button>
                         </div>
                     </div>
 
@@ -419,10 +440,11 @@
 
                 <!-- REŽIM 1: RANNÝ DENNÝ DOTAZNÍK -->
                 <div id="body-panel-daily" class="space-y-3.5">
-                    <div class="grid grid-cols-3 gap-2">
-                        <div class="card-surface p-3 text-center"><span class="text-[10px] font-bold uppercase text-zinc-400 block">Energia (7d)</span><strong id="weekly-avg-energy" class="text-sm font-black text-amber-400 mt-0.5 block">— / 10</strong></div>
-                        <div class="card-surface p-3 text-center"><span class="text-[10px] font-bold uppercase text-zinc-400 block">Spánok (7d)</span><strong id="weekly-avg-sleep" class="text-sm font-black text-brand-400 mt-0.5 block">— / 10</strong></div>
-                        <div class="card-surface p-3 text-center"><span class="text-[10px] font-bold uppercase text-zinc-400 block">Posledná váha</span><strong id="weekly-last-weight" class="text-sm font-black text-white mt-0.5 block">— kg</strong></div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <div class="card-surface p-2.5 text-center"><span class="text-[9.5px] font-bold uppercase text-zinc-400 block">Priemer váhy (7d)</span><strong id="weekly-last-weight" class="text-sm font-black text-white mt-0.5 block">— kg</strong><span id="weekly-weight-trend" class="text-[9.5px] text-zinc-500 block"></span></div>
+                        <div class="card-surface p-2.5 text-center"><span class="text-[9.5px] font-bold uppercase text-zinc-400 block">Priemer stravy (7d)</span><strong id="weekly-avg-kcal" class="text-sm font-black text-sky-300 mt-0.5 block">— kcal</strong><span id="weekly-avg-prot" class="text-[9.5px] text-zinc-500 block"></span></div>
+                        <div class="card-surface p-2.5 text-center"><span class="text-[9.5px] font-bold uppercase text-zinc-400 block">Energia (7d)</span><strong id="weekly-avg-energy" class="text-sm font-black text-amber-400 mt-0.5 block">— / 10</strong></div>
+                        <div class="card-surface p-2.5 text-center"><span class="text-[9.5px] font-bold uppercase text-zinc-400 block">Spánok (7d)</span><strong id="weekly-avg-sleep" class="text-sm font-black text-brand-400 mt-0.5 block">— / 10</strong></div>
                     </div>
 
                     <div class="card-surface p-4 space-y-3.5">
@@ -703,53 +725,74 @@
     </div>
 
     <div id="modal-macro-calc" class="fixed inset-0 z-50 hidden bg-black/85 flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-dark-900 border border-zinc-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-3.5">
-            <div class="flex items-center justify-between">
-                <div><h3 class="text-base font-extrabold text-white">Nastavenie kalórií a makier</h3><p class="text-[11px] text-zinc-400">Kalkulačka alebo vlastné gramy</p></div>
+        <div class="bg-dark-900 border border-zinc-800 w-full max-w-md max-h-[92vh] flex flex-col rounded-t-3xl sm:rounded-3xl overflow-hidden">
+            <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
+                <div><h3 class="text-base font-extrabold text-white">Kalórie & Makroživiny</h3><p class="text-[11px] text-zinc-400">Výpočet, vlastné makrá a praktický sprievodca</p></div>
                 <button onclick="document.getElementById('modal-macro-calc').classList.add('hidden')" class="p-1.5 rounded-lg bg-dark-800 text-zinc-400">✕</button>
             </div>
-            <div class="grid grid-cols-2 gap-1 bg-dark-950 p-1 rounded-xl border border-zinc-800">
-                <button type="button" onclick="setMacroModalMode('calc')" id="macro-mode-calc-btn" class="py-2 rounded-lg text-xs font-extrabold bg-brand-500 text-zinc-950 transition">Kalkulačka</button>
-                <button type="button" onclick="setMacroModalMode('manual')" id="macro-mode-manual-btn" class="py-2 rounded-lg text-xs font-extrabold text-zinc-400 hover:text-white transition">Vlastné makrá</button>
-            </div>
-            <div id="macro-panel-calc" class="space-y-3">
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Pohlavie</label><select id="calc-gender" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white"><option value="male">Muž</option><option value="female">Žena</option></select></div>
-                    <div><label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Vek</label><input type="number" id="calc-age" value="30" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-center text-xs font-bold text-white"></div>
+            <div class="p-4 overflow-y-auto space-y-3.5 flex-1">
+                <div class="grid grid-cols-3 gap-1 bg-dark-950 p-1 rounded-xl border border-zinc-800">
+                    <button type="button" onclick="setMacroModalMode('calc')" id="macro-mode-calc-btn" class="py-2 rounded-lg text-xs font-extrabold bg-brand-500 text-zinc-950 transition">Kalkulačka</button>
+                    <button type="button" onclick="setMacroModalMode('manual')" id="macro-mode-manual-btn" class="py-2 rounded-lg text-xs font-extrabold text-zinc-400 hover:text-white transition">Vlastné</button>
+                    <button type="button" onclick="setMacroModalMode('guide')" id="macro-mode-guide-btn" class="py-2 rounded-lg text-xs font-extrabold text-zinc-400 hover:text-white transition">Sprievodca</button>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Výška (cm)</label><input type="number" id="calc-height" value="180" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-center text-xs font-bold text-white"></div>
-                    <div><label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Váha (kg)</label><input type="number" id="calc-weight" value="82" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-center text-xs font-bold text-white"></div>
+                <div id="macro-panel-calc" class="space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Pohlavie</label><select id="calc-gender" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white"><option value="male">Muž</option><option value="female">Žena</option></select></div>
+                        <div><label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Vek</label><input type="number" id="calc-age" value="30" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-center text-xs font-bold text-white"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Výška (cm)</label><input type="number" id="calc-height" value="180" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-center text-xs font-bold text-white"></div>
+                        <div><label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Váha (kg)</label><input type="number" id="calc-weight" value="82" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-center text-xs font-bold text-white"></div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Aktivita</label>
+                        <select id="calc-activity" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white">
+                            <option value="1.35">Sedavá práca + 1–2× tréning</option>
+                            <option value="1.55" selected>Stredne aktívny (3–4× tréning)</option>
+                            <option value="1.72">Veľmi aktívny (5–6× tréning)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Cieľ</label>
+                        <select id="calc-goal" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white">
+                            <option value="cut">Chudnutie tuku (−18 % deficit)</option>
+                            <option value="maintain" selected>Udržanie formy (100 % TDEE)</option>
+                            <option value="bulk">Naberanie svalov (+12 % nadbytok)</option>
+                        </select>
+                    </div>
+                    <button onclick="applyCalculatedMacros()" class="w-full py-3 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-xs">Vypočítať a uložiť ✓</button>
                 </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Aktivita</label>
-                    <select id="calc-activity" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white">
-                        <option value="1.35">Sedavá práca + 1–2× tréning</option>
-                        <option value="1.55" selected>Stredne aktívny (3–4× tréning)</option>
-                        <option value="1.72">Veľmi aktívny (5–6× tréning)</option>
-                    </select>
+                <div id="macro-panel-manual" class="hidden space-y-3">
+                    <div class="grid grid-cols-3 gap-2">
+                        <div><label class="block text-[10px] font-bold uppercase text-sky-400 mb-1">Bielkoviny (g)</label><input type="number" id="manual-p" oninput="updateManualKcalPreview()" placeholder="160" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2.5 text-center text-sm font-extrabold text-white"></div>
+                        <div><label class="block text-[10px] font-bold uppercase text-amber-400 mb-1">Sacharidy (g)</label><input type="number" id="manual-c" oninput="updateManualKcalPreview()" placeholder="260" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2.5 text-center text-sm font-extrabold text-white"></div>
+                        <div><label class="block text-[10px] font-bold uppercase text-rose-400 mb-1">Tuky (g)</label><input type="number" id="manual-f" oninput="updateManualKcalPreview()" placeholder="75" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2.5 text-center text-sm font-extrabold text-white"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-dark-950 border border-zinc-800 rounded-xl p-2.5 text-center"><span class="text-[10px] font-bold uppercase text-zinc-400 block">Kalórie</span><strong id="manual-kcal-preview" class="text-base font-black text-brand-400">2355 kcal</strong></div>
+                        <div><label class="block text-[10px] font-bold uppercase text-sky-300 mb-1">Voda (L)</label><input type="number" step="0.1" id="manual-water" placeholder="2.5" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2.5 text-center text-sm font-extrabold text-white"></div>
+                    </div>
+                    <button onclick="applyManualMacros()" class="w-full py-3 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-xs">Uložiť vlastné makrá ✓</button>
                 </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Cieľ</label>
-                    <select id="calc-goal" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white">
-                        <option value="cut">Chudnutie tuku</option>
-                        <option value="maintain" selected>Udržanie formy</option>
-                        <option value="bulk">Naberanie svalov a sily</option>
-                    </select>
+                <div id="macro-panel-guide" class="hidden space-y-2.5 text-xs text-zinc-300 leading-relaxed">
+                    <div class="subcard-surface p-3 space-y-1.5">
+                        <div class="font-extrabold text-brand-400">1. Energetická bilancia (Kalórie)</div>
+                        <div>• <strong class="text-white">Chudnutie (Deficit −15 až −20 %):</strong> Zníž príjem o 300–500 kcal pod udržanie (tempo cca 0,4–0,7 % váhy týždenne). Extrémny deficit (&gt;25 %) znižuje bežný denný pohyb (NEAT), zhoršuje spánok a ohrozuje svalovú hmotu.</div>
+                        <div>• <strong class="text-white">Udržiavanie (Maintenance):</strong> Vyrovnaný príjem pre stabilnú hmotnosť, maximálnu regeneráciu a postupnú rekompozíciu u začiatočníkov.</div>
+                        <div>• <strong class="text-white">Naberanie svalov (+8 až +12 %):</strong> Mierny nadbytok (+200 až +300 kcal) stačí na rast svalov bez zbytočného priberania tuku.</div>
+                    </div>
+                    <div class="subcard-surface p-3 space-y-1.5">
+                        <div class="font-extrabold text-amber-300">2. Ako sa počítajú makroživiny</div>
+                        <div>• <strong class="text-sky-400">Bielkoviny (1,6 – 2,2 g / kg):</strong> Ochrana a rast svalov, najvyššie zasýtenie (1 g = 4 kcal).</div>
+                        <div>• <strong class="text-rose-400">Tuky (0,7 – 1,0 g / kg):</strong> Hormóny a vstrebávanie vitamínov A, D, E, K. Dlhodobo neklesaj pod 0,6 g/kg (1 g = 9 kcal).</div>
+                        <div>• <strong class="text-amber-400">Sacharidy (zvyšok kcal):</strong> Hlavné palivo pre silový tréning a výkon (1 g = 4 kcal).</div>
+                    </div>
+                    <div class="subcard-surface p-3 space-y-1">
+                        <div class="font-extrabold text-sky-300">3. Pravidlo 80/20 (Udržateľnosť)</div>
+                        <div>80–90 % kalórií zlož zo základných potravín (mäso, vajcia, mliečne výrobky, ryža, zemiaky, ovocie, zelenina) a zvyšných 10–20 % si môžeš bez výčitiek doplniť obľúbeným jedlom, ak sedia celkové kalórie a bielkoviny.</div>
+                    </div>
                 </div>
-                <button onclick="applyCalculatedMacros()" class="w-full py-3 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-xs">Vypočítať a uložiť ✓</button>
-            </div>
-            <div id="macro-panel-manual" class="hidden space-y-3">
-                <div class="grid grid-cols-3 gap-2">
-                    <div><label class="block text-[10px] font-bold uppercase text-sky-400 mb-1">Bielkoviny (g)</label><input type="number" id="manual-p" oninput="updateManualKcalPreview()" placeholder="160" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2.5 text-center text-sm font-extrabold text-white"></div>
-                    <div><label class="block text-[10px] font-bold uppercase text-amber-400 mb-1">Sacharidy (g)</label><input type="number" id="manual-c" oninput="updateManualKcalPreview()" placeholder="260" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2.5 text-center text-sm font-extrabold text-white"></div>
-                    <div><label class="block text-[10px] font-bold uppercase text-rose-400 mb-1">Tuky (g)</label><input type="number" id="manual-f" oninput="updateManualKcalPreview()" placeholder="75" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2.5 text-center text-sm font-extrabold text-white"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="bg-dark-950 border border-zinc-800 rounded-xl p-2.5 text-center"><span class="text-[10px] font-bold uppercase text-zinc-400 block">Kalórie</span><strong id="manual-kcal-preview" class="text-base font-black text-brand-400">2355 kcal</strong></div>
-                    <div><label class="block text-[10px] font-bold uppercase text-sky-300 mb-1">Voda (L)</label><input type="number" step="0.1" id="manual-water" placeholder="2.5" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2.5 text-center text-sm font-extrabold text-white"></div>
-                </div>
-                <button onclick="applyManualMacros()" class="w-full py-3 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-xs">Uložiť vlastné makrá ✓</button>
             </div>
         </div>
     </div>
@@ -825,9 +868,12 @@
 
                 <div id="mb-ingredients-list" class="space-y-1.5"></div>
 
-                <div class="bg-dark-950 border border-zinc-800 rounded-2xl p-3 flex items-center justify-between text-xs">
-                    <div><span class="text-[10px] text-zinc-400 uppercase font-bold block">Spolu za jedlo</span><strong id="mb-total-kcal" class="text-base font-black text-white">0 kcal</strong></div>
-                    <div class="text-right text-[11px] font-bold"><span class="text-sky-400">B: <span id="mb-total-p">0</span>g</span> • <span class="text-amber-400">S: <span id="mb-total-c">0</span>g</span> • <span class="text-rose-400">T: <span id="mb-total-f">0</span>g</span></div>
+                <div class="bg-dark-950 border border-zinc-800 rounded-2xl p-3 space-y-2 text-xs">
+                    <div class="flex items-center justify-between">
+                        <div><span class="text-[10px] text-zinc-400 uppercase font-bold block">Spolu za jedlo</span><strong id="mb-total-kcal" class="text-base font-black text-white">0 kcal</strong></div>
+                        <div class="text-right text-[11px] font-bold"><span class="text-sky-400">B: <span id="mb-total-p">0</span>g</span> • <span class="text-amber-400">S: <span id="mb-total-c">0</span>g</span> • <span class="text-rose-400">T: <span id="mb-total-f">0</span>g</span></div>
+                    </div>
+                    <button type="button" id="mb-scale-to-goal-btn" onclick="scaleDraftMealToUserGoal()" class="hidden w-full py-2 rounded-xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/35 text-amber-300 font-extrabold text-[11px] transition">Prepočítať gramáže na môj denný cieľ</button>
                 </div>
                 <label class="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer"><input type="checkbox" id="mb-save-as-preset" class="accent-emerald-500"><span>Uložiť toto jedlo medzi moje vlastné šablóny</span></label>
             </div>
@@ -877,6 +923,28 @@
         </div>
     </div>
 
+
+    <!-- MODÁL SLOVENSKÉ VZOROVÉ JEDLÁ & KOMPLETNÉ DNI -->
+    <div id="modal-meal-inspirations" class="fixed inset-0 z-50 hidden bg-black/85 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-dark-900 border border-zinc-800 w-full max-w-lg max-h-[92vh] flex flex-col rounded-t-3xl sm:rounded-3xl overflow-hidden">
+            <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
+                <div>
+                    <h3 class="text-base font-extrabold text-white">Slovenské jedlá & Vzorové dni</h3>
+                    <p id="insp-target-date-sub" class="text-[11px] text-brand-400 font-bold">Prispôsob si porcie na svoje kalórie</p>
+                </div>
+                <button onclick="document.getElementById('modal-meal-inspirations').classList.add('hidden')" class="p-1.5 rounded-lg bg-dark-800 text-zinc-400">✕</button>
+            </div>
+            <div class="p-4 overflow-y-auto space-y-3.5 flex-1">
+                <div class="grid grid-cols-2 gap-1 bg-dark-950 p-1 rounded-xl border border-zinc-800">
+                    <button type="button" onclick="setInspirationTab('meals')" id="insp-tab-meals-btn" class="py-2 rounded-lg text-xs font-extrabold bg-amber-400 text-zinc-950 transition">Slovenské jedlá</button>
+                    <button type="button" onclick="setInspirationTab('days')" id="insp-tab-days-btn" class="py-2 rounded-lg text-xs font-extrabold text-zinc-400 hover:text-white transition">Kompletné vzorové dni</button>
+                </div>
+                <div id="insp-meal-slot-pills" class="flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5"></div>
+                <div id="insp-content-list" class="space-y-2.5"></div>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-edu" class="fixed inset-0 z-50 hidden bg-black/85 flex items-center justify-center p-4">
         <div class="bg-dark-900 border border-zinc-800 w-full max-w-sm rounded-3xl p-5 space-y-3">
             <div class="flex items-center justify-between"><h3 id="edu-modal-title" class="text-base font-extrabold text-sky-300">Vysvetlenie</h3><button onclick="document.getElementById('modal-edu').classList.add('hidden')" class="p-1.5 rounded-lg bg-dark-800 text-zinc-400">✕</button></div>
@@ -921,7 +989,7 @@
             <div class="p-4 overflow-y-auto space-y-4 flex-1">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <div class="sm:col-span-2"><label class="block text-[11px] font-bold text-zinc-400 mb-1">Názov splitu</label><input type="text" id="split-builder-name" placeholder="Napr. PUSH – Vrch tela" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-3 py-2 text-xs font-bold text-white"></div>
-                    <div><label class="block text-[11px] font-bold text-zinc-400 mb-1">Typ</label><select id="split-builder-tag" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-semibold text-white"><option value="Fullbody">Fullbody</option><option value="Upper / Lower">Upper / Lower</option><option value="Push / Pull / Legs">Push / Pull / Legs</option><option value="Atletika">Atletika</option><option value="Vlastný">Vlastný</option></select></div>
+                    <div><label class="block text-[11px] font-bold text-zinc-400 mb-1">Typ</label><select id="split-builder-tag" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-semibold text-white"><option value="Fullbody">Fullbody</option><option value="Upper / Lower">Upper / Lower</option><option value="PPL">PPL (Push / Pull / Legs)</option><option value="Atletika">Atletika</option><option value="Doma">Doma</option><option value="Vlastný">Vlastný</option></select></div>
                 </div>
                 <div class="subcard-surface p-3 space-y-3">
                     <div class="flex items-center justify-between gap-2">
@@ -1025,7 +1093,7 @@
                 <label class="w-full py-2.5 px-4 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-200 font-bold text-xs flex items-center justify-center cursor-pointer"><span>Obnoviť dáta zo súboru (.JSON)</span><input type="file" accept=".json" onchange="importDataJSON(event)" class="hidden"></label>
             </div>
             <div class="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
-                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.3.0</span></span>
+                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.4.0</span></span>
                 <button type="button" onclick="logoutTesterCode()" class="px-3 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-bold">Odhlásiť kód</button>
             </div>
         </div>
@@ -1186,7 +1254,7 @@
         // =====================================================================
         // SUPABASE CLOUD PREPOJENIE, ROLE, AUTO-SYNC & AUTO-UPDATE
         // =====================================================================
-        const APP_VERSION = '2.3.0';
+        const APP_VERSION = '2.4.0';
         const SUPABASE_URL = 'https://gfmiyksnjimznbussdia.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmbWl5a3Nuamltem5idXNzZGlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxNzY2MjQsImV4cCI6MjExMDc1MjYyNH0.3PSwWSSmkNyvO_rQTWjQe3hz4zlcU-AFPUSU9hasCcM';
 
@@ -2150,7 +2218,9 @@
                 todayMeals.forEach(m => { eatenP += parseFloat(m.p) || 0; eatenC += parseFloat(m.c) || 0; eatenF += parseFloat(m.f) || 0; });
                 const eatenKcal = Math.round(eatenP * 4 + eatenC * 4 + eatenF * 9);
 
-                const dailyCis = [...(st.bodyCheckInsByProfile?.me || [])].reverse();
+                const rawDailyCis = st.bodyCheckInsByProfile?.me || [];
+                const rollingClient = compute7DayRollingStats(st.nutritionDataByProfile?.me, rawDailyCis);
+                const dailyCis = [...rawDailyCis].reverse();
                 const weightPoints = dailyCis.filter(c => c.weight).slice(-10).map(c => ({ date: c.date, val: c.weight }));
                 const energyPoints = dailyCis.slice(-10).map(c => ({ date: c.date, val: c.energy }));
                 const wHist = st.workoutHistory || [];
@@ -2161,13 +2231,13 @@
                         <div class="flex items-center justify-between gap-2">
                             <div>
                                 <h4 class="text-sm font-black text-white">${userObj.name} (${userObj.code})</h4>
-                                <p class="text-[11px] text-zinc-400">Vek: <strong class="text-white">${bio.age || '—'} r</strong> • Výška: <strong class="text-white">${bio.height || '—'} cm</strong> • Váha: <strong class="text-white">${bio.weight || '—'} kg</strong></p>
+                                <p class="text-[11px] text-zinc-400">Vek: <strong class="text-white">${bio.age || '—'} r</strong> • Výška: <strong class="text-white">${bio.height || '—'} cm</strong> • Váha (7d priem.): <strong class="text-brand-400">${rollingClient.avgW7 !== null ? rollingClient.avgW7 + ' kg' : (bio.weight || '—') + ' kg'}</strong></p>
                             </div>
                             <button type="button" onclick="openTrainingReminderModal('${userObj.code}')" class="px-2.5 py-1.5 rounded-xl bg-sky-500 text-zinc-950 font-extrabold text-[11px] shrink-0">Do kalendára</button>
                         </div>
                         ${bio.notes ? `<div class="text-[11px] text-amber-300 subcard-surface px-2.5 py-1.5">Poznámka: ${bio.notes}</div>` : ''}
                         <div class="subcard-surface p-2.5 space-y-1.5">
-                            <div class="flex justify-between text-[11px]"><span class="font-bold text-zinc-400">Makrá dnes vs. Cieľ:</span><strong class="text-white">${eatenKcal} / ${targets.kcal} kcal</strong></div>
+                            <div class="flex justify-between text-[11px] flex-wrap gap-1"><span class="font-bold text-zinc-400">Dnes: <strong class="text-white">${eatenKcal} / ${targets.kcal} kcal</strong></span><span class="text-sky-300 font-bold">7d priemer: ${rollingClient.avgKcal7 !== null ? rollingClient.avgKcal7 + ' kcal (B: ' + rollingClient.avgProt7 + 'g)' : '—'}</span></div>
                             <div class="grid grid-cols-4 gap-1.5 text-center text-[10.5px]">
                                 <div class="bg-dark-900 p-1.5 rounded-lg"><span class="text-sky-400 block text-[9px]">Bielk.</span><strong>${Math.round(eatenP)} / ${targets.p}g</strong></div>
                                 <div class="bg-dark-900 p-1.5 rounded-lg"><span class="text-amber-400 block text-[9px]">Sach.</span><strong>${Math.round(eatenC)} / ${targets.c}g</strong></div>
@@ -2207,7 +2277,7 @@
                 body.innerHTML = workouts.map(w => {
                     const p = w.payload || {};
                     const exList = p.exercises || [];
-                    return `<div class="card-surface p-3.5 space-y-2"><div class="flex items-start justify-between gap-2"><div><span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-brand-500/15 text-brand-400">${p.testerName || w.tester_code}</span><h4 class="text-sm font-extrabold text-white mt-1">${p.title || 'Tréning'}</h4></div><div class="text-right text-[10.5px] text-zinc-400"><div>${p.date || ''}</div><div class="text-amber-400 font-bold">${formatVolumeKg(p.totalVolume || 0)}</div></div></div><div class="space-y-1.5">${exList.map(ex => `<div onclick="openClientExerciseProgressInCockpit('${w.tester_code}', '${ex.name.replace(/'/g, "\\'")}')" class="cursor-pointer subcard-surface p-2 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[10.5px] text-zinc-400 truncate">${(ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(' | ')}</div></div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}</div></div>`;
+                    return `<div class="card-surface p-3.5 space-y-2"><div class="flex items-start justify-between gap-2"><div><span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-brand-500/15 text-brand-400">${p.testerName || w.tester_code}</span><h4 class="text-sm font-extrabold text-white mt-1">${p.title || 'Tréning'}</h4></div><div class="text-right text-[10.5px] text-zinc-400"><div>${p.date || ''}</div><div class="text-amber-400 font-bold">${formatVolumeKg(p.totalVolume || 0)}</div></div></div><div class="space-y-1.5">${exList.map(ex => `<div onclick="openClientExerciseProgressInCockpit('${w.tester_code}', '${ex.name.replace(/'/g, "\\'")}')" class="cursor-pointer subcard-surface p-2 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[10.5px] text-zinc-400 truncate">${(ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(' | ')}</div>${ex.note ? `<div class="text-[10px] text-amber-300 mt-0.5 truncate">Poznámka: ${ex.note}</div>` : ''}</div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}</div></div>`;
                 }).join('');
             } else if (cockpitActiveTab === 'logs') {
                 const combined = filteredLogs.filter(l => ['nutrition_log', 'morning_checkin', 'weekly_checkin'].includes(l.log_type));
@@ -2581,11 +2651,18 @@
         }
 
         const DEFAULT_SPLITS = [
-            { id: 'split-fullbody-beginner', name: 'FULLBODY – Celé telo', tag: 'Fullbody', blocks: [{ type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-13', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-19', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-26', sets: 2, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
+            { id: 'split-fullbody-beginner', name: 'FULLBODY A – Základná sila', tag: 'Fullbody', blocks: [{ type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-13', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-19', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-26', sets: 2, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
+            { id: 'split-fullbody-b', name: 'FULLBODY B – Variácia & Stred tela', tag: 'Fullbody', blocks: [{ type: 'single', exerciseId: 'ex-3', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-12', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-21', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-28', exerciseId2: 'ex-33', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-124', sets: 3, technique: 'standard' }] },
+            { id: 'split-ul-upper-a', name: 'UPPER A – Vrch tela (Ťažký)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-11', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-20', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-26', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-19', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-32', exerciseId2: 'ex-38', sets: 3, technique: 'superset' }] },
+            { id: 'split-ul-lower-a', name: 'LOWER A – Spodok tela (Drepy)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-1', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-5', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-47', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
+            { id: 'split-ul-upper-b', name: 'UPPER B – Vrch tela (Hypertrofia)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-12', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-21', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-28', sets: 3, technique: 'dropset' }, { type: 'single', exerciseId: 'ex-31', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-34', exerciseId2: 'ex-41', sets: 3, technique: 'superset' }] },
+            { id: 'split-ul-lower-b', name: 'LOWER B – Spodok tela (Zadný reťazec)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-69', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-6', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-48', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-126', sets: 3, technique: 'standard' }] },
             { id: 'split-push-mirome', name: 'PUSH – Prsia, Ramená & Triceps', tag: 'PPL', blocks: [{ type: 'single', exerciseId: 'ex-12', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-62', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-14', sets: 3, technique: 'dropset' }, { type: 'single', exerciseId: 'ex-26', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-28', exerciseId2: 'ex-63', sets: 3, technique: 'superset' }, { type: 'superset', exerciseId: 'ex-38', exerciseId2: 'ex-40', sets: 3, technique: 'superset' }] },
             { id: 'split-pull-mirome', name: 'PULL – Chrbát & Biceps', tag: 'PPL', blocks: [{ type: 'single', exerciseId: 'ex-18', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-21', sets: 3, technique: 'restpause' }, { type: 'single', exerciseId: 'ex-22', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-31', exerciseId2: 'ex-32', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-34', sets: 3, technique: 'dropset' }] },
             { id: 'split-legs-mirome', name: 'LEGS & CORE – Nohy & Brucho', tag: 'PPL', blocks: [{ type: 'single', exerciseId: 'ex-1', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-3', sets: 3, technique: 'restpause' }, { type: 'superset', exerciseId: 'ex-5', exerciseId2: 'ex-6', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-47', sets: 4, technique: 'dropset' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
-            { id: 'split-runners-explosive', name: 'BEŽCI – Dynamika & Prevencia', tag: 'Atletika', blocks: [{ type: 'single', exerciseId: 'ex-56', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-135', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-68', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-76', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-119', exerciseId2: 'ex-121', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-126', sets: 3, technique: 'standard' }] }
+            { id: 'split-runners-strength', name: 'BEŽCI A – Sila & Stabilita', tag: 'Atletika', blocks: [{ type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-68', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-47', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-51', sets: 3, technique: 'standard' }] },
+            { id: 'split-runners-explosive', name: 'BEŽCI B – Dynamika & Prevencia', tag: 'Atletika', blocks: [{ type: 'single', exerciseId: 'ex-56', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-135', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-68', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-76', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-119', exerciseId2: 'ex-121', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-126', sets: 3, technique: 'standard' }] },
+            { id: 'split-home-fullbody', name: 'DOMÁCE FULLBODY – Vlastná váha / Jednoručky', tag: 'Doma', blocks: [{ type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-17', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-74', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-22', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] }
         ];
 
         const SUPP_CATEGORIES = [
@@ -2682,7 +2759,13 @@
         let exercises = storedExercises;
         let activeWorkout = JSON.parse(localStorage.getItem('fitlog_active_workout')) || [];
         let workoutHistory = JSON.parse(localStorage.getItem('fitlog_history')) || [];
-        let savedSplits = JSON.parse(localStorage.getItem('fitlog_splits')) || [...DEFAULT_SPLITS];
+        let storedSplits = JSON.parse(localStorage.getItem('fitlog_splits')) || [];
+        if (storedSplits.length === 0) storedSplits = [...DEFAULT_SPLITS];
+        else {
+            const existingSplitIds = new Set(storedSplits.map(s => s.id));
+            DEFAULT_SPLITS.forEach(defSp => { if (!existingSplitIds.has(defSp.id)) storedSplits.push(defSp); });
+        }
+        let savedSplits = storedSplits;
 
         let storedSupplements = JSON.parse(localStorage.getItem('fitlog_supplements')) || [];
         if (storedSupplements.length === 0) storedSupplements = [...DEFAULT_SUPPLEMENTS];
@@ -3334,17 +3417,26 @@
             document.getElementById('modal-macro-calc').classList.remove('hidden');
         }
         function setMacroModalMode(mode) {
-            const calcBtn = document.getElementById('macro-mode-calc-btn'), manBtn = document.getElementById('macro-mode-manual-btn');
-            const calcPanel = document.getElementById('macro-panel-calc'), manPanel = document.getElementById('macro-panel-manual');
-            if (mode === 'manual') {
-                manBtn.className = 'py-2 rounded-lg text-xs font-extrabold bg-brand-500 text-zinc-950 transition';
-                calcBtn.className = 'py-2 rounded-lg text-xs font-extrabold text-zinc-400 hover:text-white transition';
-                manPanel.classList.remove('hidden'); calcPanel.classList.add('hidden');
-            } else {
-                calcBtn.className = 'py-2 rounded-lg text-xs font-extrabold bg-brand-500 text-zinc-950 transition';
-                manBtn.className = 'py-2 rounded-lg text-xs font-extrabold text-zinc-400 hover:text-white transition';
-                calcPanel.classList.remove('hidden'); manPanel.classList.add('hidden');
-            }
+            const btns = {
+                calc: document.getElementById('macro-mode-calc-btn'),
+                manual: document.getElementById('macro-mode-manual-btn'),
+                guide: document.getElementById('macro-mode-guide-btn')
+            };
+            const panels = {
+                calc: document.getElementById('macro-panel-calc'),
+                manual: document.getElementById('macro-panel-manual'),
+                guide: document.getElementById('macro-panel-guide')
+            };
+            Object.keys(btns).forEach(k => {
+                if (!btns[k] || !panels[k]) return;
+                if (k === mode) {
+                    btns[k].className = 'py-2 rounded-lg text-xs font-extrabold bg-brand-500 text-zinc-950 transition';
+                    panels[k].classList.remove('hidden');
+                } else {
+                    btns[k].className = 'py-2 rounded-lg text-xs font-extrabold text-zinc-400 hover:text-white transition';
+                    panels[k].classList.add('hidden');
+                }
+            });
         }
         function updateManualKcalPreview() {
             const p = parseFloat(document.getElementById('manual-p').value) || 0;
@@ -3639,21 +3731,277 @@
             renderMealBuilderIngredients();
         }
         function removeIngredientFromMealBuilder(idx) { draftMealIngredients.splice(idx, 1); renderMealBuilderIngredients(); }
+        function updateDraftIngredientQty(idx, newQtyRaw) {
+            const item = draftMealIngredients[idx];
+            if (!item) return;
+            const newQty = Math.max(0.5, parseFloat(newQtyRaw) || 0);
+            if (newQty <= 0) return;
+            const oldGrams = Math.max(1, item.grams || 100);
+            const newGrams = item.unit === 'ks' ? Math.round(newQty * (item.unitGrams || Math.round(oldGrams / Math.max(0.5, item.qty || 1)))) : Math.round(newQty);
+            const ratio = newGrams / oldGrams;
+            item.qty = newQty;
+            item.grams = newGrams;
+            item.p = Math.round(item.p * ratio * 10) / 10;
+            item.c = Math.round(item.c * ratio * 10) / 10;
+            item.f = Math.round(item.f * ratio * 10) / 10;
+            renderMealBuilderIngredients();
+        }
+        function scaleDraftMealToUserGoal() {
+            if (draftMealIngredients.length === 0) return;
+            const data = getProfileNutrition(selectedNutritionDateISO);
+            const targetDayKcal = data.targets?.kcal || 2400;
+            const slot = document.getElementById('mb-meal-slot')?.value || 'lunch';
+            const slotShares = { breakfast: 0.25, snack1: 0.12, lunch: 0.33, snack2: 0.12, dinner: 0.28 };
+            const desiredKcal = Math.round(targetDayKcal * (slotShares[slot] || 0.28));
+
+            let curP = 0, curC = 0, curF = 0;
+            draftMealIngredients.forEach(i => { curP += i.p; curC += i.c; curF += i.f; });
+            const curKcal = curP * 4 + curC * 4 + curF * 9;
+            if (curKcal <= 0) return;
+
+            const factor = Math.max(0.35, Math.min(2.8, desiredKcal / curKcal));
+            draftMealIngredients.forEach(item => {
+                const newQty = item.unit === 'ks'
+                    ? Math.max(0.5, Math.round(item.qty * factor * 2) / 2)
+                    : Math.max(5, Math.round((item.qty * factor) / 5) * 5);
+                const oldGrams = Math.max(1, item.grams || 100);
+                const newGrams = item.unit === 'ks' ? Math.round(newQty * (item.unitGrams || 60)) : newQty;
+                const ratio = newGrams / oldGrams;
+                item.qty = newQty;
+                item.grams = newGrams;
+                item.p = Math.round(item.p * ratio * 10) / 10;
+                item.c = Math.round(item.c * ratio * 10) / 10;
+                item.f = Math.round(item.f * ratio * 10) / 10;
+            });
+            renderMealBuilderIngredients();
+            showToast(`Porcia upravená na ~${desiredKcal} kcal ✓`);
+        }
         function formatIngredientAmountLabel(item) {
-            if (item.unit === 'ks') return `${item.qty} ks / ${item.grams} g`;
+            if (item.unit === 'ks') return `${item.qty} ks (${item.grams} g)`;
             if (item.unit === 'ml') return `${item.qty} ml`;
             return `${item.grams} g`;
         }
         function renderMealBuilderIngredients() {
             const container = document.getElementById('mb-ingredients-list');
+            const scaleBtn = document.getElementById('mb-scale-to-goal-btn');
             let p = 0, c = 0, f = 0;
             draftMealIngredients.forEach(i => { p += i.p; c += i.c; f += i.f; });
             document.getElementById('mb-total-kcal').textContent = `${Math.round(p * 4 + c * 4 + f * 9)} kcal`;
             document.getElementById('mb-total-p').textContent = Math.round(p);
             document.getElementById('mb-total-c').textContent = Math.round(c);
             document.getElementById('mb-total-f').textContent = Math.round(f);
+            if (scaleBtn) scaleBtn.classList.toggle('hidden', draftMealIngredients.length === 0);
             if (draftMealIngredients.length === 0) { container.innerHTML = `<div class="text-center py-3 text-[11px] text-zinc-500 border border-dashed border-zinc-800 rounded-xl">Naskenuj obal alebo pridaj surovinu vyššie.</div>`; return; }
-            container.innerHTML = draftMealIngredients.map((item, idx) => `<div class="subcard-surface px-3 py-2 flex items-center justify-between gap-2 text-xs"><div class="min-w-0"><div class="font-bold text-white truncate">${item.name} (${formatIngredientAmountLabel(item)})</div><div class="text-[10px] text-zinc-400">B:${item.p}g • S:${item.c}g • T:${item.f}g</div></div><button type="button" onclick="removeIngredientFromMealBuilder(${idx})" class="text-rose-400 p-1">✕</button></div>`).join('');
+            container.innerHTML = draftMealIngredients.map((item, idx) => `
+                <div class="subcard-surface px-3 py-2 flex items-center justify-between gap-2 text-xs">
+                    <div class="min-w-0 flex-1">
+                        <div class="font-bold text-white truncate">${item.name.split('(')[0].trim()}</div>
+                        <div class="text-[10px] text-zinc-400">B:${item.p}g • S:${item.c}g • T:${item.f}g</div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <input type="number" step="any" min="0.5" value="${item.qty}" onchange="updateDraftIngredientQty(${idx}, this.value)" class="w-16 bg-dark-900 border border-zinc-700 rounded-lg px-1.5 py-1 text-center text-xs font-extrabold text-brand-400">
+                        <span class="text-[10.5px] font-bold text-zinc-400 w-5">${item.unit || 'g'}</span>
+                        <button type="button" onclick="removeIngredientFromMealBuilder(${idx})" class="text-rose-400 p-1">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // SLOVENSKÉ VZOROVÉ JEDLÁ A KOMPLETNÉ DNI (INŠPIRÁCIE)
+        const SLOVAK_SAMPLE_MEALS = [
+            { id: 'sm-1', slot: 'breakfast', title: 'Praženica na masle s kváskovým chlebom a šunkou', items: [{ foodId: 'f-eggs', qty: 3, unit: 'ks' }, { foodId: 'f-ham-chicken', qty: 50, unit: 'g' }, { foodId: 'f-bread', qty: 70, unit: 'g' }, { foodId: 'f-butter', qty: 8, unit: 'g' }, { foodId: 'f-veggies', qty: 100, unit: 'g' }] },
+            { id: 'sm-2', slot: 'breakfast', title: 'Ovsená kaša s proteínom, banánom a arašidovým maslom', items: [{ foodId: 'f-oats', qty: 65, unit: 'g' }, { foodId: 'f-whey', qty: 1, unit: 'ks' }, { foodId: 'f-milk', qty: 200, unit: 'ml' }, { foodId: 'f-banana', qty: 1, unit: 'ks' }, { foodId: 'f-peanutbutter', qty: 15, unit: 'g' }] },
+            { id: 'sm-3', slot: 'snack1', title: 'Jemný tvaroh / Skyr s medom, čučoriedkami a mandľami', items: [{ foodId: 'f-curd-low', qty: 200, unit: 'g' }, { foodId: 'f-berries', qty: 100, unit: 'g' }, { foodId: 'f-honey', qty: 15, unit: 'g' }, { foodId: 'f-almonds', qty: 15, unit: 'g' }] },
+            { id: 'sm-4', slot: 'snack2', title: 'Cottage cheese s kaiserkou, šunkou a zeleninou', items: [{ foodId: 'f-cottage', qty: 180, unit: 'g' }, { foodId: 'f-kaiserka', qty: 1, unit: 'ks' }, { foodId: 'f-ham-chicken', qty: 50, unit: 'g' }, { foodId: 'f-veggies', qty: 120, unit: 'g' }] },
+            { id: 'sm-5', slot: 'lunch', title: 'Kuracie prsia s ryžou basmati, brokolicou a olivovým olejom', items: [{ foodId: 'f-chicken', qty: 170, unit: 'g' }, { foodId: 'f-rice', qty: 85, unit: 'g' }, { foodId: 'f-broccoli', qty: 150, unit: 'g' }, { foodId: 'f-oliveoil', qty: 10, unit: 'ml' }] },
+            { id: 'sm-6', slot: 'lunch', title: 'Hovädzie zadné s cestovinami a zeleninovým šalátom', items: [{ foodId: 'f-beef-lean', qty: 160, unit: 'g' }, { foodId: 'f-pasta', qty: 85, unit: 'g' }, { foodId: 'f-veggies', qty: 150, unit: 'g' }, { foodId: 'f-oliveoil', qty: 8, unit: 'ml' }] },
+            { id: 'sm-7', slot: 'lunch', title: 'Losos so zemiakmi a miešaným šalátom', items: [{ foodId: 'f-salmon', qty: 160, unit: 'g' }, { foodId: 'f-potatoes', qty: 280, unit: 'g' }, { foodId: 'f-veggies', qty: 150, unit: 'g' }] },
+            { id: 'sm-8', slot: 'dinner', title: 'Tortilla wrap s kuracím mäsom, mozzarellou a zeleninou', items: [{ foodId: 'f-tortilla', qty: 1, unit: 'ks' }, { foodId: 'f-chicken', qty: 140, unit: 'g' }, { foodId: 'f-mozzarella-light', qty: 50, unit: 'g' }, { foodId: 'f-veggies', qty: 120, unit: 'g' }] },
+            { id: 'sm-9', slot: 'dinner', title: 'Tuniak vo vlastnej šťave s kaiserkou, avokádom a šalátom', items: [{ foodId: 'f-tuna', qty: 130, unit: 'g' }, { foodId: 'f-kaiserka', qty: 1, unit: 'ks' }, { foodId: 'f-avocado', qty: 60, unit: 'g' }, { foodId: 'f-veggies', qty: 150, unit: 'g' }] }
+        ];
+
+        const SLOVAK_SAMPLE_DAYS = [
+            { id: 'sd-1600', title: 'Vzorový deň ~1 650 kcal (Chudnutie)', mealIds: ['sm-1', 'sm-3', 'sm-5', 'sm-9'] },
+            { id: 'sd-2100', title: 'Vzorový deň ~2 150 kcal (Udržanie / Aktívny)', mealIds: ['sm-2', 'sm-3', 'sm-5', 'sm-8'] },
+            { id: 'sd-2600', title: 'Vzorový deň ~2 600 kcal (Šport / Muži)', mealIds: ['sm-2', 'sm-4', 'sm-6', 'sm-3', 'sm-8'] },
+            { id: 'sd-3000', title: 'Vzorový deň ~3 050 kcal (Naberanie svalov)', mealIds: ['sm-2', 'sm-4', 'sm-7', 'sm-3', 'sm-6'] }
+        ];
+
+        function computeSampleMealMacros(sampleMeal, scaleFactor = 1) {
+            let p = 0, c = 0, f = 0;
+            const resolvedItems = [];
+            (sampleMeal.items || []).forEach(it => {
+                const food = getAllFoodsList().find(x => x.id === it.foodId);
+                if (!food) return;
+                const rawQty = it.qty * scaleFactor;
+                const qty = it.unit === 'ks'
+                    ? Math.max(0.5, Math.round(rawQty * 2) / 2)
+                    : Math.max(5, Math.round(rawQty / 5) * 5);
+                const unitGrams = food.unitGrams || 1;
+                const grams = it.unit === 'ks' ? Math.round(qty * unitGrams) : qty;
+                const mult = grams / 100;
+                const ip = Math.round(food.p * mult * 10) / 10;
+                const ic = Math.round(food.c * mult * 10) / 10;
+                const inf = Math.round(food.f * mult * 10) / 10;
+                p += ip; c += ic; f += inf;
+                resolvedItems.push({ name: food.name, qty, unit: it.unit, unitGrams, grams, p: ip, c: ic, f: inf });
+            });
+            return {
+                p: Math.round(p), c: Math.round(c), f: Math.round(f),
+                kcal: Math.round(p * 4 + c * 4 + f * 9),
+                resolvedItems
+            };
+        }
+
+        let activeInspTab = 'meals';
+        let selectedInspSlotFilter = 'all';
+
+        function openMealInspirationsModal() {
+            const sub = document.getElementById('insp-target-date-sub');
+            if (sub) sub.textContent = `Cieľový deň: ${formatNutriDateHuman(selectedNutritionDateISO)} • Tvoj cieľ: ${getProfileNutrition().targets.kcal} kcal`;
+            setInspirationTab('meals');
+            document.getElementById('modal-meal-inspirations').classList.remove('hidden');
+        }
+
+        function setInspirationTab(tab) {
+            activeInspTab = tab;
+            const mBtn = document.getElementById('insp-tab-meals-btn');
+            const dBtn = document.getElementById('insp-tab-days-btn');
+            const pills = document.getElementById('insp-meal-slot-pills');
+            if (tab === 'meals') {
+                mBtn.className = 'py-2 rounded-lg text-xs font-extrabold bg-amber-400 text-zinc-950 transition';
+                dBtn.className = 'py-2 rounded-lg text-xs font-extrabold text-zinc-400 hover:text-white transition';
+                pills.classList.remove('hidden');
+                renderInspirationSlotPills();
+                renderSampleMealsList();
+            } else {
+                dBtn.className = 'py-2 rounded-lg text-xs font-extrabold bg-amber-400 text-zinc-950 transition';
+                mBtn.className = 'py-2 rounded-lg text-xs font-extrabold text-zinc-400 hover:text-white transition';
+                pills.classList.add('hidden');
+                renderSampleDaysList();
+            }
+        }
+
+        function renderInspirationSlotPills() {
+            const filters = [
+                { id: 'all', name: 'Všetko' },
+                { id: 'breakfast', name: 'Raňajky' },
+                { id: 'snack', name: 'Desiata / Olovrant' },
+                { id: 'lunch', name: 'Obed' },
+                { id: 'dinner', name: 'Večera' }
+            ];
+            document.getElementById('insp-meal-slot-pills').innerHTML = filters.map(f => `
+                <button type="button" onclick="selectedInspSlotFilter='${f.id}'; renderInspirationSlotPills(); renderSampleMealsList();" class="px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition ${selectedInspSlotFilter === f.id ? 'bg-brand-500 text-zinc-950' : 'bg-dark-950 text-zinc-400 border border-zinc-800'}">${f.name}</button>
+            `).join('');
+        }
+
+        function renderSampleMealsList() {
+            const listEl = document.getElementById('insp-content-list');
+            const filtered = SLOVAK_SAMPLE_MEALS.filter(m => {
+                if (selectedInspSlotFilter === 'all') return true;
+                if (selectedInspSlotFilter === 'snack') return m.slot === 'snack1' || m.slot === 'snack2';
+                return m.slot === selectedInspSlotFilter;
+            });
+            listEl.innerHTML = filtered.map(m => {
+                const calc = computeSampleMealMacros(m, 1);
+                const slotName = MEAL_SLOTS.find(s => s.id === m.slot)?.name || 'Jedlo';
+                const ingText = calc.resolvedItems.map(i => `${i.name.split('(')[0].trim()} (${i.unit === 'ks' ? i.qty + ' ks' : i.grams + i.unit})`).join(', ');
+                return `
+                    <div class="subcard-surface p-3.5 space-y-2">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <span class="text-[9.5px] font-black uppercase px-2 py-0.5 rounded bg-amber-400/15 text-amber-300">${slotName}</span>
+                                <h4 class="text-xs sm:text-sm font-extrabold text-white mt-1">${m.title}</h4>
+                            </div>
+                            <span class="text-xs font-black text-brand-400 shrink-0">${calc.kcal} kcal</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-400 leading-relaxed">${ingText}</p>
+                        <div class="flex items-center justify-between pt-1.5 border-t border-zinc-800/80 gap-2">
+                            <span class="text-[10.5px] font-bold text-zinc-300">B:${calc.p}g • S:${calc.c}g • T:${calc.f}g</span>
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" onclick="openSampleMealInBuilder('${m.id}')" class="px-2.5 py-1.5 rounded-lg bg-dark-900 hover:bg-dark-800 border border-zinc-700 text-amber-300 text-[11px] font-bold">Upraviť gramáže</button>
+                                <button type="button" onclick="addSampleMealDirectly('${m.id}')" class="px-2.5 py-1.5 rounded-lg bg-brand-500 text-zinc-950 text-[11px] font-extrabold">+ Pridať</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openSampleMealInBuilder(sampleMealId) {
+            const sample = SLOVAK_SAMPLE_MEALS.find(m => m.id === sampleMealId);
+            if (!sample) return;
+            const calc = computeSampleMealMacros(sample, 1);
+            document.getElementById('modal-meal-inspirations').classList.add('hidden');
+            openMealBuilderModal(false, sample.slot);
+            document.getElementById('mb-meal-title').value = sample.title;
+            draftMealIngredients = calc.resolvedItems;
+            renderMealBuilderIngredients();
+        }
+
+        function addSampleMealDirectly(sampleMealId) {
+            const sample = SLOVAK_SAMPLE_MEALS.find(m => m.id === sampleMealId);
+            if (!sample) return;
+            const calc = computeSampleMealMacros(sample, 1);
+            getProfileNutrition(selectedNutritionDateISO).logsByDate[selectedNutritionDateISO].meals.push({
+                name: sample.title, slot: sample.slot, p: calc.p, c: calc.c, f: calc.f
+            });
+            saveState();
+            document.getElementById('modal-meal-inspirations').classList.add('hidden');
+            renderNutritionFoodView();
+            if (selectedNutritionDateISO === getTodayISO()) syncTodayNutritionToCloud(sample.title);
+            showToast('Jedlo pridané do dňa ✓');
+        }
+
+        function renderSampleDaysList() {
+            const listEl = document.getElementById('insp-content-list');
+            const userTargetKcal = getProfileNutrition().targets?.kcal || 2400;
+            listEl.innerHTML = SLOVAK_SAMPLE_DAYS.map(day => {
+                const meals = day.mealIds.map(id => SLOVAK_SAMPLE_MEALS.find(m => m.id === id)).filter(Boolean);
+                let totP = 0, totC = 0, totF = 0, totKcal = 0;
+                const rows = meals.map(m => {
+                    const c = computeSampleMealMacros(m, 1);
+                    totP += c.p; totC += c.c; totF += c.f; totKcal += c.kcal;
+                    const slotName = MEAL_SLOTS.find(s => s.id === m.slot)?.name || '';
+                    return `<div class="text-[11px] text-zinc-300"><strong class="text-amber-300">${slotName}:</strong> ${m.title} <span class="text-zinc-500">(${c.kcal} kcal)</span></div>`;
+                }).join('');
+                return `
+                    <div class="subcard-surface p-3.5 space-y-2.5">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <h4 class="text-xs sm:text-sm font-extrabold text-white">${day.title}</h4>
+                                <div class="text-[10.5px] text-zinc-400 mt-0.5">${totKcal} kcal • B:${totP}g S:${totC}g T:${totF}g</div>
+                            </div>
+                        </div>
+                        <div class="space-y-1 bg-dark-950/70 border border-zinc-800/80 rounded-xl p-2.5">${rows}</div>
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <button type="button" onclick="applySampleDayToSelectedDate('${day.id}', false)" class="py-2 px-2.5 rounded-xl bg-dark-900 border border-zinc-700 text-zinc-200 font-bold text-[11px]">Vložiť pôvodné</button>
+                            <button type="button" onclick="applySampleDayToSelectedDate('${day.id}', true)" class="py-2 px-2.5 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-[11px]">Prispôsobiť (${userTargetKcal} kcal)</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function applySampleDayToSelectedDate(dayId, scaleToUserGoal = true) {
+            const day = SLOVAK_SAMPLE_DAYS.find(d => d.id === dayId);
+            if (!day) return;
+            const meals = day.mealIds.map(id => SLOVAK_SAMPLE_MEALS.find(m => m.id === id)).filter(Boolean);
+            let baseKcal = 0;
+            meals.forEach(m => { baseKcal += computeSampleMealMacros(m, 1).kcal; });
+            const targetKcal = getProfileNutrition().targets?.kcal || 2400;
+            const scaleFactor = (scaleToUserGoal && baseKcal > 0) ? (targetKcal / baseKcal) : 1;
+
+            const destMeals = getProfileNutrition(selectedNutritionDateISO).logsByDate[selectedNutritionDateISO].meals;
+            meals.forEach(m => {
+                const scaled = computeSampleMealMacros(m, scaleFactor);
+                destMeals.push({ name: m.title, slot: m.slot, p: scaled.p, c: scaled.c, f: scaled.f });
+            });
+            saveState();
+            document.getElementById('modal-meal-inspirations').classList.add('hidden');
+            renderNutritionFoodView();
+            if (selectedNutritionDateISO === getTodayISO()) syncTodayNutritionToCloud(day.title);
+            showToast(`Vzorový deň vložený ✓`);
         }
         function saveBuiltMealToToday() {
             if (draftMealIngredients.length === 0) { showToast('Pridaj najprv aspoň jednu surovinu'); return; }
@@ -3718,16 +4066,60 @@
             saveState(); renderDailyCheckInHistory(); sendCloudTesterLog('morning_checkin', entry); showToast('Ranný dotazník uložený ✓');
         }
         function renderBodyCheckInView() { setBodyCheckInMode(activeBodyCheckInMode); }
+        function compute7DayRollingStats(nutriObj, dailyCheckInsList) {
+            const weightEntries = (dailyCheckInsList || []).filter(x => parseFloat(x.weight) > 0);
+            const wLast7 = weightEntries.slice(0, 7);
+            const wPrev7 = weightEntries.slice(7, 14);
+            const avgW7 = wLast7.length ? Math.round((wLast7.reduce((a, x) => a + parseFloat(x.weight), 0) / wLast7.length) * 10) / 10 : null;
+            const avgWPrev7 = wPrev7.length ? Math.round((wPrev7.reduce((a, x) => a + parseFloat(x.weight), 0) / wPrev7.length) * 10) / 10 : null;
+            const weightDelta = (avgW7 !== null && avgWPrev7 !== null) ? Math.round((avgW7 - avgWPrev7) * 10) / 10 : null;
+
+            const logsMap = nutriObj?.logsByDate || {};
+            const last7Dates = Array.from({ length: 7 }, (_, i) => getOffsetISO(-i));
+            let kcalSum = 0, protSum = 0, loggedDays = 0;
+            last7Dates.forEach(dISO => {
+                const meals = logsMap[dISO]?.meals || [];
+                if (meals.length > 0) {
+                    let dp = 0, dc = 0, df = 0;
+                    meals.forEach(m => { dp += parseFloat(m.p) || 0; dc += parseFloat(m.c) || 0; df += parseFloat(m.f) || 0; });
+                    kcalSum += (dp * 4 + dc * 4 + df * 9);
+                    protSum += dp;
+                    loggedDays++;
+                }
+            });
+            return {
+                avgW7,
+                weightDelta,
+                avgKcal7: loggedDays > 0 ? Math.round(kcalSum / loggedDays) : null,
+                avgProt7: loggedDays > 0 ? Math.round(protSum / loggedDays) : null,
+                loggedDays
+            };
+        }
+
         function renderDailyCheckInHistory() {
             const container = document.getElementById('body-checkin-history');
             const list = bodyCheckInsByProfile[activeProfileId] || [];
             const last7 = list.slice(0, 7);
             const avgE = last7.length ? (last7.reduce((a, x) => a + (parseFloat(x.energy) || 0), 0) / last7.length).toFixed(1) : '—';
             const avgS = last7.length ? (last7.reduce((a, x) => a + (parseFloat(x.sleep) || 0), 0) / last7.length).toFixed(1) : '—';
-            const withW = list.find(x => x.weight);
+            const rolling = compute7DayRollingStats(getProfileNutrition(), list);
+
             document.getElementById('weekly-avg-energy').textContent = `${avgE} / 10`;
             document.getElementById('weekly-avg-sleep').textContent = `${avgS} / 10`;
-            document.getElementById('weekly-last-weight').textContent = withW ? `${withW.weight} kg` : '— kg';
+            document.getElementById('weekly-last-weight').textContent = rolling.avgW7 !== null ? `${rolling.avgW7} kg` : '— kg';
+            const wTrendEl = document.getElementById('weekly-weight-trend');
+            if (wTrendEl) {
+                if (rolling.weightDelta !== null) {
+                    const sign = rolling.weightDelta > 0 ? '+' : '';
+                    wTrendEl.textContent = `${sign}${rolling.weightDelta} kg vs min. týž.`;
+                } else {
+                    wTrendEl.textContent = 'posledných 7 vážení';
+                }
+            }
+            const avgKcalEl = document.getElementById('weekly-avg-kcal');
+            const avgProtEl = document.getElementById('weekly-avg-prot');
+            if (avgKcalEl) avgKcalEl.textContent = rolling.avgKcal7 !== null ? `${rolling.avgKcal7} kcal` : '— kcal';
+            if (avgProtEl) avgProtEl.textContent = rolling.avgProt7 !== null ? `B: ${rolling.avgProt7} g/deň` : 'bez zápisu stravy';
             if (list.length === 0) { container.innerHTML = `<div class="text-center py-6 text-xs text-zinc-500 card-surface border-dashed">Zatiaľ žiadny záznam.</div>`; return; }
             container.innerHTML = list.map(ci => `
                 <div class="card-surface p-3.5 space-y-2">
@@ -4046,10 +4438,12 @@
         function getTechniqueMeta(techId) { return SET_TECHNIQUES.find(t => t.id === techId) || SET_TECHNIQUES[0]; }
 
         function getLastPerformance(exerciseId) {
+            let latestNote = '';
             for (let i = 0; i < workoutHistory.length; i++) {
                 const w = workoutHistory[i];
                 if ((w.profileId || 'me') !== activeProfileId) continue;
                 const found = (w.exercises || []).find(e => e.exerciseId === exerciseId);
+                if (found && !latestNote && found.note) latestNote = found.note;
                 if (found && found.sets?.length > 0) {
                     const valid = found.sets.filter(s => s.completed);
                     const setsToUse = valid.length > 0 ? valid : found.sets;
@@ -4061,18 +4455,65 @@
                     });
                     const headline = maxW > 0 ? `${maxW} kg` : (maxDur > 0 ? formatDuration(maxDur) : `${setsToUse[0].reps} opak.`);
                     const setsText = setsToUse.map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(', ');
-                    return { date: w.date, headline, setsText, sets: setsToUse, maxWeight: maxW };
+                    return { date: w.date, headline, setsText, sets: setsToUse, maxWeight: maxW, lastNote: latestNote || found.note || '' };
                 }
             }
             return null;
         }
 
+        let selectedSplitTagFilter = 'all';
+        let expandedSplitIds = {};
+
+        function toggleSplitGuideBox() {
+            const box = document.getElementById('split-guide-box');
+            if (box) box.classList.toggle('hidden');
+        }
+        function toggleSplitCardExpand(splitId) {
+            expandedSplitIds[splitId] = !expandedSplitIds[splitId];
+            renderSplits();
+        }
+        function duplicateSplit(splitId) {
+            const orig = savedSplits.find(s => s.id === splitId);
+            if (!orig) return;
+            const copy = JSON.parse(JSON.stringify(orig));
+            copy.id = 'split-copy-' + Date.now();
+            copy.name = `${orig.name} (Kópia)`;
+            savedSplits.unshift(copy);
+            expandedSplitIds[copy.id] = true;
+            saveState();
+            renderSplits();
+            showToast('Split skopírovaný ✓');
+        }
+        function renderSplitFilterPills() {
+            const container = document.getElementById('split-filter-pills');
+            if (!container) return;
+            const tags = [
+                { id: 'all', name: 'Všetko' },
+                { id: 'Fullbody', name: 'Fullbody' },
+                { id: 'Upper / Lower', name: 'Upper / Lower' },
+                { id: 'PPL', name: 'PPL' },
+                { id: 'Atletika', name: 'Atletika' },
+                { id: 'Doma', name: 'Doma' }
+            ];
+            container.innerHTML = tags.map(t => `
+                <button type="button" onclick="selectedSplitTagFilter='${t.id}'; renderSplits();" class="px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedSplitTagFilter === t.id ? 'bg-brand-500 text-zinc-950' : 'bg-dark-900 text-zinc-400 border border-zinc-800'}">${t.name}</button>
+            `).join('');
+        }
+
         function renderSplits() {
+            renderSplitFilterPills();
             const container = document.getElementById('splits-list');
             if (!container) return;
             const coach = isTrainerOrAdmin();
-            container.innerHTML = savedSplits.map(split => {
-                const blocksHtml = split.blocks.map((block, idx) => {
+            const filteredSplits = savedSplits.filter(s => selectedSplitTagFilter === 'all' || (s.tag || '') === selectedSplitTagFilter);
+            if (filteredSplits.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 px-4 card-surface border-dashed text-xs text-zinc-400">V tejto kategórii zatiaľ nemáš žiadny split.</div>`;
+                return;
+            }
+            container.innerHTML = filteredSplits.map(split => {
+                const isOpen = !!expandedSplitIds[split.id];
+                const totalExCount = split.blocks.reduce((acc, b) => acc + (b.type === 'superset' ? 2 : 1), 0);
+                const blocksHtml = isOpen ? split.blocks.map((block, idx) => {
                     const ex1 = exercises.find(e => e.id === block.exerciseId);
                     const tech = getTechniqueMeta(block.technique);
                     if (block.type === 'superset') {
@@ -4080,8 +4521,31 @@
                         return `<div class="bg-purple-500/10 border border-purple-500/30 rounded-xl p-2.5 space-y-1"><span class="text-[10px] font-extrabold text-purple-300">SUPERSÉRIA • ${block.sets}×</span><div class="text-xs font-bold text-white">A1: ${ex1 ? ex1.name : ''}</div><div class="text-xs font-bold text-purple-200">A2: ${ex2 ? ex2.name : ''}</div></div>`;
                     }
                     return `<div class="subcard-surface px-3 py-2 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-zinc-200 truncate">${idx + 1}. ${ex1 ? ex1.name : ''}</div><div class="text-[10px] text-zinc-400">${block.sets} série</div></div>${tech.badge ? `<span class="text-[9px] font-extrabold px-2 py-0.5 rounded border ${tech.style}">${tech.badge}</span>` : ''}</div>`;
-                }).join('');
-                return `<div class="card-surface p-4 space-y-3"><div class="flex items-start justify-between gap-2"><div><span class="text-[10px] font-extrabold uppercase text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded">${split.tag}</span><h3 class="text-sm font-extrabold text-white mt-1.5">${split.name}</h3></div><div class="flex items-center gap-1.5 shrink-0">${coach ? `<button onclick="openSendSplitModal('${split.id}')" class="px-2.5 py-1.5 rounded-lg bg-amber-400/15 border border-amber-400/35 text-amber-300 text-[11px] font-extrabold">Odoslať</button>` : ''}<button onclick="deleteSplit('${split.id}')" class="p-1.5 rounded-lg bg-dark-850 text-zinc-500 hover:text-rose-400">✕</button></div></div><div class="space-y-1.5">${blocksHtml}</div><button onclick="startWorkoutFromSplit('${split.id}')" class="w-full py-2.5 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-xs">Spustiť tréning →</button></div>`;
+                }).join('') : '';
+
+                return `
+                    <div class="card-surface ${isOpen ? 'border-brand-500/45' : ''} p-3.5 space-y-2.5">
+                        <div class="flex items-start justify-between gap-2">
+                            <div onclick="toggleSplitCardExpand('${split.id}')" class="cursor-pointer min-w-0 flex-1">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="text-[10px] font-extrabold uppercase text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded">${split.tag}</span>
+                                    <span class="text-[10.5px] text-zinc-400 font-semibold">${totalExCount} cvikov</span>
+                                </div>
+                                <h3 class="text-sm font-extrabold text-white mt-1 leading-snug">${split.name}</h3>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                <button type="button" onclick="duplicateSplit('${split.id}')" title="Duplikovať split" class="px-2 py-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-300 text-[10.5px] font-bold">Kópia</button>
+                                ${coach ? `<button type="button" onclick="openSendSplitModal('${split.id}')" class="px-2 py-1.5 rounded-lg bg-amber-400/15 border border-amber-400/35 text-amber-300 text-[10.5px] font-extrabold">Odoslať</button>` : ''}
+                                <button type="button" onclick="deleteSplit('${split.id}')" class="p-1.5 rounded-lg bg-dark-850 text-zinc-500 hover:text-rose-400">✕</button>
+                            </div>
+                        </div>
+                        ${isOpen ? `<div class="space-y-1.5 pt-1 border-t border-zinc-800/80">${blocksHtml}</div>` : ''}
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="toggleSplitCardExpand('${split.id}')" class="px-3 py-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-300 font-bold text-xs shrink-0">${isOpen ? 'Skryť ▲' : 'Cviky ▼'}</button>
+                            <button type="button" onclick="startWorkoutFromSplit('${split.id}')" class="flex-1 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-zinc-950 font-extrabold text-xs transition">Spustiť tréning →</button>
+                        </div>
+                    </div>
+                `;
             }).join('');
         }
 
@@ -4505,7 +4969,8 @@
                                 <button onclick="removeExerciseFromWorkout(${exIdx})" class="p-1.5 rounded-xl bg-dark-850 text-zinc-500 hover:text-rose-400">✕</button>
                             </div>
                         </div>
-                        ${lastPerf ? `<div class="subcard-surface p-2.5 text-[11px]"><div class="font-extrabold text-amber-400">Naposledy (${lastPerf.date}): max ${lastPerf.headline}</div><div class="text-[10px] text-zinc-400 mt-0.5">${lastPerf.setsText}</div></div>` : ''}
+                        ${lastPerf ? `<div class="subcard-surface p-2.5 text-[11px] space-y-0.5"><div class="font-extrabold text-amber-400">Naposledy (${lastPerf.date}): max ${lastPerf.headline}</div><div class="text-[10px] text-zinc-400">${lastPerf.setsText}</div>${lastPerf.lastNote ? `<div class="text-[10.5px] text-sky-300 pt-0.5">Poznámka z minula: ${lastPerf.lastNote}</div>` : ''}</div>` : ''}
+                        <input type="text" value="${(ex.note || '').replace(/"/g, '&quot;')}" oninput="updateExerciseNote(${exIdx}, this.value)" placeholder="Poznámka k cviku (sedadlo, úchop, pocit v kĺbe...)" class="w-full bg-dark-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-brand-500">
                         <div class="space-y-2.5">${setsRowsHtml}</div>
                         <button onclick="addSet(${exIdx})" class="w-full py-2.5 rounded-xl bg-dark-850 border border-dashed border-zinc-700 text-xs font-bold text-zinc-300">+ Pridať sériu</button>
                         <div class="pt-2 border-t border-zinc-800 flex items-center justify-between gap-2">
@@ -4515,6 +4980,12 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function updateExerciseNote(exIdx, noteVal) {
+            if (!activeWorkout[exIdx]) return;
+            activeWorkout[exIdx].note = noteVal;
+            saveState();
         }
 
         function saveWorkoutToHistory() {
@@ -4543,6 +5014,37 @@
             showToast(`Uložené (${formatVolumeKg(totalVolume)}) ✓`);
         }
 
+        function repeatWorkoutToday(workoutId) {
+            const w = workoutHistory.find(x => x.id === workoutId);
+            if (!w) return;
+            editingHistoryId = null;
+            activeWorkout = (w.exercises || []).map(ex => ({
+                exerciseId: ex.exerciseId,
+                name: ex.name,
+                category: ex.category,
+                supersetGroup: ex.supersetGroup || undefined,
+                supersetLabel: ex.supersetLabel || undefined,
+                note: '',
+                sets: (ex.sets || []).map(s => ({
+                    mode: s.mode || 'reps',
+                    weight: '',
+                    reps: '',
+                    prevWeight: s.weight || s.prevWeight || '',
+                    prevReps: s.reps || s.prevReps || '',
+                    duration: s.duration || 45,
+                    rir: s.rir ?? 2,
+                    technique: s.technique || 'standard',
+                    completed: false
+                }))
+            }));
+            expandedExerciseIndex = 0;
+            workoutStartTime = Date.now();
+            localStorage.setItem('fitlog_workout_start', workoutStartTime.toString());
+            document.getElementById('workout-title').value = w.title || 'Tréning';
+            saveWorkoutMeta(); saveState(); renderActiveWorkout(); switchAppDomain('training'); switchTab('workout');
+            showToast('Tréning pripravený na dnes ✓');
+        }
+
         function reopenWorkoutFromHistory(workoutId) {
             const w = workoutHistory.find(x => x.id === workoutId);
             if (!w) return;
@@ -4562,18 +5064,67 @@
             let report = `MM LAB – Report\nMeno: ${w.profileName || getActiveProfile().name}\nDátum: ${w.date} | Objem: ${formatVolumeKg(vol)}\nTréning: ${w.title}\n------------------------\n`;
             (w.exercises || []).forEach((ex, i) => {
                 const setsStr = (ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(', ');
-                report += `${i + 1}. ${ex.name}: ${setsStr}\n`;
+                report += `${i + 1}. ${ex.name}: ${setsStr}${ex.note ? ` [${ex.note}]` : ''}\n`;
             });
             copyTextToClipboard(report, 'Report skopírovaný ✓');
         }
 
         function deleteHistoryRecord(workoutId) { workoutHistory = workoutHistory.filter(w => w.id !== workoutId); saveState(); renderHistory(); renderDatabase(); }
 
+        function renderHistoryPRSummary(profileWorkouts) {
+            const box = document.getElementById('history-pr-summary');
+            if (!box) return;
+            const prMap = {};
+            (profileWorkouts || []).forEach(w => {
+                (w.exercises || []).forEach(ex => {
+                    (ex.sets || []).forEach(s => {
+                        const weight = parseFloat(s.weight) || 0;
+                        const reps = parseInt(s.reps) || 1;
+                        if (s.mode === 'time' || weight <= 0) return;
+                        const est1RM = Math.round(weight * (1 + reps / 30));
+                        if (!prMap[ex.exerciseId] || est1RM > prMap[ex.exerciseId].est1RM) {
+                            prMap[ex.exerciseId] = {
+                                exerciseId: ex.exerciseId,
+                                name: ex.name,
+                                bestWeight: weight,
+                                bestReps: reps,
+                                est1RM
+                            };
+                        }
+                    });
+                });
+            });
+            const topPRs = Object.values(prMap).sort((a, b) => b.est1RM - a.est1RM).slice(0, 6);
+            if (topPRs.length === 0) {
+                box.classList.add('hidden');
+                return;
+            }
+            box.classList.remove('hidden');
+            box.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-amber-300">Osobné rekordy (PR & odhad 1RM)</span>
+                    <span class="text-[10px] text-zinc-400">Top ${topPRs.length} cvikov</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    ${topPRs.map(pr => `
+                        <div onclick="openExerciseDetailModal('${pr.exerciseId}')" class="cursor-pointer subcard-surface hover:border-amber-400/40 p-2.5 transition">
+                            <div class="text-[11px] font-bold text-white truncate">${pr.name}</div>
+                            <div class="flex items-baseline justify-between gap-1 mt-1">
+                                <span class="text-xs font-black text-brand-400">${pr.bestWeight} kg × ${pr.bestReps}</span>
+                                <span class="text-[10px] font-extrabold text-amber-300">1RM: ${pr.est1RM} kg</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
         function renderHistory() {
             const container = document.getElementById('history-list'), badge = document.getElementById('history-count-badge');
             if (!container) return;
             const list = workoutHistory.filter(w => (w.profileId || 'me') === activeProfileId);
             badge.textContent = `${list.length}`;
+            renderHistoryPRSummary(list);
             if (list.length === 0) { container.innerHTML = `<div class="text-center py-10 px-4 card-surface border-dashed text-xs text-zinc-400">Zatiaľ žiadne uložené tréningy.</div>`; return; }
             container.innerHTML = list.map(w => {
                 const vol = w.totalVolume !== undefined ? w.totalVolume : calculateTotalVolume(w.exercises || []);
@@ -4585,6 +5136,7 @@
                                 <h3 class="text-sm font-extrabold text-white mt-1">${w.title}</h3>
                             </div>
                             <div class="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+                                <button onclick="repeatWorkoutToday('${w.id}')" class="px-2.5 py-1 rounded-lg bg-brand-500 text-zinc-950 text-[11px] font-extrabold">Zopakovať dnes</button>
                                 <button onclick="reopenWorkoutFromHistory('${w.id}')" class="px-2 py-1 rounded-lg bg-dark-850 border border-zinc-800 text-amber-300 text-[11px] font-bold">Upraviť</button>
                                 <button onclick="exportWorkoutToTCX('${w.id}')" class="px-2 py-1 rounded-lg bg-dark-850 border border-zinc-800 text-sky-300 text-[11px] font-bold">.TCX</button>
                                 <button onclick="shareWorkoutReport('${w.id}')" class="px-2 py-1 rounded-lg bg-brand-500/15 text-brand-400 text-[11px] font-bold">Report</button>
@@ -4592,7 +5144,7 @@
                             </div>
                         </div>
                         <div class="space-y-1.5">
-                            ${(w.exercises || []).map(ex => `<div onclick="openExerciseDetailModal('${ex.exerciseId}')" class="cursor-pointer subcard-surface p-2.5 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[11px] text-zinc-400 mt-0.5">${(ex.sets || []).map(s => `${s.weight ? s.weight + ' kg' : 'BW'} × ${s.mode === 'time' ? formatDuration(s.duration) : s.reps + '×'} (RIR ${s.rir})`).join(' | ')}</div></div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}
+                            ${(w.exercises || []).map(ex => `<div onclick="openExerciseDetailModal('${ex.exerciseId}')" class="cursor-pointer subcard-surface p-2.5 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[11px] text-zinc-400 mt-0.5">${(ex.sets || []).map(s => `${s.weight ? s.weight + ' kg' : 'BW'} × ${s.mode === 'time' ? formatDuration(s.duration) : s.reps + '×'} (RIR ${s.rir})`).join(' | ')}</div>${ex.note ? `<div class="text-[10.5px] text-amber-300 mt-0.5 truncate">Poznámka: ${ex.note}</div>` : ''}</div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}
                         </div>
                     </div>
                 `;
