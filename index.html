@@ -46,7 +46,7 @@
 
     <!-- BANNER AUTOMATICKÉHO UPDATE APLIKÁCIE -->
     <div id="app-update-banner" style="display: none;" class="bg-amber-400 text-zinc-950 px-4 py-2 text-xs font-extrabold flex items-center justify-between gap-2 z-40">
-        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.2.0</span>) je pripravená</span>
+        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.3.0</span>) je pripravená</span>
         <button type="button" onclick="applyAppUpdateNow()" class="px-3 py-1 rounded-lg bg-zinc-950 text-amber-300 font-black text-[11px] shrink-0">Aktualizovať</button>
     </div>
 
@@ -275,6 +275,21 @@
         <section id="view-nutrition" class="hidden space-y-3.5">
             <!-- PODZÁLOŽKA 2A: DENNÁ STRAVA -->
             <div id="nutri-view-food" class="space-y-3.5">
+                <!-- KALENDÁR STRAVY (PREPÍNANIE DNÍ & PLÁNOVANIE DOPREDU) -->
+                <div class="card-surface p-2.5 flex items-center justify-between gap-2">
+                    <button type="button" onclick="shiftNutritionDate(-1)" title="Predchádzajúci deň" class="w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-200 font-black text-sm flex items-center justify-center shrink-0 transition">◀</button>
+                    <div class="flex items-center gap-2 min-w-0">
+                        <label class="relative cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-700/80 transition">
+                            <svg class="w-3.5 h-3.5 text-brand-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span id="nutri-date-label" class="text-xs font-extrabold text-white whitespace-nowrap">Dnes</span>
+                            <span id="nutri-date-badge" class="text-[9.5px] font-black uppercase px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-400">Dnes</span>
+                            <input type="date" id="nutri-date-picker" onchange="setNutritionDate(this.value)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                        </label>
+                        <button type="button" id="nutri-jump-today-btn" onclick="setNutritionDate(getTodayISO())" class="hidden px-2.5 py-1.5 rounded-xl bg-brand-500/15 border border-brand-500/35 text-brand-400 text-[10.5px] font-extrabold shrink-0">Dnes</button>
+                    </div>
+                    <button type="button" onclick="shiftNutritionDate(1)" title="Nasledujúci deň" class="w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-200 font-black text-sm flex items-center justify-center shrink-0 transition">▶</button>
+                </div>
+
                 <!-- DORUČENÝ JEDÁLNIČEK OD TRÉNERA -->
                 <div id="shared-trainer-mealplans-box" class="hidden card-surface border-amber-400/45 p-3.5 space-y-2.5">
                     <div class="flex items-center justify-between gap-2">
@@ -292,7 +307,7 @@
                         </div>
                         <div class="min-w-0">
                             <div class="text-sm font-black text-white">Pridať jedlo do dňa</div>
-                            <div class="text-[11px] text-zinc-400 truncate">Vyskladaj zo surovín alebo naskenuj obal</div>
+                            <div class="text-[11px] text-zinc-400 truncate">Vyber chod, suroviny (ks / ml / g) alebo EAN</div>
                         </div>
                     </button>
                     <button type="button" onclick="openMealBuilderModal(true)" title="Skenovať čiarový kód EAN" class="h-11 px-3 rounded-2xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-sky-400 flex items-center gap-1.5 text-xs font-extrabold shrink-0 transition">
@@ -305,7 +320,7 @@
                 <div class="card-surface p-4 space-y-3.5">
                     <div class="flex items-center justify-between gap-2 flex-wrap">
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Dnešný príjem</span>
+                            <span id="nutri-summary-heading" class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Dnešný príjem</span>
                             <div class="flex items-baseline gap-1.5 mt-0.5">
                                 <span id="nutri-kcal-current" class="text-2xl font-black text-white">0</span>
                                 <span class="text-xs font-bold text-zinc-400">/ <span id="nutri-kcal-target">2400</span> kcal</span>
@@ -357,16 +372,19 @@
                     <div id="nutri-presets-list" class="space-y-1.5"></div>
                 </div>
 
-                <!-- DNES ZJEDENÉ JEDLÁ -->
-                <div class="card-surface p-3.5 space-y-2.5">
-                    <div class="flex items-center justify-between gap-2">
-                        <span class="text-xs font-extrabold text-white">Dnes zjedené</span>
+                <!-- ROZDELENIE DŇA NA CHODY & KOPÍROVANIE CELÉHO DŇA -->
+                <div class="space-y-2.5">
+                    <div class="card-surface p-3 flex items-center justify-between gap-2 flex-wrap">
                         <div class="flex items-center gap-2">
-                            <button type="button" onclick="copyYesterdayMealsToToday()" class="text-[10.5px] font-bold text-sky-400 hover:text-sky-300 bg-dark-850 border border-zinc-800 px-2.5 py-1 rounded-lg">Zopakovať včerajšok</button>
-                            <span id="nutri-meals-count" class="text-[11px] text-zinc-400">0</span>
+                            <span class="text-xs font-extrabold text-white">Jedálniček dňa</span>
+                            <span id="nutri-meals-count" class="text-[11px] text-zinc-400">0 jedál</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" onclick="copyPreviousDayIntoSelected()" class="text-[10.5px] font-bold text-zinc-300 hover:text-white bg-dark-850 border border-zinc-800 px-2.5 py-1.5 rounded-lg">+ Predošlý deň</button>
+                            <button type="button" onclick="openCopyNutritionModal('day')" class="text-[10.5px] font-extrabold text-sky-300 hover:text-sky-200 bg-sky-500/15 border border-sky-500/35 px-2.5 py-1.5 rounded-lg">Kopírovať deň</button>
                         </div>
                     </div>
-                    <div id="nutri-today-meals-list" class="space-y-2"></div>
+                    <div id="nutri-courses-container" class="space-y-2.5"></div>
                 </div>
             </div>
 
@@ -740,11 +758,24 @@
     <div id="modal-meal-builder" class="fixed inset-0 z-50 hidden bg-black/85 flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-dark-900 border border-zinc-800 w-full max-w-lg max-h-[92vh] flex flex-col rounded-t-3xl sm:rounded-3xl overflow-hidden">
             <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
-                <div><h3 class="text-base font-extrabold text-white">Pridať jedlo / Skener EAN</h3><p class="text-[11px] text-zinc-400">Naskenuj obal alebo vyber suroviny a gramáž</p></div>
+                <div><h3 class="text-base font-extrabold text-white">Pridať jedlo / Skener EAN</h3><p id="mb-target-date-subtitle" class="text-[11px] text-brand-400 font-bold">Zápis do vybraného dňa</p></div>
                 <button onclick="closeMealBuilderModal()" class="p-1.5 rounded-lg bg-dark-800 text-zinc-400">✕</button>
             </div>
             <div class="p-4 overflow-y-auto space-y-3.5 flex-1">
-                <input type="text" id="mb-meal-title" placeholder="Názov jedla (voliteľné, napr. Obed)" class="w-full bg-dark-850 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-bold text-white">
+                <div class="grid grid-cols-12 gap-2">
+                    <div class="col-span-5">
+                        <select id="mb-meal-slot" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-extrabold text-amber-300 focus:outline-none">
+                            <option value="breakfast">Raňajky</option>
+                            <option value="snack1">Desiata</option>
+                            <option value="lunch" selected>Obed</option>
+                            <option value="snack2">Olovrant</option>
+                            <option value="dinner">Večera</option>
+                        </select>
+                    </div>
+                    <div class="col-span-7">
+                        <input type="text" id="mb-meal-title" placeholder="Názov jedla (voliteľné)" class="w-full bg-dark-850 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-bold text-white">
+                    </div>
+                </div>
 
                 <!-- SKENER ČIAROVÝCH KÓDOV -->
                 <div class="subcard-surface border-sky-500/35 p-3 space-y-2.5">
@@ -762,24 +793,32 @@
                     </div>
                     <div id="ean-status-box" class="hidden text-xs rounded-xl p-2.5"></div>
                     <div id="ean-new-product-form" class="hidden bg-dark-900 border border-amber-400/40 rounded-xl p-3 space-y-2">
-                        <div class="text-[11px] font-extrabold text-amber-300">Nový produkt (EAN: <span id="ean-new-code-label"></span>) – hodnoty na 100 g:</div>
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-[11px] font-extrabold text-amber-300">Nový produkt (EAN: <span id="ean-new-code-label"></span>)</span>
+                            <select id="ean-new-unit" class="bg-dark-850 border border-zinc-700 rounded-lg px-2 py-1 text-[10.5px] font-bold text-white">
+                                <option value="g">na 100 g</option>
+                                <option value="ml">na 100 ml</option>
+                            </select>
+                        </div>
                         <input type="text" id="ean-new-name" placeholder="Názov produktu (napr. Lidl Pilos Skyr 0%)" class="w-full bg-dark-850 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs font-bold text-white">
                         <div class="grid grid-cols-3 gap-1.5">
-                            <div><label class="block text-[9px] font-bold text-sky-400">Bielk. / 100g</label><input type="number" step="0.1" id="ean-new-p" placeholder="11" class="w-full bg-dark-850 border border-zinc-700 rounded-lg px-2 py-1 text-center text-xs font-bold text-white"></div>
-                            <div><label class="block text-[9px] font-bold text-amber-400">Sach. / 100g</label><input type="number" step="0.1" id="ean-new-c" placeholder="4" class="w-full bg-dark-850 border border-zinc-700 rounded-lg px-2 py-1 text-center text-xs font-bold text-white"></div>
-                            <div><label class="block text-[9px] font-bold text-rose-400">Tuky / 100g</label><input type="number" step="0.1" id="ean-new-f" placeholder="0.2" class="w-full bg-dark-850 border border-zinc-700 rounded-lg px-2 py-1 text-center text-xs font-bold text-white"></div>
+                            <div><label class="block text-[9px] font-bold text-sky-400">Bielk. / 100</label><input type="number" step="0.1" id="ean-new-p" placeholder="11" class="w-full bg-dark-850 border border-zinc-700 rounded-lg px-2 py-1 text-center text-xs font-bold text-white"></div>
+                            <div><label class="block text-[9px] font-bold text-amber-400">Sach. / 100</label><input type="number" step="0.1" id="ean-new-c" placeholder="4" class="w-full bg-dark-850 border border-zinc-700 rounded-lg px-2 py-1 text-center text-xs font-bold text-white"></div>
+                            <div><label class="block text-[9px] font-bold text-rose-400">Tuky / 100</label><input type="number" step="0.1" id="ean-new-f" placeholder="0.2" class="w-full bg-dark-850 border border-zinc-700 rounded-lg px-2 py-1 text-center text-xs font-bold text-white"></div>
                         </div>
                         <button type="button" onclick="saveNewScannedFoodToCatalog()" class="w-full py-2 rounded-lg bg-amber-400 text-zinc-950 font-extrabold text-xs">Uložiť & pridať na tanier ✓</button>
                     </div>
                 </div>
 
-                <!-- VÝBER ZO SUROVÍN -->
+                <!-- VÝBER ZO SUROVÍN (S JEDNOTKAMI KS / ML / G) -->
                 <div class="subcard-surface p-3 space-y-2.5">
-                    <input type="text" id="mb-food-search" oninput="renderMealBuilderFoodSelect()" placeholder="Hľadať surovinu (kuracie, ryža, vajcia, banán...)" class="w-full bg-dark-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:border-brand-500 focus:outline-none">
+                    <input type="text" id="mb-food-search" oninput="renderMealBuilderFoodSelect()" placeholder="Hľadať surovinu (kuracie, ryža, vajcia, mlieko...)" class="w-full bg-dark-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:border-brand-500 focus:outline-none">
                     <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1" id="mb-food-cat-pills"></div>
-                    <div class="grid grid-cols-12 gap-2">
-                        <div class="col-span-8"><select id="mb-food-select" class="w-full bg-dark-900 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white"></select></div>
-                        <div class="col-span-4"><input type="number" id="mb-food-grams" value="100" min="1" step="5" placeholder="g" class="w-full bg-dark-900 border border-zinc-700 rounded-xl px-2 py-2 text-center text-xs font-extrabold text-white"></div>
+                    <select id="mb-food-select" onchange="onMealBuilderFoodChange()" class="w-full bg-dark-900 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white"></select>
+                    <div class="flex items-center gap-2">
+                        <input type="number" id="mb-food-grams" value="100" min="0.5" step="any" oninput="updateMealBuilderUnitHint()" placeholder="Množstvo" class="w-24 bg-dark-900 border border-zinc-700 rounded-xl px-2.5 py-2 text-center text-xs font-extrabold text-white">
+                        <div id="mb-unit-pills" class="inline-flex rounded-xl bg-dark-900 p-1 border border-zinc-700 shrink-0"></div>
+                        <span id="mb-unit-hint" class="text-[11px] text-zinc-400 truncate"></span>
                     </div>
                     <button type="button" onclick="addIngredientToMealBuilder()" class="w-full py-2 rounded-xl bg-brand-500/20 border border-brand-500/40 text-brand-400 font-extrabold text-xs">+ Pridať surovinu na tanier</button>
                 </div>
@@ -795,6 +834,45 @@
             <div class="p-4 border-t border-zinc-800 flex gap-2">
                 <button onclick="closeMealBuilderModal()" class="flex-1 py-2.5 rounded-xl bg-dark-850 text-zinc-300 font-semibold text-xs">Zrušiť</button>
                 <button onclick="saveBuiltMealToToday()" class="flex-1 py-2.5 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-xs">Zapísať do dňa ✓</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODÁL KOPÍROVANIA DŇA / CHODU / JEDLA (AKO V KALORICKÝCH TABUĽKÁCH) -->
+    <div id="modal-copy-nutrition" class="fixed inset-0 z-50 hidden bg-black/85 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-dark-900 border border-zinc-800 w-full max-w-sm rounded-t-3xl sm:rounded-3xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 id="copy-nutri-modal-title" class="text-base font-extrabold text-white">Kopírovať jedlo</h3>
+                    <p id="copy-nutri-modal-sub" class="text-[11px] text-zinc-400 mt-0.5">Vyber cieľový deň v kalendári</p>
+                </div>
+                <button onclick="document.getElementById('modal-copy-nutrition').classList.add('hidden')" class="p-1.5 rounded-lg bg-dark-800 text-zinc-400">✕</button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1.5">Rýchly výber dňa</label>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <button type="button" onclick="setCopyNutriTargetDate(getTodayISO())" class="py-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-xs font-extrabold text-brand-400">Dnes</button>
+                        <button type="button" onclick="setCopyNutriTargetDate(getOffsetISO(1))" class="py-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-xs font-extrabold text-sky-300">Zajtra</button>
+                        <button type="button" onclick="setCopyNutriTargetDate(getOffsetISO(2))" class="py-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-xs font-extrabold text-zinc-200">Pozajtra</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Alebo konkrétny dátum</label>
+                    <input type="date" id="copy-nutri-target-date" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-3 py-2 text-xs font-extrabold text-white">
+                </div>
+                <div id="copy-nutri-target-slot-wrap">
+                    <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Cieľový chod v dni</label>
+                    <select id="copy-nutri-target-slot" class="w-full bg-dark-850 border border-zinc-700 rounded-xl px-3 py-2 text-xs font-bold text-white">
+                        <option value="SAME">Rovnaký chod ako zdroj</option>
+                        <option value="breakfast">Raňajky</option>
+                        <option value="snack1">Desiata</option>
+                        <option value="lunch">Obed</option>
+                        <option value="snack2">Olovrant</option>
+                        <option value="dinner">Večera</option>
+                    </select>
+                </div>
+                <button type="button" onclick="confirmCopyNutrition()" class="w-full py-3 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-xs">Kopírovať do vybraného dňa ✓</button>
             </div>
         </div>
     </div>
@@ -947,7 +1025,7 @@
                 <label class="w-full py-2.5 px-4 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-200 font-bold text-xs flex items-center justify-center cursor-pointer"><span>Obnoviť dáta zo súboru (.JSON)</span><input type="file" accept=".json" onchange="importDataJSON(event)" class="hidden"></label>
             </div>
             <div class="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
-                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.2.0</span></span>
+                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.3.0</span></span>
                 <button type="button" onclick="logoutTesterCode()" class="px-3 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-bold">Odhlásiť kód</button>
             </div>
         </div>
@@ -1108,7 +1186,7 @@
         // =====================================================================
         // SUPABASE CLOUD PREPOJENIE, ROLE, AUTO-SYNC & AUTO-UPDATE
         // =====================================================================
-        const APP_VERSION = '2.2.0';
+        const APP_VERSION = '2.3.0';
         const SUPABASE_URL = 'https://gfmiyksnjimznbussdia.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmbWl5a3Nuamltem5idXNzZGlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxNzY2MjQsImV4cCI6MjExMDc1MjYyNH0.3PSwWSSmkNyvO_rQTWjQe3hz4zlcU-AFPUSU9hasCcM';
 
@@ -2551,43 +2629,45 @@
         ];
 
         const BASE_FOOD_DATABASE = [
-            { id: 'f-chicken', name: 'Kuracie prsia (surové)', cat: 'protein', p: 23, c: 0, f: 1.5 },
-            { id: 'f-chicken-thigh', name: 'Kuracie stehná bez kože', cat: 'protein', p: 19.5, c: 0, f: 8 },
-            { id: 'f-turkey', name: 'Morčacie prsia (surové)', cat: 'protein', p: 24, c: 0, f: 1.2 },
-            { id: 'f-beef-lean', name: 'Hovädzie zadné chudé', cat: 'protein', p: 21, c: 0, f: 5 },
-            { id: 'f-beef-mince', name: 'Mleté hovädzie (10 % tuku)', cat: 'protein', p: 20, c: 0, f: 10 },
-            { id: 'f-ham-chicken', name: 'Kuracia / Morčacia šunka 95 %', cat: 'protein', p: 19, c: 1, f: 2 },
-            { id: 'f-salmon', name: 'Losos čerstvý', cat: 'protein', p: 20, c: 0, f: 13 },
-            { id: 'f-tuna', name: 'Tuniak vo vlastnej šťave', cat: 'protein', p: 25, c: 0, f: 1 },
-            { id: 'f-eggs', name: 'Vajcia celé (1 ks ≈ 60 g)', cat: 'protein', p: 12.5, c: 1, f: 10.5 },
-            { id: 'f-eggwhites', name: 'Vaječné bielky tekuté', cat: 'protein', p: 11, c: 0.7, f: 0.2 },
-            { id: 'f-curd-low', name: 'Tvaroh jemný 0,5 %', cat: 'protein', p: 12, c: 4, f: 0.5 },
-            { id: 'f-skyr', name: 'Skyr / Grécky jogurt 0 %', cat: 'protein', p: 10.5, c: 4, f: 0.2 },
-            { id: 'f-greek5', name: 'Grécky jogurt 5 %', cat: 'protein', p: 9, c: 3.8, f: 5 },
-            { id: 'f-cottage', name: 'Cottage Cheese biely', cat: 'protein', p: 12, c: 3, f: 4.5 },
-            { id: 'f-mozzarella-light', name: 'Mozzarella Light', cat: 'protein', p: 19, c: 1.5, f: 9 },
-            { id: 'f-eidam30', name: 'Syr Eidam 30 %', cat: 'protein', p: 27, c: 1.5, f: 16 },
-            { id: 'f-whey', name: 'Srvátkový proteín (Whey)', cat: 'protein', p: 78, c: 6, f: 5 },
-            { id: 'f-rice', name: 'Ryža basmati / jazmínová (surová)', cat: 'carbs', p: 7.5, c: 78, f: 0.6 },
-            { id: 'f-rice-cooked', name: 'Ryža varená', cat: 'carbs', p: 2.7, c: 28, f: 0.3 },
-            { id: 'f-oats', name: 'Ovsené vločky', cat: 'carbs', p: 13, c: 60, f: 7 },
-            { id: 'f-potatoes', name: 'Zemiaky (surové)', cat: 'carbs', p: 2, c: 17, f: 0.1 },
-            { id: 'f-sweetpotato', name: 'Bataty', cat: 'carbs', p: 1.6, c: 20, f: 0.1 },
-            { id: 'f-pasta', name: 'Cestoviny (surové)', cat: 'carbs', p: 12.5, c: 72, f: 1.5 },
-            { id: 'f-bread', name: 'Kváskový / celozrnný chlieb', cat: 'carbs', p: 8.5, c: 46, f: 2 },
-            { id: 'f-kaiserka', name: 'Kaiserka / Rožok (1 ks ≈ 50 g)', cat: 'carbs', p: 9, c: 56, f: 2.5 },
-            { id: 'f-tortilla', name: 'Tortilla pšeničná (1 ks ≈ 60 g)', cat: 'carbs', p: 8, c: 52, f: 7 },
-            { id: 'f-honey', name: 'Med', cat: 'carbs', p: 0.3, c: 82, f: 0 },
-            { id: 'f-oliveoil', name: 'Olivový olej', cat: 'fats', p: 0, c: 0, f: 100 },
-            { id: 'f-butter', name: 'Maslo 82 % / Ghee', cat: 'fats', p: 0.7, c: 0.6, f: 82 },
-            { id: 'f-avocado', name: 'Avokádo', cat: 'fats', p: 2, c: 8.5, f: 15 },
-            { id: 'f-almonds', name: 'Mandle / Orechy', cat: 'fats', p: 21, c: 10, f: 50 },
-            { id: 'f-peanutbutter', name: 'Arašidové maslo 100 %', cat: 'fats', p: 25, c: 16, f: 50 },
-            { id: 'f-banana', name: 'Banán', cat: 'produce', p: 1.1, c: 23, f: 0.3 },
-            { id: 'f-apple', name: 'Jablko', cat: 'produce', p: 0.3, c: 14, f: 0.2 },
-            { id: 'f-berries', name: 'Čučoriedky / Maliny / Jahody', cat: 'produce', p: 1, c: 12, f: 0.4 },
-            { id: 'f-broccoli', name: 'Brokolica', cat: 'produce', p: 2.8, c: 6.5, f: 0.4 },
-            { id: 'f-veggies', name: 'Miešaná zelenina (šalát)', cat: 'produce', p: 1.2, c: 4.5, f: 0.2 }
+            { id: 'f-chicken', name: 'Kuracie prsia (surové)', cat: 'protein', p: 23, c: 0, f: 1.5, unit: 'g', unitGrams: 1, defaultQty: 150 },
+            { id: 'f-chicken-thigh', name: 'Kuracie stehná bez kože', cat: 'protein', p: 19.5, c: 0, f: 8, unit: 'g', unitGrams: 1, defaultQty: 150 },
+            { id: 'f-turkey', name: 'Morčacie prsia (surové)', cat: 'protein', p: 24, c: 0, f: 1.2, unit: 'g', unitGrams: 1, defaultQty: 150 },
+            { id: 'f-beef-lean', name: 'Hovädzie zadné chudé', cat: 'protein', p: 21, c: 0, f: 5, unit: 'g', unitGrams: 1, defaultQty: 150 },
+            { id: 'f-beef-mince', name: 'Mleté hovädzie (10 % tuku)', cat: 'protein', p: 20, c: 0, f: 10, unit: 'g', unitGrams: 1, defaultQty: 150 },
+            { id: 'f-ham-chicken', name: 'Kuracia / Morčacia šunka 95 %', cat: 'protein', p: 19, c: 1, f: 2, unit: 'g', unitGrams: 1, defaultQty: 60 },
+            { id: 'f-salmon', name: 'Losos čerstvý', cat: 'protein', p: 20, c: 0, f: 13, unit: 'g', unitGrams: 1, defaultQty: 150 },
+            { id: 'f-tuna', name: 'Tuniak vo vlastnej šťave', cat: 'protein', p: 25, c: 0, f: 1, unit: 'g', unitGrams: 1, defaultQty: 100 },
+            { id: 'f-eggs', name: 'Vajcia celé (1 ks ≈ 60 g)', cat: 'protein', p: 12.5, c: 1, f: 10.5, unit: 'ks', unitGrams: 60, defaultQty: 3 },
+            { id: 'f-eggwhites', name: 'Vaječné bielky tekuté', cat: 'protein', p: 11, c: 0.7, f: 0.2, unit: 'ml', unitGrams: 1, defaultQty: 150 },
+            { id: 'f-milk', name: 'Mlieko polotučné 1,5 %', cat: 'protein', p: 3.3, c: 4.8, f: 1.5, unit: 'ml', unitGrams: 1, defaultQty: 200 },
+            { id: 'f-kefir', name: 'Kefír / Acidko biele', cat: 'protein', p: 3.4, c: 4.5, f: 1.5, unit: 'ml', unitGrams: 1, defaultQty: 250 },
+            { id: 'f-curd-low', name: 'Tvaroh jemný 0,5 %', cat: 'protein', p: 12, c: 4, f: 0.5, unit: 'g', unitGrams: 1, defaultQty: 125 },
+            { id: 'f-skyr', name: 'Skyr / Grécky jogurt 0 %', cat: 'protein', p: 10.5, c: 4, f: 0.2, unit: 'g', unitGrams: 1, defaultQty: 140 },
+            { id: 'f-greek5', name: 'Grécky jogurt 5 %', cat: 'protein', p: 9, c: 3.8, f: 5, unit: 'g', unitGrams: 1, defaultQty: 150 },
+            { id: 'f-cottage', name: 'Cottage Cheese biely', cat: 'protein', p: 12, c: 3, f: 4.5, unit: 'g', unitGrams: 1, defaultQty: 150 },
+            { id: 'f-mozzarella-light', name: 'Mozzarella Light', cat: 'protein', p: 19, c: 1.5, f: 9, unit: 'g', unitGrams: 1, defaultQty: 60 },
+            { id: 'f-eidam30', name: 'Syr Eidam 30 %', cat: 'protein', p: 27, c: 1.5, f: 16, unit: 'g', unitGrams: 1, defaultQty: 40 },
+            { id: 'f-whey', name: 'Srvátkový proteín (1 odm. ≈ 30 g)', cat: 'protein', p: 78, c: 6, f: 5, unit: 'ks', unitGrams: 30, defaultQty: 1 },
+            { id: 'f-rice', name: 'Ryža basmati / jazmínová (surová)', cat: 'carbs', p: 7.5, c: 78, f: 0.6, unit: 'g', unitGrams: 1, defaultQty: 80 },
+            { id: 'f-rice-cooked', name: 'Ryža varená', cat: 'carbs', p: 2.7, c: 28, f: 0.3, unit: 'g', unitGrams: 1, defaultQty: 200 },
+            { id: 'f-oats', name: 'Ovsené vločky', cat: 'carbs', p: 13, c: 60, f: 7, unit: 'g', unitGrams: 1, defaultQty: 60 },
+            { id: 'f-potatoes', name: 'Zemiaky (surové)', cat: 'carbs', p: 2, c: 17, f: 0.1, unit: 'g', unitGrams: 1, defaultQty: 250 },
+            { id: 'f-sweetpotato', name: 'Bataty', cat: 'carbs', p: 1.6, c: 20, f: 0.1, unit: 'g', unitGrams: 1, defaultQty: 250 },
+            { id: 'f-pasta', name: 'Cestoviny (surové)', cat: 'carbs', p: 12.5, c: 72, f: 1.5, unit: 'g', unitGrams: 1, defaultQty: 80 },
+            { id: 'f-bread', name: 'Kváskový / celozrnný chlieb', cat: 'carbs', p: 8.5, c: 46, f: 2, unit: 'g', unitGrams: 1, defaultQty: 70 },
+            { id: 'f-kaiserka', name: 'Kaiserka / Rožok (1 ks ≈ 50 g)', cat: 'carbs', p: 9, c: 56, f: 2.5, unit: 'ks', unitGrams: 50, defaultQty: 1 },
+            { id: 'f-tortilla', name: 'Tortilla pšeničná (1 ks ≈ 60 g)', cat: 'carbs', p: 8, c: 52, f: 7, unit: 'ks', unitGrams: 60, defaultQty: 1 },
+            { id: 'f-honey', name: 'Med', cat: 'carbs', p: 0.3, c: 82, f: 0, unit: 'g', unitGrams: 1, defaultQty: 15 },
+            { id: 'f-oliveoil', name: 'Olivový olej', cat: 'fats', p: 0, c: 0, f: 100, unit: 'ml', unitGrams: 1, defaultQty: 10 },
+            { id: 'f-butter', name: 'Maslo 82 % / Ghee', cat: 'fats', p: 0.7, c: 0.6, f: 82, unit: 'g', unitGrams: 1, defaultQty: 15 },
+            { id: 'f-avocado', name: 'Avokádo', cat: 'fats', p: 2, c: 8.5, f: 15, unit: 'g', unitGrams: 1, defaultQty: 70 },
+            { id: 'f-almonds', name: 'Mandle / Orechy', cat: 'fats', p: 21, c: 10, f: 50, unit: 'g', unitGrams: 1, defaultQty: 25 },
+            { id: 'f-peanutbutter', name: 'Arašidové maslo 100 %', cat: 'fats', p: 25, c: 16, f: 50, unit: 'g', unitGrams: 1, defaultQty: 20 },
+            { id: 'f-banana', name: 'Banán (1 ks ≈ 120 g)', cat: 'produce', p: 1.1, c: 23, f: 0.3, unit: 'ks', unitGrams: 120, defaultQty: 1 },
+            { id: 'f-apple', name: 'Jablko (1 ks ≈ 150 g)', cat: 'produce', p: 0.3, c: 14, f: 0.2, unit: 'ks', unitGrams: 150, defaultQty: 1 },
+            { id: 'f-berries', name: 'Čučoriedky / Maliny / Jahody', cat: 'produce', p: 1, c: 12, f: 0.4, unit: 'g', unitGrams: 1, defaultQty: 100 },
+            { id: 'f-broccoli', name: 'Brokolica', cat: 'produce', p: 2.8, c: 6.5, f: 0.4, unit: 'g', unitGrams: 1, defaultQty: 150 },
+            { id: 'f-veggies', name: 'Miešaná zelenina (šalát)', cat: 'produce', p: 1.2, c: 4.5, f: 0.2, unit: 'g', unitGrams: 1, defaultQty: 150 }
         ];
 
         let communityFoods = JSON.parse(localStorage.getItem('fitlog_community_foods') || '[]');
@@ -2924,25 +3004,61 @@
         }
 
         // =====================================================================
-        // SEKCIA STRAVA & TELO (BEZ BALASTU, NEPREHLIADNUTEĽNÉ PRIDANIE JEDLA)
+        // SEKCIA STRAVA & TELO (KALENDÁR, CHODY, KOPÍROVANIE & JEDNOTKY KS/ML/G)
         // =====================================================================
-        function getTodayISO() { return new Date().toISOString().slice(0, 10); }
-        function getYesterdayISO() { const d = new Date(); d.setDate(d.getDate() - 1); return d.toISOString().slice(0, 10); }
+        const MEAL_SLOTS = [
+            { id: 'breakfast', name: 'Raňajky' },
+            { id: 'snack1', name: 'Desiata' },
+            { id: 'lunch', name: 'Obed' },
+            { id: 'snack2', name: 'Olovrant' },
+            { id: 'dinner', name: 'Večera' }
+        ];
 
-        function getProfileNutrition() {
+        function formatLocalISO(dateObj) {
+            const y = dateObj.getFullYear();
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+        function getTodayISO() { return formatLocalISO(new Date()); }
+        function getYesterdayISO() { return getOffsetISO(-1); }
+        function getOffsetISO(daysDelta, baseISO = null) {
+            const base = baseISO ? new Date(baseISO + 'T12:00:00') : new Date();
+            base.setDate(base.getDate() + daysDelta);
+            return formatLocalISO(base);
+        }
+        function formatNutriDateHuman(dateISO) {
+            const d = new Date(dateISO + 'T12:00:00');
+            return d.toLocaleDateString('sk-SK', { weekday: 'short', day: 'numeric', month: 'numeric', year: 'numeric' });
+        }
+
+        let selectedNutritionDateISO = getTodayISO();
+
+        function getProfileNutrition(dateISO = selectedNutritionDateISO) {
             if (!nutritionDataByProfile[activeProfileId]) {
                 nutritionDataByProfile[activeProfileId] = { targets: { kcal: 2400, p: 160, c: 260, f: 75, water: 2.5 }, logsByDate: {} };
             }
-            const today = getTodayISO();
-            if (!nutritionDataByProfile[activeProfileId].logsByDate[today]) {
-                nutritionDataByProfile[activeProfileId].logsByDate[today] = { meals: [], water: 0 };
+            const targetDay = dateISO || getTodayISO();
+            if (!nutritionDataByProfile[activeProfileId].logsByDate[targetDay]) {
+                nutritionDataByProfile[activeProfileId].logsByDate[targetDay] = { meals: [], water: 0 };
             }
             return nutritionDataByProfile[activeProfileId];
         }
 
+        function setNutritionDate(dateISO) {
+            if (!dateISO) return;
+            selectedNutritionDateISO = dateISO;
+            renderNutritionFoodView();
+        }
+        function shiftNutritionDate(deltaDays) {
+            selectedNutritionDateISO = getOffsetISO(deltaDays, selectedNutritionDateISO);
+            renderNutritionFoodView();
+        }
+
         function syncTodayNutritionToCloud(lastMealName = '') {
-            const data = getProfileNutrition();
-            const todayLog = data.logsByDate[getTodayISO()];
+            const todayISO = getTodayISO();
+            const data = getProfileNutrition(todayISO);
+            const todayLog = data.logsByDate[todayISO];
             let totP = 0, totC = 0, totF = 0;
             todayLog.meals.forEach(m => { totP += parseFloat(m.p) || 0; totC += parseFloat(m.c) || 0; totF += parseFloat(m.f) || 0; });
             const kcal = Math.round(totP * 4 + totC * 4 + totF * 9);
@@ -2971,12 +3087,36 @@
         function renderNutritionSection() { setNutritionSubTab(activeNutriSubTab); }
 
         function renderNutritionFoodView() {
-            const data = getProfileNutrition();
-            const todayLog = data.logsByDate[getTodayISO()];
+            const todayISO = getTodayISO();
+            const activeISO = selectedNutritionDateISO || todayISO;
+            const data = getProfileNutrition(activeISO);
+            const dayLog = data.logsByDate[activeISO];
             const targets = data.targets;
 
+            // Update Calendar Bar
+            const dateLabel = document.getElementById('nutri-date-label');
+            const dateBadge = document.getElementById('nutri-date-badge');
+            const datePicker = document.getElementById('nutri-date-picker');
+            const jumpTodayBtn = document.getElementById('nutri-jump-today-btn');
+            const summaryHeading = document.getElementById('nutri-summary-heading');
+            if (datePicker) datePicker.value = activeISO;
+            if (dateLabel) dateLabel.textContent = formatNutriDateHuman(activeISO);
+            if (activeISO === todayISO) {
+                if (dateBadge) { dateBadge.textContent = 'Dnes'; dateBadge.className = 'text-[9.5px] font-black uppercase px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-400'; }
+                if (jumpTodayBtn) jumpTodayBtn.classList.add('hidden');
+                if (summaryHeading) summaryHeading.textContent = 'Dnešný príjem';
+            } else if (activeISO > todayISO) {
+                if (dateBadge) { dateBadge.textContent = 'Plán'; dateBadge.className = 'text-[9.5px] font-black uppercase px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300'; }
+                if (jumpTodayBtn) jumpTodayBtn.classList.remove('hidden');
+                if (summaryHeading) summaryHeading.textContent = 'Plánovaný príjem';
+            } else {
+                if (dateBadge) { dateBadge.textContent = 'História'; dateBadge.className = 'text-[9.5px] font-black uppercase px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400'; }
+                if (jumpTodayBtn) jumpTodayBtn.classList.remove('hidden');
+                if (summaryHeading) summaryHeading.textContent = 'Príjem za deň';
+            }
+
             let totP = 0, totC = 0, totF = 0;
-            todayLog.meals.forEach(m => { totP += parseFloat(m.p) || 0; totC += parseFloat(m.c) || 0; totF += parseFloat(m.f) || 0; });
+            dayLog.meals.forEach(m => { totP += parseFloat(m.p) || 0; totC += parseFloat(m.c) || 0; totF += parseFloat(m.f) || 0; });
             const totKcal = Math.round(totP * 4 + totC * 4 + totF * 9);
             totP = Math.round(totP); totC = Math.round(totC); totF = Math.round(totF);
 
@@ -2997,7 +3137,7 @@
             document.getElementById('nutri-f-tar').textContent = targets.f;
             document.getElementById('nutri-f-bar').style.width = `${pct(totF, targets.f)}%`;
 
-            document.getElementById('nutri-water-cur').textContent = (todayLog.water || 0).toFixed(2);
+            document.getElementById('nutri-water-cur').textContent = (dayLog.water || 0).toFixed(2);
             document.getElementById('nutri-water-tar').textContent = targets.water;
 
             const presetsCard = document.getElementById('nutri-presets-card');
@@ -3011,16 +3151,54 @@
                 }).join('');
             }
 
-            document.getElementById('nutri-meals-count').textContent = `${todayLog.meals.length} jedál`;
-            const todayList = document.getElementById('nutri-today-meals-list');
-            if (todayLog.meals.length === 0) {
-                todayList.innerHTML = `<div class="text-center py-4 text-xs text-zinc-500">Zatiaľ si dnes nezapísal žiadne jedlo.</div>`;
-            } else {
-                todayList.innerHTML = todayLog.meals.map((m, idx) => {
+            document.getElementById('nutri-meals-count').textContent = `${dayLog.meals.length} jedál`;
+            const coursesContainer = document.getElementById('nutri-courses-container');
+            const validSlotIds = new Set(MEAL_SLOTS.map(s => s.id));
+            const indexedMeals = dayLog.meals.map((m, idx) => ({
+                ...m,
+                _idx: idx,
+                _slot: validSlotIds.has(m.slot) ? m.slot : 'lunch'
+            }));
+
+            coursesContainer.innerHTML = MEAL_SLOTS.map(slot => {
+                const slotMeals = indexedMeals.filter(m => m._slot === slot.id);
+                let sP = 0, sC = 0, sF = 0;
+                slotMeals.forEach(m => { sP += parseFloat(m.p) || 0; sC += parseFloat(m.c) || 0; sF += parseFloat(m.f) || 0; });
+                const sKcal = Math.round(sP * 4 + sC * 4 + sF * 9);
+                const hasMeals = slotMeals.length > 0;
+
+                const mealsRowsHtml = hasMeals ? slotMeals.map(m => {
                     const mkcal = Math.round(m.p * 4 + m.c * 4 + m.f * 9);
-                    return `<div class="subcard-surface p-2.5 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${m.name}</div><div class="text-[10px] text-zinc-400 mt-0.5">${mkcal} kcal • B:${m.p}g S:${m.c}g T:${m.f}g</div></div><button onclick="removeMealFromToday(${idx})" class="p-1.5 text-zinc-500 hover:text-rose-400 shrink-0">✕</button></div>`;
-                }).join('');
-            }
+                    return `
+                        <div class="subcard-surface px-3 py-2 flex items-center justify-between gap-2">
+                            <div class="min-w-0">
+                                <div class="text-xs font-bold text-white truncate">${m.name}</div>
+                                <div class="text-[10px] text-zinc-400 mt-0.5">${mkcal} kcal • B:${Math.round(m.p)}g S:${Math.round(m.c)}g T:${Math.round(m.f)}g</div>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                <button type="button" onclick="openCopyNutritionModal('meal', '${slot.id}', ${m._idx})" title="Kopírovať toto jedlo do iného dňa" class="px-2 py-1 rounded-lg bg-dark-900 hover:bg-dark-800 border border-zinc-800 text-[10px] font-bold text-sky-300">Kopírovať</button>
+                                <button type="button" onclick="removeMealFromToday(${m._idx})" class="p-1.5 text-zinc-500 hover:text-rose-400">✕</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('') : `<div class="text-[11px] text-zinc-500 px-1 py-0.5">Zatiaľ bez jedla</div>`;
+
+                return `
+                    <div class="card-surface p-3 space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="min-w-0">
+                                <div class="text-xs font-extrabold text-white">${slot.name}</div>
+                                <div class="text-[10.5px] text-zinc-400">${hasMeals ? `${sKcal} kcal • B:${Math.round(sP)}g S:${Math.round(sC)}g T:${Math.round(sF)}g` : '0 kcal'}</div>
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                ${hasMeals ? `<button type="button" onclick="openCopyNutritionModal('slot', '${slot.id}')" class="px-2 py-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-sky-300 text-[10.5px] font-bold">Kopírovať</button>` : ''}
+                                <button type="button" onclick="openMealBuilderModal(false, '${slot.id}')" class="px-2.5 py-1.5 rounded-lg bg-brand-500/15 hover:bg-brand-500 text-brand-400 hover:text-zinc-950 border border-brand-500/35 text-[11px] font-extrabold transition">+ Pridať</button>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">${mealsRowsHtml}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function deleteUserMealPreset(presetId) {
@@ -3028,18 +3206,99 @@
             saveState(); renderNutritionFoodView();
         }
 
-        function copyYesterdayMealsToToday() {
-            const data = getProfileNutrition();
-            const yMeals = data.logsByDate[getYesterdayISO()]?.meals || [];
-            if (yMeals.length === 0) { showToast('Včera nemáš zapísané žiadne jedlá'); return; }
-            const todayMeals = data.logsByDate[getTodayISO()].meals;
-            yMeals.forEach(m => todayMeals.push({ ...m }));
-            saveState(); renderNutritionFoodView(); syncTodayNutritionToCloud('Skopírovaný včerajšok');
-            showToast(`Pridaných ${yMeals.length} jedál ✓`);
+        function copyPreviousDayIntoSelected() {
+            const prevISO = getOffsetISO(-1, selectedNutritionDateISO);
+            const data = getProfileNutrition(selectedNutritionDateISO);
+            const prevMeals = data.logsByDate[prevISO]?.meals || [];
+            if (prevMeals.length === 0) { showToast('Predošlý deň nemá žiadne jedlá'); return; }
+            const targetMeals = data.logsByDate[selectedNutritionDateISO].meals;
+            prevMeals.forEach(m => targetMeals.push({ ...m }));
+            saveState(); renderNutritionFoodView();
+            if (selectedNutritionDateISO === getTodayISO()) syncTodayNutritionToCloud('Skopírovaný predošlý deň');
+            showToast(`Pridaných ${prevMeals.length} jedál ✓`);
+        }
+
+        // KOPÍROVANIE CELÉHO DŇA / CHODU / JEDLA DO VYBRANÉHO DÁTUMU
+        let copyNutriContext = { mode: 'day', slotId: null, mealIdx: null };
+
+        function openCopyNutritionModal(mode, slotId = null, mealIdx = null) {
+            const data = getProfileNutrition(selectedNutritionDateISO);
+            const dayMeals = data.logsByDate[selectedNutritionDateISO]?.meals || [];
+            if (dayMeals.length === 0) { showToast('V tomto dni zatiaľ nie je čo kopírovať'); return; }
+
+            copyNutriContext = { mode, slotId, mealIdx };
+            const titleEl = document.getElementById('copy-nutri-modal-title');
+            const subEl = document.getElementById('copy-nutri-modal-sub');
+            const slotWrap = document.getElementById('copy-nutri-target-slot-wrap');
+            const slotSel = document.getElementById('copy-nutri-target-slot');
+
+            if (mode === 'day') {
+                titleEl.textContent = 'Kopírovať celý deň';
+                subEl.textContent = `Z dňa ${formatNutriDateHuman(selectedNutritionDateISO)} (${dayMeals.length} jedál)`;
+                slotWrap.classList.add('hidden');
+            } else if (mode === 'slot') {
+                const slotName = MEAL_SLOTS.find(s => s.id === slotId)?.name || 'Chod';
+                const count = dayMeals.filter(m => (m.slot || 'lunch') === slotId).length;
+                titleEl.textContent = `Kopírovať chod: ${slotName}`;
+                subEl.textContent = `Z dňa ${formatNutriDateHuman(selectedNutritionDateISO)} (${count} jedál)`;
+                slotWrap.classList.remove('hidden');
+                slotSel.value = 'SAME';
+            } else {
+                const meal = dayMeals[mealIdx];
+                if (!meal) return;
+                titleEl.textContent = 'Kopírovať jedlo';
+                subEl.textContent = `${meal.name}`;
+                slotWrap.classList.remove('hidden');
+                slotSel.value = 'SAME';
+            }
+
+            const defaultTarget = selectedNutritionDateISO === getTodayISO() ? getOffsetISO(1) : getTodayISO();
+            document.getElementById('copy-nutri-target-date').value = defaultTarget;
+            document.getElementById('modal-copy-nutrition').classList.remove('hidden');
+        }
+
+        function setCopyNutriTargetDate(dateISO) {
+            const inp = document.getElementById('copy-nutri-target-date');
+            if (inp && dateISO) inp.value = dateISO;
+        }
+
+        function confirmCopyNutrition() {
+            const targetDateISO = document.getElementById('copy-nutri-target-date')?.value;
+            if (!targetDateISO) { showToast('Vyber cieľový dátum'); return; }
+
+            const sourceData = getProfileNutrition(selectedNutritionDateISO);
+            const sourceMeals = sourceData.logsByDate[selectedNutritionDateISO]?.meals || [];
+            const targetSlotChoice = document.getElementById('copy-nutri-target-slot')?.value || 'SAME';
+
+            let itemsToCopy = [];
+            if (copyNutriContext.mode === 'day') {
+                itemsToCopy = sourceMeals.map(m => ({ ...m }));
+            } else if (copyNutriContext.mode === 'slot') {
+                itemsToCopy = sourceMeals
+                    .filter(m => (m.slot || 'lunch') === copyNutriContext.slotId)
+                    .map(m => ({ ...m, slot: targetSlotChoice === 'SAME' ? (m.slot || copyNutriContext.slotId) : targetSlotChoice }));
+            } else if (copyNutriContext.mode === 'meal') {
+                const one = sourceMeals[copyNutriContext.mealIdx];
+                if (one) {
+                    itemsToCopy = [{ ...one, slot: targetSlotChoice === 'SAME' ? (one.slot || 'lunch') : targetSlotChoice }];
+                }
+            }
+
+            if (itemsToCopy.length === 0) { showToast('Žiadne položky na kopírovanie'); return; }
+
+            const destData = getProfileNutrition(targetDateISO);
+            itemsToCopy.forEach(item => destData.logsByDate[targetDateISO].meals.push(item));
+
+            selectedNutritionDateISO = targetDateISO;
+            saveState();
+            document.getElementById('modal-copy-nutrition').classList.add('hidden');
+            renderNutritionFoodView();
+            if (targetDateISO === getTodayISO()) syncTodayNutritionToCloud('Skopírované jedlá');
+            showToast(`Skopírované do ${formatNutriDateHuman(targetDateISO)} ✓`);
         }
 
         function addWater(deltaL) {
-            const log = getProfileNutrition().logsByDate[getTodayISO()];
+            const log = getProfileNutrition(selectedNutritionDateISO).logsByDate[selectedNutritionDateISO];
             log.water = Math.max(0, Math.round(((log.water || 0) + deltaL) * 100) / 100);
             saveState(); renderNutritionFoodView();
         }
@@ -3047,12 +3306,14 @@
         function addPresetMealToToday(presetId) {
             const mp = mealPresets.find(x => x.id === presetId);
             if (!mp) return;
-            getProfileNutrition().logsByDate[getTodayISO()].meals.push({ name: mp.name, p: mp.p, c: mp.c, f: mp.f });
-            saveState(); renderNutritionFoodView(); syncTodayNutritionToCloud(mp.name); showToast('Jedlo zapísané ✓');
+            getProfileNutrition(selectedNutritionDateISO).logsByDate[selectedNutritionDateISO].meals.push({ name: mp.name, slot: mp.slot || 'lunch', p: mp.p, c: mp.c, f: mp.f });
+            saveState(); renderNutritionFoodView();
+            if (selectedNutritionDateISO === getTodayISO()) syncTodayNutritionToCloud(mp.name);
+            showToast('Jedlo zapísané ✓');
         }
 
         function removeMealFromToday(idx) {
-            getProfileNutrition().logsByDate[getTodayISO()].meals.splice(idx, 1);
+            getProfileNutrition(selectedNutritionDateISO).logsByDate[selectedNutritionDateISO].meals.splice(idx, 1);
             saveState(); renderNutritionFoodView();
         }
 
@@ -3122,31 +3383,41 @@
             saveState(); document.getElementById('modal-macro-calc').classList.add('hidden'); renderNutritionFoodView(); showToast(`Cieľ: ${kcal} kcal`);
         }
 
-        // SKLADAČKA JEDLA + SKENER ČIAROVÝCH KÓDOV (EAN)
+        // SKLADAČKA JEDLA + SKENER ČIAROVÝCH KÓDOV (EAN) + JEDNOTKY KS / ML / G
         let selectedFoodCat = 'all', draftMealIngredients = [];
         let html5QrScannerInstance = null;
         let pendingNewEanCode = '';
+        let mbActiveUnit = 'g';
 
         async function fetchCommunityFoodCatalog() {
             try {
+                const existingUnits = new Map((communityFoods || []).map(f => [f.barcode, f.unit]));
                 const rows = await supabaseFetch('food_catalog?select=barcode,name,p_100g,c_100g,f_100g&order=created_at.desc&limit=300');
                 if (Array.isArray(rows) && rows.length > 0) {
-                    communityFoods = rows.map(r => ({
-                        id: `ean-${r.barcode}`, barcode: r.barcode, name: `${r.name} [EAN]`, cat: 'scanned',
-                        p: parseFloat(r.p_100g) || 0, c: parseFloat(r.c_100g) || 0, f: parseFloat(r.f_100g) || 0
-                    }));
+                    communityFoods = rows.map(r => {
+                        const detectedUnit = existingUnits.get(r.barcode) || (/\(ml\)|mlije|mlieko|kefír|acidko|olej|nápoj|džús/i.test(r.name) ? 'ml' : 'g');
+                        return {
+                            id: `ean-${r.barcode}`, barcode: r.barcode, name: `${r.name} [EAN]`, cat: 'scanned',
+                            p: parseFloat(r.p_100g) || 0, c: parseFloat(r.c_100g) || 0, f: parseFloat(r.f_100g) || 0,
+                            unit: detectedUnit, unitGrams: 1, defaultQty: 100
+                        };
+                    });
                     localStorage.setItem('fitlog_community_foods', JSON.stringify(communityFoods));
                 }
             } catch (e) {}
         }
 
-        function openMealBuilderModal(autoStartCamera = false) {
+        function openMealBuilderModal(autoStartCamera = false, preselectSlot = null) {
             selectedFoodCat = 'all'; draftMealIngredients = [];
             document.getElementById('mb-meal-title').value = '';
             document.getElementById('ean-manual-input').value = '';
             document.getElementById('ean-status-box').classList.add('hidden');
             document.getElementById('ean-new-product-form').classList.add('hidden');
             document.getElementById('mb-save-as-preset').checked = false;
+            const slotSel = document.getElementById('mb-meal-slot');
+            if (slotSel) slotSel.value = preselectSlot || 'lunch';
+            const subEl = document.getElementById('mb-target-date-subtitle');
+            if (subEl) subEl.textContent = `Zápis pre: ${formatNutriDateHuman(selectedNutritionDateISO)}`;
             const searchEl = document.getElementById('mb-food-search');
             if (searchEl) searchEl.value = '';
             fetchCommunityFoodCatalog().then(() => { renderMealBuilderFoodPills(); renderMealBuilderFoodSelect(); });
@@ -3251,12 +3522,13 @@
             }
         }
 
-        function addScannedFoodDirectlyToPlate(name, p100, c100, f100, ean) {
-            const grams = parseFloat(document.getElementById('mb-food-grams').value) || 100;
-            const mult = grams / 100;
-            draftMealIngredients.push({ name, grams, p: Math.round(p100 * mult * 10) / 10, c: Math.round(c100 * mult * 10) / 10, f: Math.round(f100 * mult * 10) / 10 });
+        function addScannedFoodDirectlyToPlate(name, p100, c100, f100, ean, unit = 'g') {
+            const rawQty = parseFloat(document.getElementById('mb-food-grams').value) || 100;
+            const qty = mbActiveUnit === 'ks' ? 100 : rawQty;
+            const mult = qty / 100;
+            draftMealIngredients.push({ name, qty, unit, grams: qty, p: Math.round(p100 * mult * 10) / 10, c: Math.round(c100 * mult * 10) / 10, f: Math.round(f100 * mult * 10) / 10 });
             if (!communityFoods.some(f => f.barcode === ean)) {
-                communityFoods.unshift({ id: `ean-${ean}`, barcode: ean, name: `${name} [EAN]`, cat: 'scanned', p: p100, c: c100, f: f100 });
+                communityFoods.unshift({ id: `ean-${ean}`, barcode: ean, name: `${name} [EAN]`, cat: 'scanned', p: p100, c: c100, f: f100, unit, unitGrams: 1, defaultQty: 100 });
                 saveState(); renderMealBuilderFoodSelect();
             }
             renderMealBuilderIngredients();
@@ -3265,6 +3537,7 @@
         async function saveNewScannedFoodToCatalog() {
             const name = document.getElementById('ean-new-name').value.trim();
             if (!name || !pendingNewEanCode) { showToast('Zadaj názov produktu'); return; }
+            const unit = document.getElementById('ean-new-unit')?.value || 'g';
             const p100 = parseFloat(document.getElementById('ean-new-p').value) || 0;
             const c100 = parseFloat(document.getElementById('ean-new-c').value) || 0;
             const f100 = parseFloat(document.getElementById('ean-new-f').value) || 0;
@@ -3277,7 +3550,7 @@
                 });
             } catch (e) {}
 
-            addScannedFoodDirectlyToPlate(name, p100, c100, f100, pendingNewEanCode);
+            addScannedFoodDirectlyToPlate(name, p100, c100, f100, pendingNewEanCode, unit);
             document.getElementById('ean-new-product-form').classList.add('hidden');
             showToast(`Produkt uložený & pridaný ✓`);
         }
@@ -3293,19 +3566,84 @@
             if (list.length === 0) { sel.innerHTML = `<option value="">Žiadna potravina sa nenašla</option>`; return; }
             sel.innerHTML = list.map(f => {
                 const kcal = Math.round(f.p * 4 + f.c * 4 + f.f * 9);
-                return `<option value="${f.id}">${f.name} — ${kcal} kcal (B:${f.p} S:${f.c} T:${f.f})</option>`;
+                const uLabel = f.unit === 'ml' ? '/100ml' : '/100g';
+                return `<option value="${f.id}">${f.name} — ${kcal} kcal ${uLabel} (B:${f.p} S:${f.c} T:${f.f})</option>`;
             }).join('');
+            onMealBuilderFoodChange();
+        }
+        function onMealBuilderFoodChange() {
+            const foodId = document.getElementById('mb-food-select')?.value;
+            const food = getAllFoodsList().find(f => f.id === foodId);
+            const qtyInp = document.getElementById('mb-food-grams');
+            if (!food || !qtyInp) return;
+            mbActiveUnit = food.unit || 'g';
+            qtyInp.value = food.defaultQty || (mbActiveUnit === 'ks' ? 1 : 100);
+            renderMealBuilderUnitPills(food);
+            updateMealBuilderUnitHint();
+        }
+        function setMealBuilderUnit(unit) {
+            const foodId = document.getElementById('mb-food-select')?.value;
+            const food = getAllFoodsList().find(f => f.id === foodId);
+            const qtyInp = document.getElementById('mb-food-grams');
+            if (!food || !qtyInp) return;
+            const prevUnit = mbActiveUnit;
+            const curVal = parseFloat(qtyInp.value) || 0;
+            mbActiveUnit = unit;
+            if (prevUnit !== unit && food.unitGrams && food.unitGrams > 1) {
+                if (unit === 'ks') qtyInp.value = Math.max(0.5, Math.round((curVal / food.unitGrams) * 2) / 2);
+                else if (prevUnit === 'ks') qtyInp.value = Math.round(curVal * food.unitGrams);
+            }
+            renderMealBuilderUnitPills(food);
+            updateMealBuilderUnitHint();
+        }
+        function renderMealBuilderUnitPills(food) {
+            const pillsEl = document.getElementById('mb-unit-pills');
+            if (!pillsEl) return;
+            let options = ['g', 'ml'];
+            if (food?.unit === 'ks') options = ['ks', 'g'];
+            else if (food?.unit === 'ml') options = ['ml', 'g'];
+            pillsEl.innerHTML = options.map(u => `
+                <button type="button" onclick="setMealBuilderUnit('${u}')" class="px-2.5 py-1 rounded-lg text-xs font-extrabold transition ${mbActiveUnit === u ? 'bg-brand-500 text-zinc-950' : 'text-zinc-400 hover:text-white'}">${u}</button>
+            `).join('');
+        }
+        function updateMealBuilderUnitHint() {
+            const hintEl = document.getElementById('mb-unit-hint');
+            if (!hintEl) return;
+            const foodId = document.getElementById('mb-food-select')?.value;
+            const food = getAllFoodsList().find(f => f.id === foodId);
+            const qty = parseFloat(document.getElementById('mb-food-grams')?.value) || 0;
+            if (!food || qty <= 0) { hintEl.textContent = ''; return; }
+            if (mbActiveUnit === 'ks') {
+                const g = Math.round(qty * (food.unitGrams || 60));
+                hintEl.textContent = `= ${g} g`;
+            } else {
+                hintEl.textContent = '';
+            }
         }
         function addIngredientToMealBuilder() {
             const foodId = document.getElementById('mb-food-select').value;
-            const grams = parseFloat(document.getElementById('mb-food-grams').value) || 0;
+            const qty = parseFloat(document.getElementById('mb-food-grams').value) || 0;
             const food = getAllFoodsList().find(f => f.id === foodId);
-            if (!food || grams <= 0) return;
+            if (!food || qty <= 0) return;
+            const grams = mbActiveUnit === 'ks' ? Math.round(qty * (food.unitGrams || 60)) : qty;
             const mult = grams / 100;
-            draftMealIngredients.push({ name: food.name, grams, p: Math.round(food.p * mult * 10) / 10, c: Math.round(food.c * mult * 10) / 10, f: Math.round(food.f * mult * 10) / 10 });
+            draftMealIngredients.push({
+                name: food.name,
+                qty,
+                unit: mbActiveUnit,
+                grams,
+                p: Math.round(food.p * mult * 10) / 10,
+                c: Math.round(food.c * mult * 10) / 10,
+                f: Math.round(food.f * mult * 10) / 10
+            });
             renderMealBuilderIngredients();
         }
         function removeIngredientFromMealBuilder(idx) { draftMealIngredients.splice(idx, 1); renderMealBuilderIngredients(); }
+        function formatIngredientAmountLabel(item) {
+            if (item.unit === 'ks') return `${item.qty} ks / ${item.grams} g`;
+            if (item.unit === 'ml') return `${item.qty} ml`;
+            return `${item.grams} g`;
+        }
         function renderMealBuilderIngredients() {
             const container = document.getElementById('mb-ingredients-list');
             let p = 0, c = 0, f = 0;
@@ -3315,19 +3653,26 @@
             document.getElementById('mb-total-c').textContent = Math.round(c);
             document.getElementById('mb-total-f').textContent = Math.round(f);
             if (draftMealIngredients.length === 0) { container.innerHTML = `<div class="text-center py-3 text-[11px] text-zinc-500 border border-dashed border-zinc-800 rounded-xl">Naskenuj obal alebo pridaj surovinu vyššie.</div>`; return; }
-            container.innerHTML = draftMealIngredients.map((item, idx) => `<div class="subcard-surface px-3 py-2 flex items-center justify-between gap-2 text-xs"><div class="min-w-0"><div class="font-bold text-white truncate">${item.name} (${item.grams} g)</div><div class="text-[10px] text-zinc-400">B:${item.p}g • S:${item.c}g • T:${item.f}g</div></div><button type="button" onclick="removeIngredientFromMealBuilder(${idx})" class="text-rose-400 p-1">✕</button></div>`).join('');
+            container.innerHTML = draftMealIngredients.map((item, idx) => `<div class="subcard-surface px-3 py-2 flex items-center justify-between gap-2 text-xs"><div class="min-w-0"><div class="font-bold text-white truncate">${item.name} (${formatIngredientAmountLabel(item)})</div><div class="text-[10px] text-zinc-400">B:${item.p}g • S:${item.c}g • T:${item.f}g</div></div><button type="button" onclick="removeIngredientFromMealBuilder(${idx})" class="text-rose-400 p-1">✕</button></div>`).join('');
         }
         function saveBuiltMealToToday() {
             if (draftMealIngredients.length === 0) { showToast('Pridaj najprv aspoň jednu surovinu'); return; }
             let p = 0, c = 0, f = 0;
             draftMealIngredients.forEach(i => { p += i.p; c += i.c; f += i.f; });
-            const autoName = draftMealIngredients.map(i => `${i.name.split('(')[0].replace('[EAN]', '').trim()} ${i.grams}g`).join(' + ');
+            const autoName = draftMealIngredients.map(i => {
+                const cleanBase = i.name.split('(')[0].replace('[EAN]', '').trim();
+                const amt = i.unit === 'ks' ? `${i.qty} ks` : (i.unit === 'ml' ? `${i.qty} ml` : `${i.grams}g`);
+                return `${cleanBase} ${amt}`;
+            }).join(' + ');
             const name = document.getElementById('mb-meal-title').value.trim() || autoName;
-            const mealObj = { name, p: Math.round(p), c: Math.round(c), f: Math.round(f) };
-            getProfileNutrition().logsByDate[getTodayISO()].meals.push(mealObj);
+            const slot = document.getElementById('mb-meal-slot')?.value || 'lunch';
+            const mealObj = { name, slot, p: Math.round(p), c: Math.round(c), f: Math.round(f) };
+            getProfileNutrition(selectedNutritionDateISO).logsByDate[selectedNutritionDateISO].meals.push(mealObj);
             if (document.getElementById('mb-save-as-preset').checked) mealPresets.unshift({ id: 'mp-user-' + Date.now(), ...mealObj });
             saveState(); closeMealBuilderModal();
-            renderNutritionFoodView(); syncTodayNutritionToCloud(name); showToast('Jedlo zapísané ✓');
+            renderNutritionFoodView();
+            if (selectedNutritionDateISO === getTodayISO()) syncTodayNutritionToCloud(name);
+            showToast('Jedlo zapísané ✓');
         }
 
         // CHECK-INY
