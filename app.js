@@ -31,7 +31,7 @@ function hydrateStaticSvgIcons() {
 // =====================================================================
 // SUPABASE CLOUD PREPOJENIE, ROLE, AUTO-SYNC & AUTO-UPDATE
 // =====================================================================
-const APP_VERSION = '2.5.1';
+const APP_VERSION = '2.5.2';
 const SUPABASE_URL = 'https://gfmiyksnjimznbussdia.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmbWl5a3Nuamltem5idXNzZGlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxNzY2MjQsImV4cCI6MjExMDc1MjYyNH0.3PSwWSSmkNyvO_rQTWjQe3hz4zlcU-AFPUSU9hasCcM';
 
@@ -3033,7 +3033,7 @@ function renderMySupplementStack() {
                 </button>
                 ${isOpen ? `<div class="px-3.5 pb-3.5 pt-1 border-t border-zinc-800 space-y-2">${items.map(s => {
                     const isTaken = takenSet.has(s.id);
-                    return `<div class="subcard-surface ${isTaken ? 'border-brand-500/45 bg-brand-500/5' : ''} p-3 space-y-1.5"><div class="flex items-start justify-between gap-2"><div class="font-extrabold text-xs text-white">${s.name}</div><div class="flex items-center gap-1.5 shrink-0"><button onclick="toggleSuppTakenToday('${s.id}')" class="text-[10px] font-extrabold px-2.5 py-1 rounded-lg border ${isTaken ? 'bg-brand-500 text-zinc-950 border-brand-400' : 'bg-dark-900 text-zinc-300 border-zinc-700'}">${isTaken ? 'Užité ${svgIcon('ok', 'w-3.5 h-3.5 inline')}' : 'Užiť'}</button><button onclick="toggleSupplementInStack('${s.id}')" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-rose-500/15 text-rose-300">${svgIcon('close', 'w-3.5 h-3.5')}</button></div></div><div class="text-[11px] font-bold text-amber-400">Dávka: ${s.dosage}</div><div class="text-[11px] text-zinc-400">${s.benefit}</div></div>`;
+                    return `<div class="subcard-surface ${isTaken ? 'border-brand-500/45 bg-brand-500/5' : ''} p-3 space-y-1.5"><div class="flex items-start justify-between gap-2"><div class="font-extrabold text-xs text-white">${s.name}</div><div class="flex items-center gap-1.5 shrink-0"><button onclick="toggleSuppTakenToday('${s.id}')" class="text-[10px] font-extrabold px-2.5 py-1 rounded-lg border ${isTaken ? 'bg-brand-500 text-zinc-950 border-brand-400' : 'bg-dark-900 text-zinc-300 border-zinc-700'}">${isTaken ? 'Užité ' + svgIcon('ok', 'w-3.5 h-3.5 inline') : 'Užiť'}</button><button onclick="toggleSupplementInStack('${s.id}')" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-rose-500/15 text-rose-300">${svgIcon('close', 'w-3.5 h-3.5')}</button></div></div><div class="text-[11px] font-bold text-amber-400">Dávka: ${s.dosage}</div><div class="text-[11px] text-zinc-400">${s.benefit}</div></div>`;
                 }).join('')}</div>` : ''}
             </div>
         `;
@@ -3053,7 +3053,7 @@ function renderSupplementsCatalog() {
     container.innerHTML = filtered.map(s => {
         const inStack = stackIds.has(s.id);
         const slotMeta = TIMING_SLOTS[s.timingSlot] || TIMING_SLOTS.with_meal;
-        return `<div class="card-surface ${inStack ? 'border-amber-400/45' : ''} p-3.5 space-y-2"><div class="flex items-start justify-between gap-2"><div class="min-w-0"><span class="text-[10px] font-bold px-2 py-0.5 rounded-md border ${slotMeta.color}">${slotMeta.badge}</span><h3 class="text-sm font-extrabold text-white mt-1.5">${s.name}</h3></div><button onclick="toggleSupplementInStack('${s.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold shrink-0 ${inStack ? 'bg-amber-400 text-zinc-950' : 'bg-dark-850 text-zinc-200 border border-zinc-700'}">${inStack ? 'Užívam ${svgIcon('ok', 'w-3.5 h-3.5 inline')}' : '+ Pridať'}</button></div><p class="text-xs text-zinc-300 leading-relaxed">${s.benefit}</p><div class="text-[11px] text-zinc-400">Dávkovanie: <strong class="text-zinc-200">${s.dosage}</strong> • ${s.withWhat}</div></div>`;
+        return `<div class="card-surface ${inStack ? 'border-amber-400/45' : ''} p-3.5 space-y-2"><div class="flex items-start justify-between gap-2"><div class="min-w-0"><span class="text-[10px] font-bold px-2 py-0.5 rounded-md border ${slotMeta.color}">${slotMeta.badge}</span><h3 class="text-sm font-extrabold text-white mt-1.5">${s.name}</h3></div><button onclick="toggleSupplementInStack('${s.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold shrink-0 ${inStack ? 'bg-amber-400 text-zinc-950' : 'bg-dark-850 text-zinc-200 border border-zinc-700'}">${inStack ? 'Užívam ' + svgIcon('ok', 'w-3.5 h-3.5 inline') : '+ Pridať'}</button></div><p class="text-xs text-zinc-300 leading-relaxed">${s.benefit}</p><div class="text-[11px] text-zinc-400">Dávkovanie: <strong class="text-zinc-200">${s.dosage}</strong> • ${s.withWhat}</div></div>`;
     }).join('');
 }
 function openNewSupplementModal() { document.getElementById('modal-new-supplement').classList.remove('hidden'); }
