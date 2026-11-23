@@ -47,7 +47,7 @@
 
     <!-- BANNER AUTOMATICKÉHO UPDATE APLIKÁCIE -->
     <div id="app-update-banner" style="display: none;" class="bg-amber-400 text-zinc-950 px-4 py-2 text-xs font-extrabold flex items-center justify-between gap-2 z-40">
-        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.5.0</span>) je pripravená</span>
+        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.5.1</span>) je pripravená</span>
         <button type="button" onclick="applyAppUpdateNow()" class="px-3 py-1 rounded-lg bg-zinc-950 text-amber-300 font-black text-[11px] shrink-0">Aktualizovať</button>
     </div>
 
@@ -1098,7 +1098,7 @@
                 <label class="w-full py-2.5 px-4 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-200 font-bold text-xs flex items-center justify-center cursor-pointer"><span>Obnoviť dáta zo súboru (.JSON)</span><input type="file" accept=".json" onchange="importDataJSON(event)" class="hidden"></label>
             </div>
             <div class="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
-                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.5.0</span></span>
+                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.5.1</span></span>
                 <button type="button" onclick="logoutTesterCode()" class="px-3 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-bold">Odhlásiť kód</button>
             </div>
         </div>
@@ -1255,7 +1255,17 @@
         </div>
     </div>
 
-    <script src="data.js"></script>
-    <script src="app.js"></script>
+    <script src="data.js?v=2.5.1"></script>
+    <script src="app.js?v=2.5.1"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            if (typeof DEFAULT_EXERCISES === 'undefined' || typeof switchAppDomain !== 'function') {
+                var warn = document.createElement('div');
+                warn.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#e11d48;color:#fff;padding:12px 16px;font-size:13px;font-weight:800;text-align:center;';
+                warn.textContent = 'Chyba načítania: Skontroluj na GitHube, či sú súbory pomenované presne index.html, data.js a app.js v hlavnom priečinku.';
+                document.body.appendChild(warn);
+            }
+        });
+    </script>
 </body>
 </html>
