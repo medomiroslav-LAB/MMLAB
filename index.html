@@ -46,16 +46,16 @@
 
     <!-- BANNER AUTOMATICKÉHO UPDATE APLIKÁCIE -->
     <div id="app-update-banner" style="display: none;" class="bg-amber-400 text-zinc-950 px-4 py-2 text-xs font-extrabold flex items-center justify-between gap-2 z-40">
-        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.6.0</span>) je pripravená</span>
+        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.7.0</span>) je pripravená</span>
         <button type="button" onclick="applyAppUpdateNow()" class="px-3 py-1 rounded-lg bg-zinc-950 text-amber-300 font-black text-[11px] shrink-0">Aktualizovať</button>
     </div>
 
     <!-- HORNÁ LIŠTA -->
-    <header class="sticky top-0 z-30 bg-[#121215] border-b border-zinc-800/90 px-3.5 pb-2.5 safe-area-top">
-        <div class="max-w-2xl mx-auto flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-9 h-9 rounded-xl bg-[#18181c] border border-zinc-700/80 flex items-center justify-center shrink-0">
-                    <svg viewBox="0 0 64 64" class="w-7 h-7">
+    <header class="sticky top-0 z-30 bg-[#121215] border-b border-zinc-800/90 px-3 py-2.5 safe-area-top">
+        <div class="max-w-2xl mx-auto flex items-center justify-between gap-1.5">
+            <div class="flex items-center gap-2 min-w-0">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#18181c] border border-zinc-700/80 flex items-center justify-center shrink-0">
+                    <svg viewBox="0 0 64 64" class="w-6 h-6 sm:w-7 sm:h-7">
                         <defs>
                             <linearGradient id="mmLabGreen" x1="0" y1="0" x2="1" y2="1">
                                 <stop offset="0%" stop-color="#10b981"/>
@@ -69,31 +69,31 @@
                     </svg>
                 </div>
                 <div class="min-w-0">
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-base font-black tracking-tight text-white leading-none">MM</span>
-                        <span class="text-[9.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-400 text-zinc-950 leading-none">LAB</span>
+                    <div class="flex items-center gap-1">
+                        <span class="text-sm sm:text-base font-black tracking-tight text-white leading-none">MM</span>
+                        <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-400 text-zinc-950 leading-none">LAB</span>
                         <span id="cloud-sync-dot" title="Stav cloudovej zálohy" class="w-2 h-2 rounded-full bg-brand-400 shrink-0"></span>
                     </div>
                     <p class="text-[10px] text-zinc-400 mt-0.5 font-medium truncate">MiroMedo<span class="text-amber-400">_</span><span class="text-brand-400">fit</span></p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-1.5 shrink-0">
-                <button type="button" onclick="openLabFeedModal()" title="Tipy & Oznamy" class="relative w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 text-zinc-300 hover:text-white border border-zinc-800 flex items-center justify-center transition">
+            <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                <button type="button" onclick="openLabFeedModal()" title="Tipy & Oznamy" class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-dark-850 hover:bg-dark-800 text-zinc-200 hover:text-white border border-zinc-800 flex items-center justify-center shrink-0 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                     <span id="feed-unread-badge" style="display: none;" class="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center">1</span>
                 </button>
-                <button type="button" onclick="openFeedbackModal()" title="Správa & Podpora" class="w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 text-zinc-300 hover:text-amber-300 border border-zinc-800 flex items-center justify-center transition">
+                <button type="button" onclick="openFeedbackModal()" title="Správa & Podpora" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-dark-850 hover:bg-dark-800 text-zinc-200 hover:text-amber-300 border border-zinc-800 flex items-center justify-center shrink-0 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                 </button>
-                <button type="button" onclick="openProfileModal()" id="header-profile-btn" class="h-9 px-2.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 flex items-center gap-1.5 transition">
+                <button type="button" onclick="openProfileModal()" id="header-profile-btn" class="h-8 sm:h-9 px-2 sm:px-2.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 flex items-center gap-1.5 shrink-0 transition">
                     <span id="header-profile-dot" class="w-2 h-2 rounded-full bg-brand-400 shrink-0"></span>
-                    <span id="header-profile-name" class="text-[11px] font-bold text-white max-w-[68px] sm:max-w-[100px] truncate">Profil</span>
+                    <span id="header-profile-name" class="text-[11px] font-bold text-white max-w-[56px] sm:max-w-[96px] truncate">Profil</span>
                 </button>
-                <button type="button" onclick="openWearablesModal()" title="Hodinky & Zdravie" class="w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 text-sky-400 border border-zinc-800 flex items-center justify-center transition">
+                <button type="button" onclick="openWearablesModal()" title="Hodinky & Zdravie" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-dark-850 hover:bg-dark-800 text-sky-400 border border-zinc-800 flex items-center justify-center shrink-0 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><polyline points="12 10 12 12 13.5 13.5"/><path d="M16.51 17.35l-.35 3.83a2 2 0 01-2 1.82H9.83a2 2 0 01-2-1.82l-.35-3.83m.01-10.7l.35-3.83A2 2 0 019.83 1h4.35a2 2 0 012 1.82l.35 3.83"/></svg>
                 </button>
-                <button type="button" onclick="openBackupModal()" title="Záloha & Účet" class="w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 text-zinc-300 hover:text-white border border-zinc-800 flex items-center justify-center transition">
+                <button type="button" onclick="openBackupModal()" title="Záloha & Účet" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-dark-850 hover:bg-dark-800 text-zinc-200 hover:text-white border border-zinc-800 flex items-center justify-center shrink-0 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 </button>
             </div>
@@ -220,20 +220,35 @@
 
         <!-- ZÁLOŽKA 1.2: SPLITY (ČISTÉ ZBALENÉ KARTY + FILTRE + DUPLIKOVANIE) -->
         <section id="view-splits" class="hidden space-y-3">
-            <div class="flex items-center justify-between gap-2">
-                <div>
-                    <h2 class="text-base font-extrabold text-white">Tréningové splity</h2>
-                    <p class="text-[11px] text-zinc-400">Vyber plán podľa počtu tréningov v týždni</p>
+            <div class="card-surface p-3.5 space-y-3">
+                <div class="flex items-center justify-between gap-2">
+                    <div class="min-w-0">
+                        <h2 class="text-base font-extrabold text-white">Tréningové splity</h2>
+                        <p class="text-[11px] text-zinc-400">Vyber plán podľa počtu tréningov v týždni</p>
+                    </div>
+                    <button type="button" onclick="openSplitBuilderModal()" class="bg-brand-500 hover:bg-brand-600 text-zinc-950 font-extrabold text-xs px-3.5 py-2 rounded-xl shrink-0 flex items-center gap-1 transition">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        <span>Nový split</span>
+                    </button>
                 </div>
-                <div class="flex items-center gap-1.5 shrink-0">
-                    <button type="button" onclick="toggleSplitGuideBox()" class="bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-amber-300 font-bold text-xs px-2.5 py-2 rounded-xl transition">Ktorý?</button>
-                    <button type="button" onclick="openTrainingReminderModal()" class="bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-sky-300 font-bold text-xs px-2.5 py-2 rounded-xl transition">Kalendár</button>
-                    <button type="button" onclick="openSplitBuilderModal()" class="bg-brand-500 hover:bg-brand-600 text-zinc-950 font-extrabold text-xs px-3 py-2 rounded-xl transition">+ Split</button>
+
+                <div class="grid grid-cols-2 gap-2 pt-2 border-t border-zinc-800/80">
+                    <button type="button" onclick="toggleSplitGuideBox()" class="py-2 px-3 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3m.08 4h.01"/></svg>
+                        <span>Ktorý split zvoliť?</span>
+                    </button>
+                    <button type="button" onclick="openTrainingReminderModal()" class="py-2 px-3 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-sky-300 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <span>Do kalendára</span>
+                    </button>
                 </div>
             </div>
 
             <div id="split-guide-box" class="hidden card-surface border-amber-400/35 p-3.5 text-xs text-zinc-300 space-y-1.5 leading-relaxed">
-                <div class="font-extrabold text-amber-300">Aký split si vybrať?</div>
+                <div class="flex items-center justify-between">
+                    <span class="font-extrabold text-amber-300">Aký split si vybrať?</span>
+                    <button type="button" onclick="toggleSplitGuideBox()" class="p-1 text-zinc-400 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                </div>
                 <div>• <strong class="text-white">2–3× týždenne:</strong> Fullbody (A / B) – precvičíš celé telo v každom tréningu.</div>
                 <div>• <strong class="text-white">4× týždenne:</strong> Upper / Lower (A / B) – 2× vrch tela a 2× spodok tela.</div>
                 <div>• <strong class="text-white">3× alebo 5–6× týždenne:</strong> Push / Pull / Legs – tlakové, ťahové cviky a nohy zvlášť.</div>
@@ -294,7 +309,9 @@
             <div id="nutri-view-food" class="space-y-3.5">
                 <!-- KALENDÁR A PREPÍNANIE DÁTUMU V STRAVE -->
                 <div class="card-surface px-3 py-2 flex items-center justify-between gap-2">
-                    <button type="button" onclick="shiftNutritionDate(-1)" class="px-2.5 py-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-xs font-extrabold text-zinc-300">◀</button>
+                    <button type="button" onclick="shiftNutritionDate(-1)" title="Predchádzajúci deň" class="w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-200 flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
                     <label class="relative flex-1 text-center cursor-pointer py-0.5 rounded-lg hover:bg-dark-850 transition">
                         <div class="flex items-center justify-center gap-1.5">
                             <svg class="w-3.5 h-3.5 text-brand-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -303,9 +320,11 @@
                         <div id="nutri-selected-date-sub" class="text-[10px] text-zinc-400"></div>
                         <input type="date" id="nutri-date-picker" onchange="setNutritionDateFromPicker(this.value)" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer">
                     </label>
-                    <div class="flex items-center gap-1">
-                        <button type="button" id="nutri-today-jump-btn" onclick="resetNutritionDateToToday()" class="hidden px-2 py-1.5 rounded-lg bg-brand-500/15 text-brand-400 text-[10px] font-extrabold">Dnes</button>
-                        <button type="button" onclick="shiftNutritionDate(1)" class="px-2.5 py-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-xs font-extrabold text-zinc-300">▶</button>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" id="nutri-today-jump-btn" onclick="resetNutritionDateToToday()" class="hidden px-2.5 py-1.5 rounded-xl bg-brand-500/15 border border-brand-500/35 text-brand-400 text-[10px] font-extrabold">Dnes</button>
+                        <button type="button" onclick="shiftNutritionDate(1)" title="Nasledujúci deň" class="w-9 h-9 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-200 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        </button>
                     </div>
                 </div>
 
@@ -318,27 +337,30 @@
                     <div id="shared-trainer-mealplans-list" class="space-y-2"></div>
                 </div>
 
-                <!-- NEPREHLIADNUTEĽNÁ HLAVNÁ AKČNÁ KARTA -->
-                <div class="card-surface border-brand-500/40 p-3.5 space-y-2.5">
-                    <div class="flex items-center justify-between gap-2.5">
-                        <button type="button" onclick="openMealBuilderModal(false)" class="flex-1 flex items-center gap-3 text-left group min-w-0">
-                            <div class="w-11 h-11 rounded-2xl bg-brand-500 text-zinc-950 flex items-center justify-center shrink-0 shadow-lg shadow-brand-500/20 group-hover:scale-105 transition">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                <!-- HLAVNÉ AKCIE STRAVY -->
+                <div class="card-surface border-brand-500/40 p-3 space-y-2.5">
+                    <button type="button" onclick="openMealBuilderModal(false)" class="w-full flex items-center justify-between gap-3 text-left group min-w-0">
+                        <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <div class="w-10 h-10 rounded-xl bg-brand-500 text-zinc-950 flex items-center justify-center shrink-0 shadow-lg shadow-brand-500/20 group-hover:scale-105 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                             </div>
-                            <div class="min-w-0">
-                                <div class="text-sm font-black text-white">Pridať jedlo do dňa</div>
-                                <div class="text-[11px] text-zinc-400 truncate">Suroviny v ks / ml / g alebo skener obalu</div>
+                            <div class="min-w-0 flex-1">
+                                <div class="text-sm font-black text-white truncate">Pridať jedlo do dňa</div>
+                                <div class="text-[11px] text-zinc-400 truncate">Vyskladaj zo surovín (ks / ml / g)</div>
                             </div>
+                        </div>
+                        <svg class="w-4 h-4 text-brand-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    </button>
+                    <div class="grid grid-cols-2 gap-2 pt-2.5 border-t border-zinc-800/80">
+                        <button type="button" onclick="openMealInspirationsModal()" class="py-2.5 px-3 rounded-xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/35 text-amber-300 flex items-center justify-center gap-1.5 text-xs font-extrabold transition">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                            <span class="truncate">Inšpirácie & Dni</span>
                         </button>
-                        <button type="button" onclick="openMealBuilderModal(true)" title="Skenovať čiarový kód EAN" class="h-11 px-3 rounded-2xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-sky-400 flex items-center gap-1.5 text-xs font-extrabold shrink-0 transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2M7 12h10"/></svg>
-                            <span>EAN</span>
+                        <button type="button" onclick="openMealBuilderModal(true)" class="py-2.5 px-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/35 text-sky-300 flex items-center justify-center gap-1.5 text-xs font-extrabold transition">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2M7 12h10"/></svg>
+                            <span class="truncate">Skenovať EAN</span>
                         </button>
                     </div>
-                    <button type="button" onclick="openMealInspirationsModal()" class="w-full py-2 px-3 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 flex items-center justify-between text-xs transition">
-                        <span class="font-bold text-amber-300">Vzorové jedlá & kompletné dni</span>
-                        <span class="text-[11px] text-zinc-400">Otvoriť →</span>
-                    </button>
                 </div>
 
                 <!-- PREHĽAD KALÓRIÍ, MAKIER A VODY -->
@@ -353,7 +375,8 @@
                         </div>
                         <div class="flex items-center gap-1.5">
                             <button type="button" id="trainer-send-mealplan-btn" onclick="openSendMealPlanModal()" class="hidden px-2.5 py-1.5 rounded-xl bg-amber-400 text-zinc-950 font-extrabold text-[11px]">Poslať klientom</button>
-                            <button type="button" onclick="openMacroCalcModal('calc')" class="px-3 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-zinc-200 font-bold text-[11px] transition">Ciele & Návod</button>
+                            <button type="button" onclick="openMacroCalcModal('guide')" class="px-2.5 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-sky-300 font-bold text-[11px] transition">Ako na makrá?</button>
+                            <button type="button" onclick="openMacroCalcModal('calc')" class="px-3 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-700 text-zinc-200 font-bold text-[11px] transition">Ciele</button>
                         </div>
                     </div>
 
@@ -385,23 +408,26 @@
                             <div class="text-xs font-extrabold text-white mt-0.5"><span id="nutri-water-cur">0.0</span> / <span id="nutri-water-tar" class="text-zinc-400">2.5</span> L</div>
                         </div>
                         <div class="flex items-center gap-1.5">
-                            <button type="button" onclick="addWater(-0.25)" class="px-2.5 py-1.5 rounded-lg bg-dark-900 border border-zinc-800 text-xs font-bold text-zinc-400 hover:text-white">−250</button>
+                            <button type="button" onclick="addWater(-0.25)" class="px-2.5 py-1.5 rounded-lg bg-dark-900 border border-zinc-800 text-xs font-bold text-zinc-400 hover:text-white">-250</button>
                             <button type="button" onclick="addWater(0.25)" class="px-3 py-1.5 rounded-lg bg-sky-500/15 border border-sky-500/35 text-xs font-extrabold text-sky-300">+250 ml</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- MOJE ULOŽENÉ ŠABLÓNY (LEN AK SI ICH POUŽÍVATEĽ VYTVORÍ) -->
+                <!-- MOJE ULOŽENÉ ŠABLÓNY -->
                 <div id="nutri-presets-card" class="hidden card-surface p-3.5 space-y-2.5">
                     <div class="text-xs font-extrabold text-white">Moje uložené šablóny jedál</div>
                     <div id="nutri-presets-list" class="space-y-1.5"></div>
                 </div>
 
-                <!-- CHODY DŇA A ZJEDENÉ JEDLÁ (S KOPÍROVANÍM DŇA / CHODU / POLOŽKY) -->
-                <div class="card-surface p-3.5 space-y-3">
-                    <div class="flex items-center justify-between gap-2">
-                        <span class="text-xs font-extrabold text-white">Jedálniček dňa (<span id="nutri-meals-count">0</span>)</span>
-                        <button type="button" onclick="openCopyMealModal('day')" class="text-[10.5px] font-extrabold text-sky-300 hover:text-sky-200 bg-sky-500/15 border border-sky-500/35 px-2.5 py-1 rounded-lg">Kopírovať celý deň</button>
+                <!-- ROZDELENIE DŇA NA CHODY & KOPÍROVANIE -->
+                <div class="space-y-2.5">
+                    <div class="card-surface p-3 flex items-center justify-between gap-2 flex-wrap">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-extrabold text-white">Jedálniček dňa</span>
+                            <span id="nutri-meals-count" class="text-[11px] text-zinc-400">0 jedál</span>
+                        </div>
+                        <button type="button" onclick="openCopyMealModal('day')" class="text-[10.5px] font-extrabold text-sky-300 hover:text-sky-200 bg-sky-500/15 border border-sky-500/35 px-2.5 py-1.5 rounded-lg">Kopírovať deň</button>
                     </div>
                     <div id="nutri-today-meals-list" class="space-y-2.5"></div>
                 </div>
@@ -436,24 +462,11 @@
                     <button type="button" onclick="setBodyCheckInMode('weekly')" id="body-mode-weekly-btn" class="py-2 px-3 rounded-lg text-xs font-extrabold text-zinc-400 hover:text-white transition">Týždenný Check-in</button>
                 </div>
 
-                <!-- REŽIM 1: RANNÝ DENNÝ DOTAZNÍK + 7-DŇOVÉ PRIEMERY -->
                 <div id="body-panel-daily" class="space-y-3.5">
                     <div class="grid grid-cols-3 gap-2">
-                        <div class="card-surface p-2.5 text-center">
-                            <span class="text-[9.5px] font-bold uppercase text-zinc-400 block">7d priemer váhy</span>
-                            <strong id="weekly-last-weight" class="text-sm font-black text-white mt-0.5 block">— kg</strong>
-                            <span id="weekly-weight-delta" class="text-[9.5px] text-zinc-500 block"></span>
-                        </div>
-                        <div class="card-surface p-2.5 text-center">
-                            <span class="text-[9.5px] font-bold uppercase text-zinc-400 block">7d priemer Kcal</span>
-                            <strong id="weekly-avg-kcal" class="text-sm font-black text-amber-400 mt-0.5 block">—</strong>
-                            <span id="weekly-avg-prot" class="text-[9.5px] text-zinc-500 block"></span>
-                        </div>
-                        <div class="card-surface p-2.5 text-center">
-                            <span class="text-[9.5px] font-bold uppercase text-zinc-400 block">Energia / Spánok</span>
-                            <strong id="weekly-avg-energy" class="text-sm font-black text-brand-400 mt-0.5 block">— / —</strong>
-                            <span id="weekly-avg-sleep" class="text-[9.5px] text-zinc-500 block">priemer 7d</span>
-                        </div>
+                        <div class="card-surface p-2.5 text-center"><span class="text-[9.5px] font-bold uppercase text-zinc-400 block">Priemer váhy (7d)</span><strong id="weekly-last-weight" class="text-sm font-black text-white mt-0.5 block">— kg</strong><span id="weekly-weight-delta" class="text-[9.5px] text-zinc-500 block"></span></div>
+                        <div class="card-surface p-2.5 text-center"><span class="text-[9.5px] font-bold uppercase text-zinc-400 block">Priemer stravy (7d)</span><strong id="weekly-avg-kcal" class="text-sm font-black text-sky-300 mt-0.5 block">—</strong><span id="weekly-avg-prot" class="text-[9.5px] text-zinc-500 block"></span></div>
+                        <div class="card-surface p-2.5 text-center"><span class="text-[9.5px] font-bold uppercase text-zinc-400 block">Energia / Spánok</span><strong id="weekly-avg-energy" class="text-sm font-black text-amber-400 mt-0.5 block">— / —</strong></div>
                     </div>
 
                     <div class="card-surface p-4 space-y-3.5">
@@ -484,14 +497,13 @@
                     <div id="body-checkin-history" class="space-y-2.5"></div>
                 </div>
 
-                <!-- REŽIM 2: TÝŽDENNÝ CHECK-IN -->
                 <div id="body-panel-weekly" class="hidden space-y-3.5">
                     <div class="card-surface p-4 space-y-3.5">
                         <h3 class="text-sm font-extrabold text-white">Týždenný Check-in & Obvody</h3>
                         <div class="bg-dark-950/70 border border-zinc-800 rounded-2xl p-3 space-y-2.5">
                             <div class="flex items-center justify-between gap-2">
                                 <div class="text-[11px] font-extrabold uppercase tracking-wider text-brand-400">1. Váha a telesné obvody</div>
-                                <button type="button" onclick="toggleMeasureGuide('all')" class="text-[10px] font-extrabold text-sky-400 bg-dark-850 border border-zinc-800 px-2 py-0.5 rounded-md">Ako merať?</button>
+                                <button type="button" onclick="toggleMeasureGuide()" class="text-[10px] font-extrabold text-sky-400 bg-dark-850 border border-zinc-800 px-2 py-0.5 rounded-md">Ako merať?</button>
                             </div>
                             <div id="measure-guide-box" class="hidden bg-dark-900 border border-zinc-800 rounded-xl p-2.5 text-[11px] text-zinc-200 space-y-1 leading-relaxed"></div>
                             <div class="grid grid-cols-3 gap-2">
@@ -1098,7 +1110,7 @@
                 <label class="w-full py-2.5 px-4 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-200 font-bold text-xs flex items-center justify-center cursor-pointer"><span>Obnoviť dáta zo súboru (.JSON)</span><input type="file" accept=".json" onchange="importDataJSON(event)" class="hidden"></label>
             </div>
             <div class="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
-                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.6.0</span></span>
+                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.7.0</span></span>
                 <button type="button" onclick="logoutTesterCode()" class="px-3 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-bold">Odhlásiť kód</button>
             </div>
         </div>
@@ -1274,9 +1286,32 @@
 
     <script>
         // =====================================================================
+        // VEKTOROVÉ SVG IKONY (100% VIDITEĽNÉ NA VŠETKÝCH DISPLEJOCH)
+        // =====================================================================
+        function svgIcon(name, cls = 'w-4 h-4') {
+            const icons = {
+                'chev-d': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>',
+                'chev-u': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>',
+                'arr-u': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>',
+                'arr-d': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>',
+                'arr-r': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>',
+                'swap': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>',
+                'copy': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>',
+                'send': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>',
+                'trash': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>',
+                'close': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>',
+                'ok': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>',
+                'plus': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>',
+                'minus': '<svg class="' + cls + '" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/></svg>',
+                'play': '<svg class="' + cls + '" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>'
+            };
+            return icons[name] || '';
+        }
+
+        // =====================================================================
         // SUPABASE CLOUD PREPOJENIE, ROLE, AUTO-SYNC & AUTO-UPDATE
         // =====================================================================
-        const APP_VERSION = '2.6.0';
+        const APP_VERSION = '2.7.0';
         const SUPABASE_URL = 'https://gfmiyksnjimznbussdia.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmbWl5a3Nuamltem5idXNzZGlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxNzY2MjQsImV4cCI6MjExMDc1MjYyNH0.3PSwWSSmkNyvO_rQTWjQe3hz4zlcU-AFPUSU9hasCcM';
 
@@ -2433,7 +2468,7 @@
                         <div class="text-xs font-extrabold text-sky-300">Progres konkrétneho cviku (klikni pre graf + RIR)</div>
                         ${uniqueExercises.length === 0 ? `<div class="text-[11px] text-zinc-500">Zatiaľ bez zaznamenaných cvikov.</div>` : `
                             <div class="flex flex-wrap gap-1.5">
-                                ${uniqueExercises.map(exName => `<button type="button" onclick="openClientExerciseProgressInCockpit('${selectedCode}', '${exName.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-xs font-bold text-white">${exName}</button>`).join('')}
+                                ${uniqueExercises.map(exName => `<button type="button" onclick="openClientExerciseProgressInCockpit('${selectedCode}', '${exName.replace(/'/g, '&#39;')}')" class="px-2.5 py-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-xs font-bold text-white">${exName}</button>`).join('')}
                             </div>
                         `}
                     </div>
@@ -2449,7 +2484,7 @@
                 body.innerHTML = workouts.map(w => {
                     const p = w.payload || {};
                     const exList = p.exercises || [];
-                    return `<div class="card-surface p-3.5 space-y-2"><div class="flex items-start justify-between gap-2"><div><span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-brand-500/15 text-brand-400">${p.testerName || w.tester_code}</span><h4 class="text-sm font-extrabold text-white mt-1">${p.title || 'Tréning'}</h4></div><div class="text-right text-[10.5px] text-zinc-400"><div>${p.date || ''}</div><div class="text-amber-400 font-bold">${formatVolumeKg(p.totalVolume || 0)}</div></div></div><div class="space-y-1.5">${exList.map(ex => `<div onclick="openClientExerciseProgressInCockpit('${w.tester_code}', '${ex.name.replace(/'/g, "\\'")}')" class="cursor-pointer subcard-surface p-2 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[10.5px] text-zinc-400 truncate">${(ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(' | ')}</div>${ex.note ? `<div class="text-[10px] text-amber-300 truncate mt-0.5">Poznámka: ${ex.note}</div>` : ''}</div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}</div></div>`;
+                    return `<div class="card-surface p-3.5 space-y-2"><div class="flex items-start justify-between gap-2"><div><span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-brand-500/15 text-brand-400">${p.testerName || w.tester_code}</span><h4 class="text-sm font-extrabold text-white mt-1">${p.title || 'Tréning'}</h4></div><div class="text-right text-[10.5px] text-zinc-400"><div>${p.date || ''}</div><div class="text-amber-400 font-bold">${formatVolumeKg(p.totalVolume || 0)}</div></div></div><div class="space-y-1.5">${exList.map(ex => `<div onclick="openClientExerciseProgressInCockpit('${w.tester_code}', '${ex.name.replace(/'/g, '&#39;')}')" class="cursor-pointer subcard-surface p-2 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[10.5px] text-zinc-400 truncate">${(ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(' | ')}</div>${ex.note ? `<div class="text-[10px] text-amber-300 truncate mt-0.5">Poznámka: ${ex.note}</div>` : ''}</div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}</div></div>`;
                 }).join('');
             } else if (cockpitActiveTab === 'logs') {
                 const combined = filteredLogs.filter(l => ['nutrition_log', 'morning_checkin', 'weekly_checkin'].includes(l.log_type));
@@ -4704,7 +4739,8 @@
             container.innerHTML = filtered.map(split => {
                 const isOpen = expandedSplitIds.has(split.id);
                 const exCount = split.blocks.reduce((acc, b) => acc + (b.type === 'superset' ? 2 : 1), 0);
-                const previewNames = split.blocks.slice(0, 3).map(b => exercises.find(e => e.id === b.exerciseId)?.name.split('(')[0].trim() || '').filter(Boolean).join(', ');
+                const setsCount = split.blocks.reduce((acc, b) => acc + (parseInt(b.sets) || 3) * (b.type === 'superset' ? 2 : 1), 0);
+                const previewNames = split.blocks.slice(0, 3).map(b => exercises.find(e => e.id === b.exerciseId)?.name.split('(')[0].trim() || '').filter(Boolean).join(' • ');
 
                 const blocksHtml = isOpen ? split.blocks.map((block, idx) => {
                     const ex1 = exercises.find(e => e.id === block.exerciseId);
@@ -4717,25 +4753,200 @@
                 }).join('') : '';
 
                 return `
-                    <div class="card-surface p-3.5 space-y-2.5">
-                        <div class="flex items-start justify-between gap-2">
-                            <div onclick="toggleSplitCardExpand('${split.id}')" class="cursor-pointer min-w-0 flex-1">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-[10px] font-extrabold uppercase text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded">${split.tag}</span>
-                                    <span class="text-[10px] text-zinc-500 font-bold">${exCount} cvikov</span>
+                    <div class="card-surface p-3.5 space-y-3">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <span class="text-[10px] font-extrabold uppercase text-brand-400 bg-brand-500/10 border border-brand-500/25 px-2 py-0.5 rounded-md shrink-0">${split.tag}</span>
+                                    <span class="text-[11px] text-zinc-400 font-semibold truncate">${exCount} cvikov • ${setsCount} sérií</span>
                                 </div>
-                                <h3 class="text-sm font-extrabold text-white mt-1 truncate">${split.name}</h3>
-                                ${!isOpen ? `<p class="text-[11px] text-zinc-400 truncate mt-0.5">${previewNames}...</p>` : ''}
+                                <div class="flex items-center gap-1 shrink-0">
+                                    <button type="button" onclick="duplicateSplit('${split.id}')" title="Skopírovať split" class="w-8 h-8 rounded-lg bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-sky-300 flex items-center justify-center">${svgIcon('copy', 'w-3.5 h-3.5')}</button>
+                                    ${coach ? `<button type="button" onclick="openSendSplitModal('${split.id}')" title="Odoslať klientom" class="w-8 h-8 rounded-lg bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/35 text-amber-300 flex items-center justify-center">${svgIcon('send', 'w-3.5 h-3.5')}</button>` : ''}
+                                    ${!split.isPreset ? `<button type="button" onclick="deleteSplit('${split.id}')" title="Zmazať split" class="w-8 h-8 rounded-lg bg-dark-850 hover:bg-rose-500/15 border border-zinc-800 text-zinc-400 hover:text-rose-400 flex items-center justify-center">${svgIcon('trash', 'w-3.5 h-3.5')}</button>` : ''}
+                                </div>
                             </div>
-                            <div class="flex items-center gap-1 shrink-0 flex-wrap justify-end">
-                                <button type="button" onclick="toggleSplitCardExpand('${split.id}')" class="px-2 py-1.5 rounded-lg bg-dark-850 border border-zinc-800 text-zinc-300 text-[11px] font-bold">${isOpen ? 'Skryť ▲' : 'Cviky ▼'}</button>
-                                <button type="button" onclick="duplicateSplit('${split.id}')" title="Skopírovať split" class="px-2 py-1.5 rounded-lg bg-dark-850 border border-zinc-800 text-sky-300 text-[11px] font-bold">Duplikovať</button>
-                                ${coach ? `<button type="button" onclick="openSendSplitModal('${split.id}')" class="px-2 py-1.5 rounded-lg bg-amber-400/15 border border-amber-400/35 text-amber-300 text-[11px] font-extrabold">Odoslať</button>` : ''}
-                                ${!split.isPreset ? `<button type="button" onclick="deleteSplit('${split.id}')" class="p-1.5 rounded-lg bg-dark-850 text-zinc-500 hover:text-rose-400">✕</button>` : ''}
+                            <div onclick="toggleSplitCardExpand('${split.id}')" class="cursor-pointer">
+                                <h3 class="text-sm sm:text-base font-extrabold text-white leading-snug">${split.name}</h3>
+                                ${!isOpen ? `<p class="text-[11px] text-zinc-400 truncate mt-0.5">${previewNames}</p>` : ''}
                             </div>
                         </div>
-                        ${isOpen ? `<div class="space-y-1.5 pt-1 border-t border-zinc-800/80">${blocksHtml}</div>` : ''}
-                        <button type="button" onclick="startWorkoutFromSplit('${split.id}')" class="w-full py-2.5 rounded-xl bg-brand-500 text-zinc-950 font-extrabold text-xs">Spustiť tréning →</button>
+
+                        ${isOpen ? `<div class="space-y-1.5 pt-2 border-t border-zinc-800/80">${blocksHtml}</div>` : ''}
+
+                        <div class="grid grid-cols-12 gap-2 pt-0.5">
+                            <button type="button" onclick="toggleSplitCardExpand('${split.id}')" class="col-span-4 py-2.5 px-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-200 font-bold text-xs flex items-center justify-center gap-1 transition">
+                                <span>${isOpen ? 'Skryť' : 'Cviky'}</span>
+                                ${isOpen ? svgIcon('chev-u', 'w-3.5 h-3.5') : svgIcon('chev-d', 'w-3.5 h-3.5')}
+                            </button>
+                            <button type="button" onclick="startWorkoutFromSplit('${split.id}')" class="col-span-8 py-2.5 px-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-zinc-950 font-extrabold text-xs flex items-center justify-center gap-1.5 transition">
+                                ${svgIcon('play', 'w-3.5 h-3.5')}
+                                <span>Spustiť tréning</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function saveWorkoutToHistory() {
+            if (activeWorkout.length === 0) return;
+            stopRestTimer();
+            const title = document.getElementById('workout-title').value.trim() || 'Tréning';
+            const totalVolume = calculateTotalVolume(activeWorkout);
+            const prof = getActiveProfile();
+            const dateStr = new Date().toLocaleDateString('sk-SK', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const durationMin = workoutStartTime ? Math.max(1, Math.round((Date.now() - workoutStartTime) / 60000)) : 0;
+            const snapshotExercises = JSON.parse(JSON.stringify(activeWorkout));
+
+            const existingIdx = editingHistoryId ? workoutHistory.findIndex(w => w.id === editingHistoryId) : -1;
+            if (existingIdx >= 0) {
+                const prev = workoutHistory[existingIdx];
+                workoutHistory[existingIdx] = { ...prev, title, totalVolume, durationMin: Math.max(prev.durationMin || 0, durationMin), readiness: { ...preWorkoutReadiness }, exercises: snapshotExercises };
+            } else {
+                workoutHistory.unshift({ id: 'workout-' + Date.now(), profileId: prof.id, profileName: prof.name, title, date: dateStr, durationMin, totalVolume, readiness: { ...preWorkoutReadiness }, exercises: snapshotExercises });
+            }
+
+            editingHistoryId = null; activeWorkout = []; expandedExerciseIndex = 0; workoutStartTime = null;
+            localStorage.removeItem('fitlog_workout_start');
+            document.getElementById('workout-title').value = 'Dnešný tréning';
+            saveWorkoutMeta(); saveState(); renderActiveWorkout(); renderDatabase(); renderHistory(); switchTab('history');
+            sendCloudTesterLog('workout_completed', { title, date: dateStr, durationMin, totalVolume, exercisesCount: snapshotExercises.length, exercises: snapshotExercises });
+            showToast(`Uložené (${formatVolumeKg(totalVolume)}) ✓`);
+        }
+
+        // Zopakovanie ukončeného tréningu ako nového dnešného tréningu (pôvodný v histórii ostáva)
+        function repeatWorkoutFromHistory(workoutId) {
+            const w = workoutHistory.find(x => x.id === workoutId);
+            if (!w) return;
+            editingHistoryId = null;
+            activeWorkout = (w.exercises || []).map(ex => ({
+                exerciseId: ex.exerciseId,
+                name: ex.name,
+                category: ex.category,
+                supersetGroup: ex.supersetGroup || undefined,
+                supersetLabel: ex.supersetLabel || undefined,
+                note: '',
+                prevNote: ex.note || '',
+                sets: (ex.sets || []).map(s => ({
+                    mode: s.mode || 'reps',
+                    weight: '',
+                    reps: '',
+                    prevWeight: s.weight || s.prevWeight || '',
+                    prevReps: s.reps || s.prevReps || '',
+                    duration: s.duration || 45,
+                    rir: s.rir ?? 2,
+                    technique: s.technique || 'standard',
+                    completed: false
+                }))
+            }));
+            expandedExerciseIndex = 0;
+            workoutStartTime = Date.now();
+            localStorage.setItem('fitlog_workout_start', workoutStartTime.toString());
+            document.getElementById('workout-title').value = w.title || 'Dnešný tréning';
+            saveWorkoutMeta();
+            saveState();
+            renderActiveWorkout();
+            switchAppDomain('training');
+            switchTab('workout');
+            showToast('Tréning pripravený na dnes ✓');
+        }
+
+        function reopenWorkoutFromHistory(workoutId) {
+            const w = workoutHistory.find(x => x.id === workoutId);
+            if (!w) return;
+            editingHistoryId = w.id;
+            activeWorkout = JSON.parse(JSON.stringify(w.exercises || []));
+            expandedExerciseIndex = Math.max(0, activeWorkout.length - 1);
+            workoutStartTime = Date.now() - ((w.durationMin || 0) * 60000);
+            localStorage.setItem('fitlog_workout_start', workoutStartTime.toString());
+            document.getElementById('workout-title').value = w.title || 'Tréning';
+            saveWorkoutMeta(); saveState(); renderActiveWorkout(); switchAppDomain('training'); switchTab('workout');
+        }
+
+        function shareWorkoutReport(workoutId) {
+            const w = workoutHistory.find(x => x.id === workoutId);
+            if (!w) return;
+            const vol = w.totalVolume !== undefined ? w.totalVolume : calculateTotalVolume(w.exercises || []);
+            let report = `MM LAB – Report\nMeno: ${w.profileName || getActiveProfile().name}\nDátum: ${w.date} | Objem: ${formatVolumeKg(vol)}\nTréning: ${w.title}\n------------------------\n`;
+            (w.exercises || []).forEach((ex, i) => {
+                const setsStr = (ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(', ');
+                report += `${i + 1}. ${ex.name}: ${setsStr}${ex.note ? ` [${ex.note}]` : ''}\n`;
+            });
+            copyTextToClipboard(report, 'Report skopírovaný ✓');
+        }
+
+        function deleteHistoryRecord(workoutId) {
+            workoutHistory = workoutHistory.filter(w => w.id !== workoutId);
+            saveState();
+            renderHistory();
+            renderDatabase();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('history-list');
+            const badge = document.getElementById('history-count-badge');
+            const prCard = document.getElementById('history-pr-card');
+            const prGrid = document.getElementById('history-pr-grid');
+            if (!container) return;
+
+            const list = workoutHistory.filter(w => (w.profileId || 'me') === activeProfileId);
+            if (badge) badge.textContent = `${list.length}`;
+
+            const prMap = {};
+            list.forEach(w => {
+                (w.exercises || []).forEach(ex => {
+                    (ex.sets || []).forEach(s => {
+                        const weight = parseFloat(s.weight) || 0;
+                        const reps = parseInt(s.reps) || 1;
+                        if (s.mode !== 'time' && weight > 0) {
+                            const est1RM = Math.round(weight * (1 + reps / 30));
+                            if (!prMap[ex.exerciseId] || est1RM > prMap[ex.exerciseId].est1RM) {
+                                prMap[ex.exerciseId] = { name: ex.name, est1RM, weight, reps };
+                            }
+                        }
+                    });
+                });
+            });
+            const topPRs = Object.values(prMap).sort((a, b) => b.est1RM - a.est1RM).slice(0, 6);
+            if (prCard && prGrid) {
+                if (topPRs.length === 0) {
+                    prCard.classList.add('hidden');
+                } else {
+                    prCard.classList.remove('hidden');
+                    prGrid.innerHTML = topPRs.map(pr => `
+                        <div class="subcard-surface p-2">
+                            <div class="text-[10.5px] font-bold text-white truncate">${pr.name.split('(')[0].trim()}</div>
+                            <div class="text-xs font-black text-amber-400 mt-0.5">${pr.est1RM} kg <span class="text-[10px] font-normal text-zinc-400">(${pr.weight}×${pr.reps})</span></div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 px-4 card-surface border-dashed text-xs text-zinc-400">Zatiaľ žiadne uložené tréningy.</div>`;
+                return;
+            }
+            container.innerHTML = list.map(w => {
+                const vol = w.totalVolume !== undefined ? w.totalVolume : calculateTotalVolume(w.exercises || []);
+                return `
+                    <div class="card-surface p-4 space-y-3">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap"><span class="text-[11px] font-bold text-zinc-400">${w.date}</span>${vol > 0 ? `<span class="text-[10px] font-extrabold bg-amber-500/15 text-amber-400 px-2 py-0.5 rounded">${formatVolumeKg(vol)}</span>` : ''}</div>
+                                <h3 class="text-sm font-extrabold text-white mt-1">${w.title}</h3>
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+                                <button type="button" onclick="repeatWorkoutFromHistory('${w.id}')" class="px-2.5 py-1 rounded-lg bg-brand-500 text-zinc-950 text-[11px] font-extrabold">Zopakovať dnes</button>
+                                <button type="button" onclick="reopenWorkoutFromHistory('${w.id}')" class="px-2 py-1 rounded-lg bg-dark-850 border border-zinc-800 text-amber-300 text-[11px] font-bold">Upraviť</button>
+                                <button type="button" onclick="exportWorkoutToTCX('${w.id}')" class="px-2 py-1 rounded-lg bg-dark-850 border border-zinc-800 text-sky-300 text-[11px] font-bold">.TCX</button>
+                                <button type="button" onclick="shareWorkoutReport('${w.id}')" class="px-2 py-1 rounded-lg bg-brand-500/15 text-brand-400 text-[11px] font-bold">Report</button>
+                                <button type="button" onclick="deleteHistoryRecord('${w.id}')" class="p-1 text-zinc-500 hover:text-rose-400">✕</button>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            ${(w.exercises || []).map(ex => `<div onclick="openExerciseDetailModal('${ex.exerciseId}')" class="cursor-pointer subcard-surface p-2.5 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[11px] text-zinc-400 mt-0.5">${(ex.sets || []).map(s => `${s.weight ? s.weight + ' kg' : 'BW'} × ${s.mode === 'time' ? formatDuration(s.duration) : s.reps + '×'} (RIR ${s.rir})`).join(' | ')}</div>${ex.note ? `<div class="text-[10px] text-amber-300 mt-0.5">Poznámka: ${ex.note}</div>` : ''}</div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -4899,7 +5110,7 @@
             const name = document.getElementById('split-builder-name').value.trim();
             if (!name || draftSplitBlocks.length === 0) return;
             savedSplits.unshift({ id: 'split-' + Date.now(), name, tag: document.getElementById('split-builder-tag').value, isPreset: false, blocks: [...draftSplitBlocks] });
-            saveState(); renderSplits(); closeSplitBuilderModal();
+            saveState(); renderSplits(); closeSplitBuilderModal(); showToast('Split uložený ✓');
         }
 
         function selectExerciseCat(catId) {
@@ -4919,7 +5130,7 @@
                 if (list.length === 0) return '';
                 return `<div class="space-y-2"><div class="flex items-center justify-between px-1"><h3 class="text-xs font-extrabold uppercase tracking-wider text-brand-400">${cat.name}</h3><span class="text-[11px] text-zinc-500">${list.length}</span></div><div class="space-y-2">${list.map(ex => {
                     const lastPerf = getLastPerformance(ex.id);
-                    return `<div class="card-surface p-3 flex items-center justify-between gap-2.5"><div onclick="openExerciseDetailModal('${ex.id}')" class="cursor-pointer min-w-0 flex-1"><h4 class="text-xs sm:text-sm font-bold text-white leading-snug truncate">${ex.name}</h4><div class="mt-0.5">${lastPerf ? `<span class="text-[10px] font-bold text-amber-400">Naposledy: ${lastPerf.headline}</span>` : `<span class="text-[10px] text-zinc-500">Technika & Graf →</span>`}</div></div><button type="button" onclick="addExerciseToWorkout('${ex.id}')" class="bg-brand-500/15 hover:bg-brand-500 text-brand-400 hover:text-zinc-950 border border-brand-500/30 font-extrabold text-xs px-3 py-2 rounded-xl shrink-0">+ Pridať</button></div>`;
+                    return `<div class="card-surface p-3 flex items-center justify-between gap-2.5"><div onclick="openExerciseDetailModal('${ex.id}')" class="cursor-pointer min-w-0 flex-1"><h4 class="text-xs sm:text-sm font-bold text-white leading-snug">${ex.name}</h4><div class="mt-0.5">${lastPerf ? `<span class="text-[10px] font-bold text-amber-400">Naposledy: ${lastPerf.headline}</span>` : `<span class="text-[10px] text-zinc-500">Technika & Graf →</span>`}</div></div><button type="button" onclick="addExerciseToWorkout('${ex.id}')" class="bg-brand-500/15 hover:bg-brand-500 text-brand-400 hover:text-zinc-950 border border-brand-500/30 font-extrabold text-xs px-3 py-2 rounded-xl shrink-0">+ Pridať</button></div>`;
                 }).join('')}</div></div>`;
             }).join('');
         }
@@ -4946,7 +5157,6 @@
         }
         function setExpandedExercise(idx) { expandedExerciseIndex = idx; saveState(); renderActiveWorkout(); }
 
-        // Zmena poradia cvikov (hore/dole) v aktívnom tréningu
         function moveWorkoutBlock(firstIdx, direction) {
             const blocks = [];
             for (let i = 0; i < activeWorkout.length; i++) {
@@ -4958,93 +5168,84 @@
                     blocks.push([cur]);
                 }
             }
-            let targetBlockIdx = -1, runningIdx = 0;
+            let running = 0, bIdx = -1;
             for (let b = 0; b < blocks.length; b++) {
-                if (runningIdx === firstIdx) { targetBlockIdx = b; break; }
-                runningIdx += blocks[b].length;
+                if (running === firstIdx) { bIdx = b; break; }
+                running += blocks[b].length;
             }
-            const swapWithIdx = targetBlockIdx + direction;
-            if (targetBlockIdx < 0 || swapWithIdx < 0 || swapWithIdx >= blocks.length) return;
-            const temp = blocks[targetBlockIdx];
-            blocks[targetBlockIdx] = blocks[swapWithIdx];
-            blocks[swapWithIdx] = temp;
+            const targetBIdx = bIdx + direction;
+            if (bIdx < 0 || targetBIdx < 0 || targetBIdx >= blocks.length) return;
+            const movedBlock = blocks.splice(bIdx, 1)[0];
+            blocks.splice(targetBIdx, 0, movedBlock);
             activeWorkout = blocks.flat();
-            let newFirstIdx = 0;
-            for (let b = 0; b < swapWithIdx; b++) newFirstIdx += blocks[b].length;
-            expandedExerciseIndex = newFirstIdx;
+            expandedExerciseIndex = activeWorkout.indexOf(movedBlock[0]);
             saveState();
             renderActiveWorkout();
-            showToast('Poradie cvikov upravené ✓');
         }
 
-        // Rýchla výmena cviku za iný (napr. šikmé JČ -> šikmý bench)
-        let swappingExerciseIndex = null;
+        let swapExerciseTargetIdx = null;
         function openSwapExerciseModal(exIdx) {
-            const ex = activeWorkout[exIdx];
-            if (!ex) return;
-            swappingExerciseIndex = exIdx;
-            document.getElementById('swap-ex-current-label').textContent = `Nahradiť: ${ex.name}`;
-            const searchInp = document.getElementById('swap-ex-search');
-            if (searchInp) searchInp.value = '';
+            const cur = activeWorkout[exIdx];
+            if (!cur) return;
+            swapExerciseTargetIdx = exIdx;
+            document.getElementById('swap-ex-current-label').textContent = `Nahradiť: ${cur.name}`;
+            const searchEl = document.getElementById('swap-ex-search');
+            if (searchEl) searchEl.value = '';
             renderSwapExerciseList();
             document.getElementById('modal-swap-exercise').classList.remove('hidden');
         }
         function closeSwapExerciseModal() {
-            swappingExerciseIndex = null;
+            swapExerciseTargetIdx = null;
             document.getElementById('modal-swap-exercise').classList.add('hidden');
         }
         function renderSwapExerciseList() {
             const listEl = document.getElementById('swap-ex-list');
-            if (!listEl || swappingExerciseIndex === null) return;
-            const currentEx = activeWorkout[swappingExerciseIndex];
+            if (!listEl || swapExerciseTargetIdx === null) return;
+            const cur = activeWorkout[swapExerciseTargetIdx];
             const q = (document.getElementById('swap-ex-search')?.value || '').toLowerCase().trim();
-            const sameCat = exercises.filter(e => e.category === currentEx.category && e.id !== currentEx.exerciseId && (!q || e.name.toLowerCase().includes(q)));
-            const otherCat = exercises.filter(e => e.category !== currentEx.category && e.id !== currentEx.exerciseId && (!q || e.name.toLowerCase().includes(q)));
-            const combined = [...sameCat, ...otherCat].slice(0, 40);
-
-            if (combined.length === 0) {
-                listEl.innerHTML = `<div class="text-center py-6 text-xs text-zinc-500">Žiadny zodpovedajúci cvik.</div>`;
-                return;
-            }
-            listEl.innerHTML = combined.map(ex => {
-                const isSameCat = ex.category === currentEx.category;
+            const sorted = [...exercises]
+                .filter(e => e.id !== cur?.exerciseId && (!q || e.name.toLowerCase().includes(q)))
+                .sort((a, b) => (a.category === cur?.category ? -1 : 1) - (b.category === cur?.category ? -1 : 1));
+            listEl.innerHTML = sorted.map(ex => {
+                const catName = CATEGORIES.find(c => c.id === ex.category)?.name || '';
                 const lastPerf = getLastPerformance(ex.id);
                 return `
-                    <div onclick="confirmSwapExercise('${ex.id}')" class="cursor-pointer subcard-surface hover:border-brand-500/50 p-3 flex items-center justify-between gap-2 transition">
+                    <div onclick="confirmSwapExercise('${ex.id}')" class="cursor-pointer subcard-surface hover:border-brand-500 p-3 flex items-center justify-between gap-2 transition">
                         <div class="min-w-0">
-                            <div class="text-xs font-extrabold text-white truncate">${ex.name}</div>
-                            <div class="text-[10px] ${isSameCat ? 'text-brand-400' : 'text-zinc-500'} mt-0.5">${isSameCat ? 'Rovnaká partia' : 'Iná partia'}${lastPerf ? ` • Minule: ${lastPerf.headline}` : ''}</div>
+                            <span class="text-[9.5px] font-bold uppercase text-brand-400">${catName}</span>
+                            <div class="text-xs font-bold text-white truncate">${ex.name}</div>
+                            ${lastPerf ? `<div class="text-[10px] text-amber-400 mt-0.5">Naposledy: ${lastPerf.headline}</div>` : ''}
                         </div>
-                        <span class="px-2.5 py-1 rounded-lg bg-brand-500/15 text-brand-400 font-extrabold text-[11px] shrink-0">Zvoliť</span>
+                        <span class="text-[11px] font-extrabold text-brand-400 shrink-0">Vybrať</span>
                     </div>
                 `;
             }).join('');
         }
-        function confirmSwapExercise(newExId) {
-            if (swappingExerciseIndex === null) return;
-            const target = activeWorkout[swappingExerciseIndex];
-            const newEx = exercises.find(e => e.id === newExId);
-            if (!target || !newEx) return;
+        function confirmSwapExercise(newExerciseId) {
+            if (swapExerciseTargetIdx === null || !activeWorkout[swapExerciseTargetIdx]) return;
+            const newEx = exercises.find(e => e.id === newExerciseId);
+            if (!newEx) return;
+            const oldItem = activeWorkout[swapExerciseTargetIdx];
             const lastPerf = getLastPerformance(newEx.id);
-            target.exerciseId = newEx.id;
-            target.name = newEx.name;
-            target.category = newEx.category;
-            target.prevNote = lastPerf?.note || '';
-            target.sets = target.sets.map((s, i) => {
+            oldItem.exerciseId = newEx.id;
+            oldItem.name = newEx.name;
+            oldItem.category = newEx.category;
+            oldItem.prevNote = lastPerf?.note || '';
+            oldItem.sets = oldItem.sets.map((s, i) => {
                 const prev = lastPerf?.sets[i];
-                return {
-                    ...s,
-                    mode: newEx.defaultMode || s.mode,
-                    prevWeight: prev ? prev.weight : '',
-                    prevReps: prev ? prev.reps : ''
-                };
+                return { ...s, prevWeight: prev ? prev.weight : '', prevReps: prev ? prev.reps : '' };
             });
             saveState();
             closeSwapExerciseModal();
             renderActiveWorkout();
-            showToast(`Vymenené za: ${newEx.name} ✓`);
+            showToast(`Nahradené: ${newEx.name} ✓`);
         }
 
+        function updateExerciseNote(exIdx, noteVal) {
+            if (!activeWorkout[exIdx]) return;
+            activeWorkout[exIdx].note = noteVal;
+            saveState();
+        }
         function removeExerciseFromWorkout(exIdx) {
             const target = activeWorkout[exIdx];
             if (target?.supersetGroup) activeWorkout = activeWorkout.filter(item => item.supersetGroup !== target.supersetGroup);
@@ -5074,11 +5275,6 @@
             if (setCountEl) setCountEl.textContent = totalSets;
             if (volEl) volEl.textContent = formatVolumeKg(calculateTotalVolume(activeWorkout));
             if (finishBtn) finishBtn.classList.toggle('hidden', activeWorkout.length === 0);
-        }
-        function updateExerciseNote(exIdx, val) {
-            if (!activeWorkout[exIdx]) return;
-            activeWorkout[exIdx].note = val;
-            saveState();
         }
         function updateSetField(exIdx, setIdx, field, value) {
             if (!activeWorkout[exIdx]?.sets[setIdx]) return;
@@ -5237,19 +5433,21 @@
 
                     return `
                         <div class="card-surface border-2 border-purple-500/60 p-4 space-y-3.5">
-                            <div class="flex items-start justify-between gap-2">
-                                <div class="min-w-0"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">SUPERSÉRIA</span><h3 class="text-sm font-extrabold text-white mt-1">A1: ${a1.ex.name}</h3><h3 class="text-sm font-extrabold text-purple-200">A2: ${a2.ex.name}</h3></div>
-                                <div class="flex items-center gap-1 shrink-0">
-                                    ${bIdx > 0 ? `<button type="button" onclick="moveWorkoutBlock(${firstIdx}, -1)" title="Posunúť vyššie" class="p-1.5 rounded-xl bg-dark-850 text-zinc-300 hover:text-white text-xs font-bold">↑</button>` : ''}
-                                    ${!isLastBlock ? `<button type="button" onclick="moveWorkoutBlock(${firstIdx}, 1)" title="Posunúť nižšie" class="p-1.5 rounded-xl bg-dark-850 text-zinc-300 hover:text-white text-xs font-bold">↓</button>` : ''}
-                                    <button type="button" onclick="removeExerciseFromWorkout(${firstIdx})" class="p-1.5 rounded-xl bg-dark-850 text-zinc-500 hover:text-rose-400">✕</button>
+                            <div class="space-y-2">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div class="min-w-0"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">SUPERSÉRIA</span><h3 class="text-sm font-extrabold text-white mt-1 leading-snug">A1: ${a1.ex.name}</h3><h3 class="text-sm font-extrabold text-purple-200 leading-snug">A2: ${a2.ex.name}</h3></div>
+                                    <button type="button" onclick="removeExerciseFromWorkout(${firstIdx})" title="Odobrať supersériu" class="w-8 h-8 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-400 hover:text-rose-400 flex items-center justify-center shrink-0">${svgIcon('trash', 'w-3.5 h-3.5')}</button>
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    ${bIdx > 0 ? `<button type="button" onclick="moveWorkoutBlock(${firstIdx}, -1)" class="px-2.5 py-1.5 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-300 text-[11px] font-bold flex items-center gap-1">${svgIcon('arr-u', 'w-3 h-3')}<span>Vyššie</span></button>` : ''}
+                                    ${!isLastBlock ? `<button type="button" onclick="moveWorkoutBlock(${firstIdx}, 1)" class="px-2.5 py-1.5 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-300 text-[11px] font-bold flex items-center gap-1">${svgIcon('arr-d', 'w-3 h-3')}<span>Nižšie</span></button>` : ''}
                                 </div>
                             </div>
                             <div class="space-y-3">${roundsHtml}</div>
                             <button type="button" onclick="addSet(${firstIdx})" class="w-full py-2.5 rounded-xl bg-purple-500/15 border border-dashed border-purple-500/40 text-xs font-bold text-purple-200">+ Pridať kolo supersérie</button>
                             <div class="pt-2 border-t border-zinc-800 flex items-center justify-between gap-2">
                                 <span class="text-[11px] text-zinc-400">Blok ${bIdx + 1} z ${blocks.length}</span>
-                                ${!isLastBlock ? `<button type="button" onclick="setExpandedExercise(${nextBlockFirstIdx})" class="bg-brand-500 text-zinc-950 font-extrabold text-xs px-4 py-2 rounded-xl">Ďalší cvik →</button>` : `<button type="button" onclick="saveWorkoutToHistory()" class="bg-brand-500 text-zinc-950 font-extrabold text-xs px-4 py-2 rounded-xl">Dokončiť ✓</button>`}
+                                ${!isLastBlock ? `<button type="button" onclick="setExpandedExercise(${nextBlockFirstIdx})" class="bg-brand-500 text-zinc-950 font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1"><span>Ďalší cvik</span>${svgIcon('arr-r', 'w-3.5 h-3.5')}</button>` : `<button type="button" onclick="saveWorkoutToHistory()" class="bg-brand-500 text-zinc-950 font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1">${svgIcon('ok', 'w-3.5 h-3.5')}<span>Dokončiť</span></button>`}
                             </div>
                         </div>
                     `;
@@ -5263,7 +5461,7 @@
                 if (!isExpanded) {
                     const maxW = Math.max(...ex.sets.map(s => parseFloat(s.weight) || 0));
                     const best = maxW > 0 ? `max ${maxW} kg` : '';
-                    return `<div onclick="setExpandedExercise(${exIdx})" class="cursor-pointer card-surface ${allDone ? 'border-brand-500/40' : ''} px-3.5 py-2.5 flex items-center justify-between gap-2.5"><div class="flex items-center gap-2.5 min-w-0"><div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-extrabold shrink-0 ${allDone ? 'bg-brand-500 text-zinc-950' : 'bg-dark-850 text-zinc-300 border border-zinc-800'}">${allDone ? '✓' : bIdx + 1}</div><div class="min-w-0"><h4 class="text-xs sm:text-sm font-bold text-white truncate">${ex.name}</h4><div class="text-[11px] text-zinc-400">${doneCount}/${ex.sets.length} sérií ${best ? `• <span class="text-amber-400">${best}</span>` : ''}</div></div></div><span class="text-xs font-bold text-brand-400 shrink-0">Otvoriť →</span></div>`;
+                    return `<div onclick="setExpandedExercise(${exIdx})" class="cursor-pointer card-surface ${allDone ? 'border-brand-500/40' : ''} px-3.5 py-2.5 flex items-center justify-between gap-2.5"><div class="flex items-center gap-2.5 min-w-0"><div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-extrabold shrink-0 ${allDone ? 'bg-brand-500 text-zinc-950' : 'bg-dark-850 text-zinc-300 border border-zinc-800'}">${allDone ? '✓' : bIdx + 1}</div><div class="min-w-0"><h4 class="text-xs sm:text-sm font-bold text-white truncate">${ex.name}</h4><div class="text-[11px] text-zinc-400">${doneCount}/${ex.sets.length} sérií ${best ? `• <span class="text-amber-400">${best}</span>` : ''}</div></div></div><span class="text-xs font-bold text-brand-400 shrink-0 flex items-center gap-0.5"><span>Otvoriť</span>${svgIcon('arr-r', 'w-3.5 h-3.5')}</span></div>`;
                 }
 
                 const lastPerf = getLastPerformance(ex.exerciseId);
@@ -5273,15 +5471,20 @@
 
                 return `
                     <div class="card-surface border-2 border-brand-500/60 p-4 space-y-3.5">
-                        <div class="flex items-start justify-between gap-2">
-                            <div class="min-w-0"><span class="text-[10px] font-extrabold uppercase text-brand-400">${catObj?.name || ''}</span><h3 onclick="openExerciseDetailModal('${ex.exerciseId}')" class="cursor-pointer text-base font-extrabold text-white leading-tight mt-0.5">${ex.name}</h3></div>
-                            <div class="flex items-center gap-1 shrink-0 flex-wrap justify-end">
-                                ${bIdx > 0 ? `<button type="button" onclick="moveWorkoutBlock(${exIdx}, -1)" title="Posunúť vyššie" class="px-2 py-1.5 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-300 text-[10px] font-bold">↑</button>` : ''}
-                                ${!isLastBlock ? `<button type="button" onclick="moveWorkoutBlock(${exIdx}, 1)" title="Posunúť nižšie" class="px-2 py-1.5 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-300 text-[10px] font-bold">↓</button>` : ''}
-                                <button type="button" onclick="openSwapExerciseModal(${exIdx})" title="Vymeniť cvik za iný" class="px-2 py-1.5 rounded-xl bg-dark-850 border border-zinc-800 text-brand-400 text-[10px] font-bold">Vymeniť</button>
-                                <button type="button" onclick="openWarmupModal(${suggestedWarmupW})" class="px-2 py-1.5 rounded-xl bg-dark-850 border border-zinc-800 text-amber-300 text-[10px] font-bold">Rozohriať</button>
-                                <button type="button" onclick="openExerciseDetailModal('${ex.exerciseId}')" class="px-2 py-1.5 rounded-xl bg-dark-850 border border-zinc-800 text-sky-300 text-[10px] font-bold">Graf</button>
-                                <button type="button" onclick="removeExerciseFromWorkout(${exIdx})" class="p-1.5 rounded-xl bg-dark-850 text-zinc-500 hover:text-rose-400">✕</button>
+                        <div class="space-y-2">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-[10px] font-extrabold uppercase text-brand-400">${catObj?.name || ''}</span>
+                                    <h3 onclick="openExerciseDetailModal('${ex.exerciseId}')" class="cursor-pointer text-base font-extrabold text-white leading-snug mt-0.5">${ex.name}</h3>
+                                </div>
+                                <button type="button" onclick="removeExerciseFromWorkout(${exIdx})" title="Odobrať cvik" class="w-8 h-8 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-400 hover:text-rose-400 flex items-center justify-center shrink-0">${svgIcon('trash', 'w-3.5 h-3.5')}</button>
+                            </div>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                ${bIdx > 0 ? `<button type="button" onclick="moveWorkoutBlock(${exIdx}, -1)" title="Posunúť vyššie" class="w-8 h-8 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-200 flex items-center justify-center">${svgIcon('arr-u', 'w-3.5 h-3.5')}</button>` : ''}
+                                ${!isLastBlock ? `<button type="button" onclick="moveWorkoutBlock(${exIdx}, 1)" title="Posunúť nižšie" class="w-8 h-8 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-200 flex items-center justify-center">${svgIcon('arr-d', 'w-3.5 h-3.5')}</button>` : ''}
+                                <button type="button" onclick="openSwapExerciseModal(${exIdx})" class="px-2.5 py-1.5 rounded-xl bg-dark-850 border border-zinc-800 text-brand-400 text-[11px] font-extrabold flex items-center gap-1">${svgIcon('swap', 'w-3.5 h-3.5')}<span>Vymeniť</span></button>
+                                <button type="button" onclick="openWarmupModal(${suggestedWarmupW})" class="px-2.5 py-1.5 rounded-xl bg-dark-850 border border-zinc-800 text-amber-300 text-[11px] font-bold">Rozohriať</button>
+                                <button type="button" onclick="openExerciseDetailModal('${ex.exerciseId}')" class="px-2.5 py-1.5 rounded-xl bg-dark-850 border border-zinc-800 text-sky-300 text-[11px] font-bold">Graf</button>
                             </div>
                         </div>
                         ${lastPerf ? `<div class="subcard-surface p-2.5 text-[11px]"><div class="font-extrabold text-amber-400">Naposledy (${lastPerf.date}): max ${lastPerf.headline}</div><div class="text-[10px] text-zinc-400 mt-0.5">${lastPerf.setsText}</div>${lastPerf.note ? `<div class="text-[10px] text-sky-300 mt-0.5">Poznámka: ${lastPerf.note}</div>` : ''}</div>` : ''}
@@ -5290,160 +5493,7 @@
                         <button type="button" onclick="addSet(${exIdx})" class="w-full py-2.5 rounded-xl bg-dark-850 border border-dashed border-zinc-700 text-xs font-bold text-zinc-300">+ Pridať sériu</button>
                         <div class="pt-2 border-t border-zinc-800 flex items-center justify-between gap-2">
                             <span class="text-[11px] text-zinc-400">Blok ${bIdx + 1} z ${blocks.length}</span>
-                            ${!isLastBlock ? `<button type="button" onclick="setExpandedExercise(${nextBlockFirstIdx})" class="bg-brand-500 text-zinc-950 font-extrabold text-xs px-4 py-2 rounded-xl">Ďalší cvik →</button>` : `<button type="button" onclick="saveWorkoutToHistory()" class="bg-brand-500 text-zinc-950 font-extrabold text-xs px-4 py-2 rounded-xl">Dokončiť ✓</button>`}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function saveWorkoutToHistory() {
-            if (activeWorkout.length === 0) return;
-            stopRestTimer();
-            const title = document.getElementById('workout-title').value.trim() || 'Tréning';
-            const totalVolume = calculateTotalVolume(activeWorkout);
-            const prof = getActiveProfile();
-            const dateStr = new Date().toLocaleDateString('sk-SK', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            const durationMin = workoutStartTime ? Math.max(1, Math.round((Date.now() - workoutStartTime) / 60000)) : 0;
-            const snapshotExercises = JSON.parse(JSON.stringify(activeWorkout));
-
-            const existingIdx = editingHistoryId ? workoutHistory.findIndex(w => w.id === editingHistoryId) : -1;
-            if (existingIdx >= 0) {
-                const prev = workoutHistory[existingIdx];
-                workoutHistory[existingIdx] = { ...prev, title, totalVolume, durationMin: Math.max(prev.durationMin || 0, durationMin), readiness: { ...preWorkoutReadiness }, exercises: snapshotExercises };
-            } else {
-                workoutHistory.unshift({ id: 'workout-' + Date.now(), profileId: prof.id, profileName: prof.name, title, date: dateStr, durationMin, totalVolume, readiness: { ...preWorkoutReadiness }, exercises: snapshotExercises });
-            }
-
-            editingHistoryId = null; activeWorkout = []; expandedExerciseIndex = 0; workoutStartTime = null;
-            localStorage.removeItem('fitlog_workout_start');
-            document.getElementById('workout-title').value = 'Dnešný tréning';
-            saveWorkoutMeta(); saveState(); renderActiveWorkout(); renderDatabase(); renderHistory(); switchTab('history');
-            sendCloudTesterLog('workout_completed', { title, date: dateStr, durationMin, totalVolume, exercisesCount: snapshotExercises.length, exercises: snapshotExercises });
-            showToast(`Uložené (${formatVolumeKg(totalVolume)}) ✓`);
-        }
-
-        // Zopakovanie ukončeného tréningu ako nového dnešného tréningu (pôvodný v histórii ostáva)
-        function repeatWorkoutFromHistory(workoutId) {
-            const w = workoutHistory.find(x => x.id === workoutId);
-            if (!w) return;
-            editingHistoryId = null;
-            activeWorkout = (w.exercises || []).map(ex => ({
-                exerciseId: ex.exerciseId,
-                name: ex.name,
-                category: ex.category,
-                supersetGroup: ex.supersetGroup || undefined,
-                supersetLabel: ex.supersetLabel || undefined,
-                note: '',
-                prevNote: ex.note || '',
-                sets: (ex.sets || []).map(s => ({
-                    mode: s.mode || 'reps',
-                    weight: '',
-                    reps: '',
-                    prevWeight: s.weight || s.prevWeight || '',
-                    prevReps: s.reps || s.prevReps || '',
-                    duration: s.duration || 45,
-                    rir: s.rir ?? 2,
-                    technique: s.technique || 'standard',
-                    completed: false
-                }))
-            }));
-            expandedExerciseIndex = 0;
-            workoutStartTime = Date.now();
-            localStorage.setItem('fitlog_workout_start', workoutStartTime.toString());
-            document.getElementById('workout-title').value = w.title || 'Dnešný tréning';
-            saveWorkoutMeta();
-            saveState();
-            renderActiveWorkout();
-            switchAppDomain('training');
-            switchTab('workout');
-            showToast('Tréning pripravený na dnes ✓');
-        }
-
-        function reopenWorkoutFromHistory(workoutId) {
-            const w = workoutHistory.find(x => x.id === workoutId);
-            if (!w) return;
-            editingHistoryId = w.id;
-            activeWorkout = JSON.parse(JSON.stringify(w.exercises || []));
-            expandedExerciseIndex = Math.max(0, activeWorkout.length - 1);
-            workoutStartTime = Date.now() - ((w.durationMin || 0) * 60000);
-            localStorage.setItem('fitlog_workout_start', workoutStartTime.toString());
-            document.getElementById('workout-title').value = w.title || 'Tréning';
-            saveWorkoutMeta(); saveState(); renderActiveWorkout(); switchAppDomain('training'); switchTab('workout');
-        }
-
-        function shareWorkoutReport(workoutId) {
-            const w = workoutHistory.find(x => x.id === workoutId);
-            if (!w) return;
-            const vol = w.totalVolume !== undefined ? w.totalVolume : calculateTotalVolume(w.exercises || []);
-            let report = `MM LAB – Report\nMeno: ${w.profileName || getActiveProfile().name}\nDátum: ${w.date} | Objem: ${formatVolumeKg(vol)}\nTréning: ${w.title}\n------------------------\n`;
-            (w.exercises || []).forEach((ex, i) => {
-                const setsStr = (ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(', ');
-                report += `${i + 1}. ${ex.name}: ${setsStr}${ex.note ? ` [${ex.note}]` : ''}\n`;
-            });
-            copyTextToClipboard(report, 'Report skopírovaný ✓');
-        }
-
-        function deleteHistoryRecord(workoutId) { workoutHistory = workoutHistory.filter(w => w.id !== workoutId); saveState(); renderHistory(); renderDatabase(); }
-
-        function renderHistory() {
-            const container = document.getElementById('history-list'), badge = document.getElementById('history-count-badge');
-            const prCard = document.getElementById('history-pr-card'), prGrid = document.getElementById('history-pr-grid');
-            if (!container) return;
-            const list = workoutHistory.filter(w => (w.profileId || 'me') === activeProfileId);
-            badge.textContent = `${list.length}`;
-
-            const prMap = {};
-            list.forEach(w => {
-                (w.exercises || []).forEach(ex => {
-                    (ex.sets || []).forEach(s => {
-                        const weight = parseFloat(s.weight) || 0;
-                        const reps = parseInt(s.reps) || 1;
-                        if (s.mode !== 'time' && weight > 0) {
-                            const est1RM = Math.round(weight * (1 + reps / 30));
-                            if (!prMap[ex.name] || est1RM > prMap[ex.name].est1RM) {
-                                prMap[ex.name] = { name: ex.name, exerciseId: ex.exerciseId, est1RM, bestSet: `${weight} kg × ${reps}` };
-                            }
-                        }
-                    });
-                });
-            });
-            const topPRs = Object.values(prMap).sort((a, b) => b.est1RM - a.est1RM).slice(0, 6);
-            if (prCard && prGrid) {
-                if (topPRs.length === 0) {
-                    prCard.classList.add('hidden');
-                } else {
-                    prCard.classList.remove('hidden');
-                    prGrid.innerHTML = topPRs.map(pr => `
-                        <div onclick="openExerciseDetailModal('${pr.exerciseId}')" class="cursor-pointer subcard-surface p-2.5">
-                            <div class="text-[10.5px] font-bold text-zinc-300 truncate">${pr.name.split('(')[0].trim()}</div>
-                            <div class="text-sm font-black text-amber-300 mt-0.5">${pr.est1RM} kg</div>
-                            <div class="text-[9.5px] text-zinc-500">${pr.bestSet}</div>
-                        </div>
-                    `).join('');
-                }
-            }
-
-            if (list.length === 0) { container.innerHTML = `<div class="text-center py-10 px-4 card-surface border-dashed text-xs text-zinc-400">Zatiaľ žiadne uložené tréningy.</div>`; return; }
-            container.innerHTML = list.map(w => {
-                const vol = w.totalVolume !== undefined ? w.totalVolume : calculateTotalVolume(w.exercises || []);
-                return `
-                    <div class="card-surface p-4 space-y-3">
-                        <div class="flex items-start justify-between gap-2">
-                            <div>
-                                <div class="flex items-center gap-2 flex-wrap"><span class="text-[11px] font-bold text-zinc-400">${w.date}</span>${vol > 0 ? `<span class="text-[10px] font-extrabold bg-amber-500/15 text-amber-400 px-2 py-0.5 rounded">${formatVolumeKg(vol)}</span>` : ''}</div>
-                                <h3 class="text-sm font-extrabold text-white mt-1">${w.title}</h3>
-                            </div>
-                            <div class="flex items-center gap-1 shrink-0 flex-wrap justify-end">
-                                <button type="button" onclick="repeatWorkoutFromHistory('${w.id}')" class="px-2.5 py-1 rounded-lg bg-brand-500 text-zinc-950 text-[11px] font-extrabold">Zopakovať dnes</button>
-                                <button type="button" onclick="reopenWorkoutFromHistory('${w.id}')" class="px-2 py-1 rounded-lg bg-dark-850 border border-zinc-800 text-amber-300 text-[11px] font-bold">Upraviť</button>
-                                <button type="button" onclick="exportWorkoutToTCX('${w.id}')" class="px-2 py-1 rounded-lg bg-dark-850 border border-zinc-800 text-sky-300 text-[11px] font-bold">.TCX</button>
-                                <button type="button" onclick="shareWorkoutReport('${w.id}')" class="px-2 py-1 rounded-lg bg-brand-500/15 text-brand-400 text-[11px] font-bold">Report</button>
-                                <button type="button" onclick="deleteHistoryRecord('${w.id}')" class="p-1 text-zinc-500 hover:text-rose-400">✕</button>
-                            </div>
-                        </div>
-                        <div class="space-y-1.5">
-                            ${(w.exercises || []).map(ex => `<div onclick="openExerciseDetailModal('${ex.exerciseId}')" class="cursor-pointer subcard-surface p-2.5 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[11px] text-zinc-400 mt-0.5">${(ex.sets || []).map(s => `${s.weight ? s.weight + ' kg' : 'BW'} × ${s.mode === 'time' ? formatDuration(s.duration) : s.reps + '×'} (RIR ${s.rir})`).join(' | ')}</div>${ex.note ? `<div class="text-[10px] text-amber-300 truncate mt-0.5">Poznámka: ${ex.note}</div>` : ''}</div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}
+                            ${!isLastBlock ? `<button type="button" onclick="setExpandedExercise(${nextBlockFirstIdx})" class="bg-brand-500 text-zinc-950 font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1"><span>Ďalší cvik</span>${svgIcon('arr-r', 'w-3.5 h-3.5')}</button>` : `<button type="button" onclick="saveWorkoutToHistory()" class="bg-brand-500 text-zinc-950 font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1">${svgIcon('ok', 'w-3.5 h-3.5')}<span>Dokončiť</span></button>`}
                         </div>
                     </div>
                 `;
