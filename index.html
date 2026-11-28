@@ -47,7 +47,7 @@
 
     <!-- BANNER AUTOMATICKÉHO UPDATE APLIKÁCIE -->
     <div id="app-update-banner" style="display: none;" class="bg-amber-400 text-zinc-950 px-4 py-2 text-xs font-extrabold flex items-center justify-between gap-2 z-40">
-        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.9.0</span>) je pripravená</span>
+        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.9.1</span>) je pripravená</span>
         <button type="button" onclick="applyAppUpdateNow()" class="px-3 py-1 rounded-lg bg-zinc-950 text-amber-300 font-black text-[11px] shrink-0">Aktualizovať</button>
     </div>
 
@@ -1160,7 +1160,7 @@
                 <label class="w-full py-2.5 px-4 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-200 font-bold text-xs flex items-center justify-center cursor-pointer"><span>Obnoviť dáta zo súboru (.JSON)</span><input type="file" accept=".json" onchange="importDataJSON(event)" class="hidden"></label>
             </div>
             <div class="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
-                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.9.0</span></span>
+                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.9.1</span></span>
                 <button type="button" onclick="logoutTesterCode()" class="px-3 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-bold">Odhlásiť kód</button>
             </div>
         </div>
@@ -1774,7 +1774,7 @@
         // =====================================================================
         // SUPABASE CLOUD PREPOJENIE, ROLE, AUTO-SYNC & AUTO-UPDATE
         // =====================================================================
-        const APP_VERSION = '2.9.0';
+        const APP_VERSION = '2.9.1';
         const SUPABASE_URL = 'https://gfmiyksnjimznbussdia.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmbWl5a3Nuamltem5idXNzZGlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxNzY2MjQsImV4cCI6MjExMDc1MjYyNH0.3PSwWSSmkNyvO_rQTWjQe3hz4zlcU-AFPUSU9hasCcM';
 
@@ -2949,50 +2949,137 @@
             const filteredLogs = cockpitLogsCache.filter(l => (selectedCode === 'ALL' ? visibleCodes.has(l.tester_code) : l.tester_code === selectedCode));
 
             if (cockpitActiveTab === 'workouts') {
-                const workouts = filteredLogs.filter(l => l.log_type === 'workout_completed');
-                if (workouts.length === 0) { body.innerHTML = `<div class="text-center py-8 text-xs text-zinc-500">Zatiaľ žiadne odtrénované tréningy.</div>`; return; }
-                const totalAllVol = workouts.reduce((acc, w) => acc + (parseFloat(w.payload?.totalVolume) || 0), 0);
+                const targetUsers = selectedCode === 'ALL'
+                    ? visibleUsers
+                    : visibleUsers.filter(u => u.code === selectedCode);
+                const rawWorkouts = [];
+                const seenWorkoutKeys = new Set();
+
+                targetUsers.forEach(u => {
+                    const stHistory = cockpitUserStatesCache[u.code]?.state_json?.workoutHistory || [];
+                    stHistory.forEach(w => {
+                        const key = w.id || `${u.code}_${w.date}_${w.title}_${w.totalVolume}`;
+                        seenWorkoutKeys.add(key);
+                        rawWorkouts.push({
+                            testerCode: u.code,
+                            testerName: u.name,
+                            id: w.id || key,
+                            title: w.title || 'Tréning',
+                            date: w.date || '',
+                            isoDate: getWorkoutISO(w),
+                            durationMin: parseInt(w.durationMin) || 0,
+                            totalVolume: parseFloat(w.totalVolume) || calculateTotalVolume(w.exercises || []),
+                            exercises: Array.isArray(w.exercises) ? w.exercises : []
+                        });
+                    });
+                });
+
+                filteredLogs.filter(l => l.log_type === 'workout_completed').forEach(l => {
+                    const p = l.payload || {};
+                    const key = p.id || `${l.tester_code}_${p.date}_${p.title}_${p.totalVolume}`;
+                    if (seenWorkoutKeys.has(key)) return;
+                    const uObj = cockpitTestersCache.find(u => u.code === l.tester_code);
+                    rawWorkouts.push({
+                        testerCode: l.tester_code,
+                        testerName: p.testerName || uObj?.name || l.tester_code,
+                        id: key,
+                        title: p.title || 'Tréning',
+                        date: p.date || '',
+                        isoDate: getWorkoutISO(p) || (l.created_at ? l.created_at.slice(0, 10) : ''),
+                        durationMin: parseInt(p.durationMin) || 0,
+                        totalVolume: parseFloat(p.totalVolume) || calculateTotalVolume(p.exercises || []),
+                        exercises: Array.isArray(p.exercises) ? p.exercises : []
+                    });
+                });
+
+                // Automatické zlúčenie rozkúskovaných „Dnešných tréningov“ v rovnaký deň u toho istého klienta
+                const mergedWorkouts = [];
+                const genericBucketMap = {};
+                rawWorkouts.forEach(w => {
+                    const cleanTitle = (w.title || '').trim();
+                    const isGenericTitle = !cleanTitle || cleanTitle === 'Dnešný tréning' || cleanTitle === 'Tréning' || cleanTitle.startsWith('Tréning:');
+                    if (isGenericTitle && w.date) {
+                        const bucketKey = `${w.testerCode}__${w.date}`;
+                        if (!genericBucketMap[bucketKey]) {
+                            genericBucketMap[bucketKey] = {
+                                ...w,
+                                exercises: [...w.exercises],
+                                _isMergedGeneric: true
+                            };
+                            mergedWorkouts.push(genericBucketMap[bucketKey]);
+                        } else {
+                            const existing = genericBucketMap[bucketKey];
+                            existing.exercises.push(...w.exercises);
+                            existing.totalVolume = Math.round((existing.totalVolume + w.totalVolume) * 10) / 10;
+                            existing.durationMin += w.durationMin;
+                        }
+                    } else {
+                        mergedWorkouts.push(w);
+                    }
+                });
+
+                mergedWorkouts.forEach(w => {
+                    if (w._isMergedGeneric) {
+                        w.title = deriveWorkoutMuscleTitle(w.exercises);
+                    }
+                });
+
+                mergedWorkouts.sort((a, b) => (b.isoDate || '').localeCompare(a.isoDate || ''));
+
+                if (mergedWorkouts.length === 0) {
+                    body.innerHTML = `<div class="text-center py-8 text-xs text-zinc-500">Zatiaľ žiadne odtrénované tréningy.</div>`;
+                    return;
+                }
+
+                const totalAllVol = mergedWorkouts.reduce((acc, w) => acc + (parseFloat(w.totalVolume) || 0), 0);
                 body.innerHTML = `
                     <div class="card-surface p-3 flex items-center justify-between gap-2 text-xs">
-                        <span class="text-zinc-400">Odtrénované tréningy: <strong class="text-white">${workouts.length}×</strong></span>
+                        <span class="text-zinc-400">Tréningové dni: <strong class="text-white">${mergedWorkouts.length}×</strong></span>
                         <span class="text-zinc-400">Spolu objem: <strong class="text-amber-400">${formatVolumeKg(Math.round(totalAllVol))}</strong></span>
                     </div>
-                ` + workouts.map((w, wIdx) => {
-                    const p = w.payload || {};
-                    const exList = p.exercises || [];
+                ` + mergedWorkouts.map(w => {
+                    const exList = w.exercises || [];
                     const totalSets = exList.reduce((acc, ex) => acc + (ex.sets || []).length, 0);
                     let rirSum = 0, rirCount = 0;
                     exList.forEach(ex => (ex.sets || []).forEach(s => {
                         if (s.rir !== undefined && s.rir !== '') { rirSum += parseFloat(s.rir) || 0; rirCount++; }
                     }));
                     const avgRir = rirCount > 0 ? (rirSum / rirCount).toFixed(1) : '—';
-                    const cardId = `cockpit-w-detail-${wIdx}`;
-                    const exNamesPreview = exList.map(e => e.name.split('(')[0].trim()).join(' • ');
 
                     return `
                         <div class="card-surface p-3.5 space-y-2.5">
                             <div class="flex items-start justify-between gap-2">
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-1.5 flex-wrap">
-                                        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-brand-500/15 text-brand-400">${p.testerName || w.tester_code}</span>
-                                        <span class="text-[10.5px] text-zinc-400 font-semibold">${p.date || ''}${p.durationMin ? ` • ${p.durationMin} min` : ''}</span>
+                                        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-brand-500/15 text-brand-400">${w.testerName}</span>
+                                        <span class="text-[10.5px] text-zinc-400 font-semibold">${w.date || ''}${w.durationMin ? ` • ${w.durationMin} min` : ''}</span>
                                     </div>
-                                    <h4 class="text-sm font-extrabold text-white mt-1 leading-snug">${p.title || 'Tréning'}</h4>
+                                    <h4 class="text-sm font-extrabold text-white mt-1 leading-snug">${w.title}</h4>
                                 </div>
-                                <button type="button" onclick="const el=document.getElementById('${cardId}'); const open=el.classList.toggle('hidden'); this.textContent = open ? 'Detail ▼' : 'Skryť ▲';" class="px-2.5 py-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-[11px] font-bold text-zinc-200 shrink-0">Detail ▼</button>
+                                <span class="text-xs font-black text-amber-400 shrink-0">${formatVolumeKg(w.totalVolume || 0)}</span>
                             </div>
 
-                            <div class="grid grid-cols-4 gap-1.5 text-center text-[10.5px]">
-                                <div class="subcard-surface p-1.5"><span class="text-zinc-500 block text-[9px]">Objem</span><strong class="text-amber-400">${formatVolumeKg(p.totalVolume || 0)}</strong></div>
+                            <div class="grid grid-cols-3 gap-1.5 text-center text-[10.5px]">
                                 <div class="subcard-surface p-1.5"><span class="text-zinc-500 block text-[9px]">Cviky</span><strong class="text-white">${exList.length}</strong></div>
                                 <div class="subcard-surface p-1.5"><span class="text-zinc-500 block text-[9px]">Série</span><strong class="text-brand-400">${totalSets}</strong></div>
                                 <div class="subcard-surface p-1.5"><span class="text-zinc-500 block text-[9px]">Priem. RIR</span><strong class="text-sky-300">${avgRir}</strong></div>
                             </div>
 
-                            ${exNamesPreview ? `<div class="text-[10.5px] text-zinc-400 truncate">${exNamesPreview}</div>` : ''}
-
-                            <div id="${cardId}" class="hidden space-y-1.5 pt-2 border-t border-zinc-800/80">
-                                ${exList.map(ex => `<div onclick="openClientExerciseProgressInCockpit('${w.tester_code}', '${ex.name.replace(/'/g, '&#39;')}')" class="cursor-pointer subcard-surface p-2 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[10.5px] text-zinc-400 truncate">${(ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(' | ')}</div>${ex.note ? `<div class="text-[10px] text-amber-300 mt-0.5 truncate">Poznámka: ${ex.note}</div>` : ''}</div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}
+                            <div class="space-y-1.5 pt-1">
+                                ${exList.map(ex => {
+                                    const safeExName = (ex.name || '').replace(/'/g, '&#39;');
+                                    const setsLine = (ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(' | ');
+                                    return `
+                                        <div onclick="openClientExerciseProgressInCockpit('${w.testerCode}', '${safeExName}')" class="cursor-pointer subcard-surface hover:border-zinc-700 px-2.5 py-2 flex items-center justify-between gap-2 transition">
+                                            <div class="min-w-0">
+                                                <div class="text-xs font-bold text-white truncate">${ex.name}</div>
+                                                <div class="text-[10.5px] text-zinc-400 mt-0.5 leading-snug">${setsLine}</div>
+                                                ${ex.note ? `<div class="text-[10px] text-amber-300 mt-0.5 truncate">Poznámka: ${ex.note}</div>` : ''}
+                                            </div>
+                                            <span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span>
+                                        </div>
+                                    `;
+                                }).join('')}
                             </div>
                         </div>
                     `;
@@ -5948,22 +6035,37 @@
             saveState();
         }
 
+        function deriveWorkoutMuscleTitle(exList) {
+            const catNames = [];
+            (exList || []).forEach(ex => {
+                const foundEx = exercises.find(e => e.id === ex.exerciseId);
+                const catId = ex.category || foundEx?.category;
+                const catObj = CATEGORIES.find(c => c.id === catId && c.id !== 'all');
+                if (catObj && !catNames.includes(catObj.name)) catNames.push(catObj.name);
+            });
+            return catNames.length > 0 ? `Tréning: ${catNames.slice(0, 3).join(' & ')}` : 'Tréning';
+        }
+
         function saveWorkoutToHistory() {
             if (activeWorkout.length === 0) return;
             stopRestTimer();
-            const title = document.getElementById('workout-title').value.trim() || 'Tréning';
+            const rawTitle = document.getElementById('workout-title').value.trim();
+            const snapshotExercises = JSON.parse(JSON.stringify(activeWorkout));
+            const title = (!rawTitle || rawTitle === 'Dnešný tréning')
+                ? deriveWorkoutMuscleTitle(snapshotExercises)
+                : rawTitle;
             const totalVolume = calculateTotalVolume(activeWorkout);
             const prof = getActiveProfile();
+            const isoDate = getTodayISO();
             const dateStr = new Date().toLocaleDateString('sk-SK', { day: '2-digit', month: '2-digit', year: 'numeric' });
             const durationMin = workoutStartTime ? Math.max(1, Math.round((Date.now() - workoutStartTime) / 60000)) : 0;
-            const snapshotExercises = JSON.parse(JSON.stringify(activeWorkout));
 
             const existingIdx = editingHistoryId ? workoutHistory.findIndex(w => w.id === editingHistoryId) : -1;
             if (existingIdx >= 0) {
                 const prev = workoutHistory[existingIdx];
                 workoutHistory[existingIdx] = { ...prev, title, totalVolume, durationMin: Math.max(prev.durationMin || 0, durationMin), readiness: { ...preWorkoutReadiness }, exercises: snapshotExercises };
             } else {
-                workoutHistory.unshift({ id: 'workout-' + Date.now(), profileId: prof.id, profileName: prof.name, title, date: dateStr, durationMin, totalVolume, readiness: { ...preWorkoutReadiness }, exercises: snapshotExercises });
+                workoutHistory.unshift({ id: 'workout-' + Date.now(), profileId: prof.id, profileName: prof.name, title, isoDate, date: dateStr, durationMin, totalVolume, readiness: { ...preWorkoutReadiness }, exercises: snapshotExercises });
             }
 
             editingHistoryId = null; activeWorkout = []; expandedExerciseIndex = 0; workoutStartTime = null;
