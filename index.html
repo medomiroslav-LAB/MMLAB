@@ -47,7 +47,7 @@
 
     <!-- BANNER AUTOMATICKÉHO UPDATE APLIKÁCIE -->
     <div id="app-update-banner" style="display: none;" class="bg-amber-400 text-zinc-950 px-4 py-2 text-xs font-extrabold flex items-center justify-between gap-2 z-40">
-        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.8.1</span>) je pripravená</span>
+        <span class="truncate">Nová verzia MM LAB (<span id="remote-version-badge">2.9.0</span>) je pripravená</span>
         <button type="button" onclick="applyAppUpdateNow()" class="px-3 py-1 rounded-lg bg-zinc-950 text-amber-300 font-black text-[11px] shrink-0">Aktualizovať</button>
     </div>
 
@@ -294,10 +294,11 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-base font-extrabold text-white">História tréningov</h2>
-                    <p class="text-[11px] text-zinc-400">Osobné rekordy (PR), porovnanie objemu a reporty</p>
+                    <p class="text-[11px] text-zinc-400">Kalendár tréningov, osobné rekordy (PR) a reporty</p>
                 </div>
                 <span id="history-count-badge" class="text-xs bg-dark-900 text-zinc-300 px-2.5 py-1 rounded-lg border border-zinc-800">0</span>
             </div>
+            <div id="history-calendar-card" class="card-surface p-3.5 space-y-2.5"></div>
             <div id="history-pr-summary" class="hidden card-surface p-3.5 space-y-2.5"></div>
             <div id="history-list" class="space-y-3"></div>
         </section>
@@ -925,7 +926,7 @@
                     <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1" id="mb-food-cat-pills"></div>
                     <select id="mb-food-select" onchange="onMealBuilderFoodChange()" class="w-full bg-dark-900 border border-zinc-700 rounded-xl px-2.5 py-2 text-xs font-bold text-white"></select>
                     <div class="flex items-center gap-2 min-w-0">
-                        <input type="number" id="mb-food-grams" value="100" min="0.5" step="any" oninput="updateMealBuilderUnitHint()" placeholder="Množstvo" class="w-20 sm:w-24 min-w-0 bg-dark-900 border border-zinc-700 rounded-xl px-2 py-2 text-center text-xs font-extrabold text-white">
+                        <input type="text" inputmode="decimal" id="mb-food-grams" value="100" oninput="updateMealBuilderUnitHint()" placeholder="Množstvo" class="w-20 sm:w-24 min-w-0 bg-dark-900 border border-zinc-700 rounded-xl px-2 py-2 text-center text-xs font-extrabold text-white">
                         <div id="mb-unit-pills" class="inline-flex rounded-xl bg-dark-900 p-1 border border-zinc-700 shrink-0"></div>
                         <span id="mb-unit-hint" class="text-[11px] text-zinc-400 truncate min-w-0"></span>
                     </div>
@@ -1159,7 +1160,7 @@
                 <label class="w-full py-2.5 px-4 rounded-xl bg-dark-850 border border-zinc-800 text-zinc-200 font-bold text-xs flex items-center justify-center cursor-pointer"><span>Obnoviť dáta zo súboru (.JSON)</span><input type="file" accept=".json" onchange="importDataJSON(event)" class="hidden"></label>
             </div>
             <div class="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
-                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.8.1</span></span>
+                <span class="text-zinc-400">Účet: <strong id="backup-tester-code-label" class="text-brand-400">—</strong> • v<span id="app-version-label">2.9.0</span></span>
                 <button type="button" onclick="logoutTesterCode()" class="px-3 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/35 text-rose-300 font-bold">Odhlásiť kód</button>
             </div>
         </div>
@@ -1406,22 +1407,22 @@
         ];
 
         const DEFAULT_SPLITS = [
-            { id: 'split-fullbody-beginner', name: 'FULLBODY A – Základná sila', tag: 'Fullbody', blocks: [{ type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-13', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-19', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-26', sets: 2, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
-            { id: 'split-fullbody-b', name: 'FULLBODY B – Variácia & Stred tela', tag: 'Fullbody', blocks: [{ type: 'single', exerciseId: 'ex-3', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-12', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-21', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-28', exerciseId2: 'ex-33', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-124', sets: 3, technique: 'standard' }] },
-            { id: 'split-glutes-a', name: 'GLUTES & ZADOK A – Guľatý zadok & Sila', tag: 'Zadok / Pre ženy', blocks: [{ type: 'single', exerciseId: 'ex-9', sets: 4, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-6', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-140', sets: 3, technique: 'dropset' }] },
-            { id: 'split-glutes-b', name: 'GLUTES & ZADOK B – Tvarovanie & Izolácia', tag: 'Zadok / Pre ženy', blocks: [{ type: 'single', exerciseId: 'ex-3', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-68', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-76', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-141', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
+            { id: 'split-fullbody-beginner', name: 'FULLBODY A – Základná sila & Stred tela', tag: 'Fullbody', blocks: [{ type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-13', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-19', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-26', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-47', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
+            { id: 'split-fullbody-b', name: 'FULLBODY B – Komplexný rozvoj & Kondícia', tag: 'Fullbody', blocks: [{ type: 'single', exerciseId: 'ex-3', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-12', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-21', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-28', exerciseId2: 'ex-33', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-48', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-124', sets: 3, technique: 'standard' }] },
+            { id: 'split-glutes-a', name: 'GLUTES & ZADOK A – Guľatý zadok & Sila', tag: 'Zadok / Pre ženy', blocks: [{ type: 'single', exerciseId: 'ex-9', sets: 4, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-6', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-140', sets: 3, technique: 'dropset' }, { type: 'single', exerciseId: 'ex-47', sets: 3, technique: 'standard' }] },
+            { id: 'split-glutes-b', name: 'GLUTES & ZADOK B – Tvarovanie & Izolácia', tag: 'Zadok / Pre ženy', blocks: [{ type: 'single', exerciseId: 'ex-3', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-68', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-76', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-141', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-48', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
             { id: 'split-women-fullbody', name: 'ŽENSKÉ FULLBODY – Pevný zadok & Tónovaný vrch', tag: 'Zadok / Pre ženy', blocks: [{ type: 'single', exerciseId: 'ex-9', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-19', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-12', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-28', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-124', sets: 3, technique: 'standard' }] },
             { id: 'split-home-glutes', name: 'DOMÁCI ZADOK & BRUCHO – Bez fitka (25 min)', tag: 'Zadok / Pre ženy', blocks: [{ type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-74', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-9', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-17', sets: 2, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-50', exerciseId2: 'ex-51', sets: 3, technique: 'superset' }] },
-            { id: 'split-ul-upper-a', name: 'UPPER A – Vrch tela (Ťažký)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-11', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-20', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-26', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-19', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-32', exerciseId2: 'ex-38', sets: 3, technique: 'superset' }] },
-            { id: 'split-ul-lower-a', name: 'LOWER A – Spodok tela (Drepy)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-1', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-5', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-47', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
+            { id: 'split-ul-upper-a', name: 'UPPER A – Vrch tela (Ťažký základ)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-11', sets: 4, technique: 'standard' }, { type: 'single', exerciseId: 'ex-20', sets: 4, technique: 'standard' }, { type: 'single', exerciseId: 'ex-26', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-19', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-32', exerciseId2: 'ex-38', sets: 3, technique: 'superset' }] },
+            { id: 'split-ul-lower-a', name: 'LOWER A – Spodok tela (Drepy & Lýtka)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-1', sets: 4, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-5', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-47', sets: 4, technique: 'standard' }, { type: 'single', exerciseId: 'ex-48', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
             { id: 'split-ul-upper-b', name: 'UPPER B – Vrch tela (Hypertrofia)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-12', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-21', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-28', sets: 3, technique: 'dropset' }, { type: 'single', exerciseId: 'ex-31', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-34', exerciseId2: 'ex-41', sets: 3, technique: 'superset' }] },
-            { id: 'split-ul-lower-b', name: 'LOWER B – Spodok tela (Zadný reťazec)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-69', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-6', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-48', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-126', sets: 3, technique: 'standard' }] },
+            { id: 'split-ul-lower-b', name: 'LOWER B – Spodok tela (Zadný reťazec & Lýtka)', tag: 'Upper / Lower', blocks: [{ type: 'single', exerciseId: 'ex-69', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-6', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-48', sets: 4, technique: 'standard' }, { type: 'single', exerciseId: 'ex-47', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-126', sets: 3, technique: 'standard' }] },
             { id: 'split-push-mirome', name: 'PUSH – Prsia, Ramená & Triceps', tag: 'PPL', blocks: [{ type: 'single', exerciseId: 'ex-12', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-62', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-14', sets: 3, technique: 'dropset' }, { type: 'single', exerciseId: 'ex-26', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-28', exerciseId2: 'ex-63', sets: 3, technique: 'superset' }, { type: 'superset', exerciseId: 'ex-38', exerciseId2: 'ex-40', sets: 3, technique: 'superset' }] },
             { id: 'split-pull-mirome', name: 'PULL – Chrbát & Biceps', tag: 'PPL', blocks: [{ type: 'single', exerciseId: 'ex-18', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-21', sets: 3, technique: 'restpause' }, { type: 'single', exerciseId: 'ex-22', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-31', exerciseId2: 'ex-32', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-34', sets: 3, technique: 'dropset' }] },
-            { id: 'split-legs-mirome', name: 'LEGS & CORE – Nohy & Brucho', tag: 'PPL', blocks: [{ type: 'single', exerciseId: 'ex-1', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-3', sets: 3, technique: 'restpause' }, { type: 'superset', exerciseId: 'ex-5', exerciseId2: 'ex-6', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-47', sets: 4, technique: 'dropset' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
-            { id: 'split-runners-strength', name: 'BEŽCI A – Sila & Stabilita', tag: 'Atletika', blocks: [{ type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-68', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-47', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-51', sets: 3, technique: 'standard' }] },
-            { id: 'split-runners-explosive', name: 'BEŽCI B – Dynamika & Prevencia', tag: 'Atletika', blocks: [{ type: 'single', exerciseId: 'ex-56', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-135', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-68', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-76', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-119', exerciseId2: 'ex-121', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-126', sets: 3, technique: 'standard' }] },
-            { id: 'split-home-fullbody', name: 'DOMÁCE FULLBODY – Vlastná váha / Jednoručky', tag: 'Doma', blocks: [{ type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-17', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-74', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-22', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] }
+            { id: 'split-legs-mirome', name: 'LEGS & CORE – Nohy, Lýtka & Brucho', tag: 'PPL', blocks: [{ type: 'single', exerciseId: 'ex-1', sets: 4, technique: 'standard' }, { type: 'single', exerciseId: 'ex-4', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-3', sets: 3, technique: 'restpause' }, { type: 'superset', exerciseId: 'ex-5', exerciseId2: 'ex-6', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-47', sets: 4, technique: 'dropset' }, { type: 'single', exerciseId: 'ex-48', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] },
+            { id: 'split-runners-strength', name: 'BEŽCI A – Sila nôh, Lýtka & Stabilita', tag: 'Atletika', blocks: [{ type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-68', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-8', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-47', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-121', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-51', sets: 3, technique: 'standard' }] },
+            { id: 'split-runners-explosive', name: 'BEŽCI B – Skoky, Odraz & Core', tag: 'Atletika', blocks: [{ type: 'single', exerciseId: 'ex-56', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-58', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-135', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-76', sets: 3, technique: 'standard' }, { type: 'superset', exerciseId: 'ex-119', exerciseId2: 'ex-121', sets: 3, technique: 'superset' }, { type: 'single', exerciseId: 'ex-126', sets: 3, technique: 'standard' }] },
+            { id: 'split-home-fullbody', name: 'DOMÁCE FULLBODY – Vlastná váha / Jednoručky', tag: 'Doma', blocks: [{ type: 'single', exerciseId: 'ex-65', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-17', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-74', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-22', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-47', sets: 3, technique: 'standard' }, { type: 'single', exerciseId: 'ex-50', sets: 3, technique: 'standard' }] }
         ];
 
         const SUPP_CATEGORIES = [
@@ -1592,7 +1593,44 @@
                 ['Kaleráb / Reďkovka / Fenykel', 'produce', 1.6, 5.5, 0.1, 'g', 1, 100],
                 ['Pór / Cibuľa / Cesnak', 'produce', 1.5, 9, 0.2, 'g', 1, 60],
                 ['Tekvica Hokkaido / Maslová', 'produce', 1.1, 8.5, 0.2, 'g', 1, 200],
-                ['Špargľa zelená / Ružičkový kel', 'produce', 2.4, 4.2, 0.2, 'g', 1, 150]
+                ['Špargľa zelená / Ružičkový kel', 'produce', 2.4, 4.2, 0.2, 'g', 1, 150],
+                ['Ehrmann High Protein Pudding (čokoláda / vanilka)', 'protein', 10, 5.5, 1.5, 'g', 1, 200],
+                ['Milbona High Protein Pudding / Mousse (Lidl)', 'protein', 10, 5.8, 1.6, 'g', 1, 200],
+                ['Rajo Protein Jogurt / Tvaroh', 'protein', 11, 5.2, 1.2, 'g', 1, 150],
+                ['Olomoucké syrečky / Tvarôžky', 'protein', 28, 1.5, 0.5, 'g', 1, 100],
+                ['Brynza plnotučná', 'protein', 17, 1.5, 22, 'g', 1, 50],
+                ['Ricotta čerstvá', 'protein', 8.5, 3.5, 10, 'g', 1, 100],
+                ['Parmezán / Grana Padano strúhaný', 'protein', 32, 0.5, 28, 'g', 1, 25],
+                ['Bravčová panenka chudá (surová)', 'protein', 21.5, 0, 3.5, 'g', 1, 150],
+                ['Bravčové karé bez kosti (surové)', 'protein', 21, 0, 6.5, 'g', 1, 150],
+                ['Treska filet (surová / mrazená)', 'protein', 18, 0, 0.7, 'g', 1, 180],
+                ['Krevety lúpané varené', 'protein', 21, 0.5, 1.2, 'g', 1, 150],
+                ['Sardinky vo vlastnej šťave', 'protein', 22, 0, 5.0, 'g', 1, 100],
+                ['Ryžové chlebíčky Racio natural (1 ks ≈ 9 g)', 'carbs', 7.8, 80, 2.5, 'ks', 9, 4],
+                ['Kukuričné chlebíčky Racio (1 ks ≈ 9 g)', 'carbs', 8.2, 79, 2.8, 'ks', 9, 4],
+                ['Pohánka lúpaná (surová)', 'carbs', 12, 71, 2.5, 'g', 1, 80],
+                ['Bulgur pšeničný (surový)', 'carbs', 12.3, 76, 1.3, 'g', 1, 80],
+                ['Kuskus celozrnný / klasický (surový)', 'carbs', 12.5, 75, 1.6, 'g', 1, 80],
+                ['Quinoa biela / červená (surová)', 'carbs', 14, 64, 6.0, 'g', 1, 80],
+                ['Červená šošovica lúpaná (surová)', 'carbs', 25, 56, 1.5, 'g', 1, 80],
+                ['Cícer varený / sterilizovaný', 'carbs', 8.5, 22, 2.5, 'g', 1, 150],
+                ['Zemiakové gnocchi (chladené)', 'carbs', 3.8, 35, 0.5, 'g', 1, 200],
+                ['Toastový chlieb celozrnný (1 plátok ≈ 35 g)', 'carbs', 9.0, 44, 3.5, 'ks', 35, 2],
+                ['Javorový sirup / Agáve sirup', 'carbs', 0, 67, 0, 'ml', 1, 15],
+                ['Chia semienka', 'fats', 17, 42, 31, 'g', 1, 15],
+                ['Ľanové semienka mleté', 'fats', 18, 29, 42, 'g', 1, 15],
+                ['Tekvicové semienka lúpané', 'fats', 30, 11, 49, 'g', 1, 20],
+                ['Kešu orechy natural', 'fats', 18, 30, 44, 'g', 1, 25],
+                ['Vlašské orechy lúpané', 'fats', 15, 14, 65, 'g', 1, 25],
+                ['Horká čokoláda 85 %', 'fats', 11, 19, 48, 'g', 1, 20],
+                ['Mango čerstvé', 'produce', 0.8, 15, 0.4, 'g', 1, 150],
+                ['Kiwi (1 ks ≈ 75 g)', 'produce', 1.1, 14, 0.5, 'ks', 75, 2],
+                ['Pomaranč (1 ks ≈ 180 g)', 'produce', 0.9, 12, 0.1, 'ks', 180, 1],
+                ['Paradajky / Cherry paradajky', 'produce', 0.9, 3.9, 0.2, 'g', 1, 150],
+                ['Uhorka šalátová', 'produce', 0.7, 3.6, 0.1, 'g', 1, 150],
+                ['Paprika červená / žltá', 'produce', 1.0, 6.0, 0.3, 'g', 1, 120],
+                ['Špenát čerstvý baby / mrazený', 'produce', 2.9, 3.6, 0.4, 'g', 1, 100],
+                ['Cuketa čerstvá', 'produce', 1.2, 3.1, 0.3, 'g', 1, 200]
             ];
             extraCommonFoods.forEach((row, idx) => {
                 const id = `f-gen-extra-${idx}`;
@@ -1736,7 +1774,7 @@
         // =====================================================================
         // SUPABASE CLOUD PREPOJENIE, ROLE, AUTO-SYNC & AUTO-UPDATE
         // =====================================================================
-        const APP_VERSION = '2.8.1';
+        const APP_VERSION = '2.9.0';
         const SUPABASE_URL = 'https://gfmiyksnjimznbussdia.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmbWl5a3Nuamltem5idXNzZGlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxNzY2MjQsImV4cCI6MjExMDc1MjYyNH0.3PSwWSSmkNyvO_rQTWjQe3hz4zlcU-AFPUSU9hasCcM';
 
@@ -2913,10 +2951,51 @@
             if (cockpitActiveTab === 'workouts') {
                 const workouts = filteredLogs.filter(l => l.log_type === 'workout_completed');
                 if (workouts.length === 0) { body.innerHTML = `<div class="text-center py-8 text-xs text-zinc-500">Zatiaľ žiadne odtrénované tréningy.</div>`; return; }
-                body.innerHTML = workouts.map(w => {
+                const totalAllVol = workouts.reduce((acc, w) => acc + (parseFloat(w.payload?.totalVolume) || 0), 0);
+                body.innerHTML = `
+                    <div class="card-surface p-3 flex items-center justify-between gap-2 text-xs">
+                        <span class="text-zinc-400">Odtrénované tréningy: <strong class="text-white">${workouts.length}×</strong></span>
+                        <span class="text-zinc-400">Spolu objem: <strong class="text-amber-400">${formatVolumeKg(Math.round(totalAllVol))}</strong></span>
+                    </div>
+                ` + workouts.map((w, wIdx) => {
                     const p = w.payload || {};
                     const exList = p.exercises || [];
-                    return `<div class="card-surface p-3.5 space-y-2"><div class="flex items-start justify-between gap-2"><div><span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-brand-500/15 text-brand-400">${p.testerName || w.tester_code}</span><h4 class="text-sm font-extrabold text-white mt-1">${p.title || 'Tréning'}</h4></div><div class="text-right text-[10.5px] text-zinc-400"><div>${p.date || ''}</div><div class="text-amber-400 font-bold">${formatVolumeKg(p.totalVolume || 0)}</div></div></div><div class="space-y-1.5">${exList.map(ex => `<div onclick="openClientExerciseProgressInCockpit('${w.tester_code}', '${ex.name.replace(/'/g, '&#39;')}')" class="cursor-pointer subcard-surface p-2 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[10.5px] text-zinc-400 truncate">${(ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(' | ')}</div>${ex.note ? `<div class="text-[10px] text-amber-300 mt-0.5 truncate">Poznámka: ${ex.note}</div>` : ''}</div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}</div></div>`;
+                    const totalSets = exList.reduce((acc, ex) => acc + (ex.sets || []).length, 0);
+                    let rirSum = 0, rirCount = 0;
+                    exList.forEach(ex => (ex.sets || []).forEach(s => {
+                        if (s.rir !== undefined && s.rir !== '') { rirSum += parseFloat(s.rir) || 0; rirCount++; }
+                    }));
+                    const avgRir = rirCount > 0 ? (rirSum / rirCount).toFixed(1) : '—';
+                    const cardId = `cockpit-w-detail-${wIdx}`;
+                    const exNamesPreview = exList.map(e => e.name.split('(')[0].trim()).join(' • ');
+
+                    return `
+                        <div class="card-surface p-3.5 space-y-2.5">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-brand-500/15 text-brand-400">${p.testerName || w.tester_code}</span>
+                                        <span class="text-[10.5px] text-zinc-400 font-semibold">${p.date || ''}${p.durationMin ? ` • ${p.durationMin} min` : ''}</span>
+                                    </div>
+                                    <h4 class="text-sm font-extrabold text-white mt-1 leading-snug">${p.title || 'Tréning'}</h4>
+                                </div>
+                                <button type="button" onclick="const el=document.getElementById('${cardId}'); const open=el.classList.toggle('hidden'); this.textContent = open ? 'Detail ▼' : 'Skryť ▲';" class="px-2.5 py-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-[11px] font-bold text-zinc-200 shrink-0">Detail ▼</button>
+                            </div>
+
+                            <div class="grid grid-cols-4 gap-1.5 text-center text-[10.5px]">
+                                <div class="subcard-surface p-1.5"><span class="text-zinc-500 block text-[9px]">Objem</span><strong class="text-amber-400">${formatVolumeKg(p.totalVolume || 0)}</strong></div>
+                                <div class="subcard-surface p-1.5"><span class="text-zinc-500 block text-[9px]">Cviky</span><strong class="text-white">${exList.length}</strong></div>
+                                <div class="subcard-surface p-1.5"><span class="text-zinc-500 block text-[9px]">Série</span><strong class="text-brand-400">${totalSets}</strong></div>
+                                <div class="subcard-surface p-1.5"><span class="text-zinc-500 block text-[9px]">Priem. RIR</span><strong class="text-sky-300">${avgRir}</strong></div>
+                            </div>
+
+                            ${exNamesPreview ? `<div class="text-[10.5px] text-zinc-400 truncate">${exNamesPreview}</div>` : ''}
+
+                            <div id="${cardId}" class="hidden space-y-1.5 pt-2 border-t border-zinc-800/80">
+                                ${exList.map(ex => `<div onclick="openClientExerciseProgressInCockpit('${w.tester_code}', '${ex.name.replace(/'/g, '&#39;')}')" class="cursor-pointer subcard-surface p-2 flex items-center justify-between gap-2"><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${ex.name}</div><div class="text-[10.5px] text-zinc-400 truncate">${(ex.sets || []).map(s => `${s.weight ? s.weight + 'kg' : 'BW'}×${s.mode === 'time' ? formatDuration(s.duration) : s.reps + 'x'} (RIR ${s.rir})`).join(' | ')}</div>${ex.note ? `<div class="text-[10px] text-amber-300 mt-0.5 truncate">Poznámka: ${ex.note}</div>` : ''}</div><span class="text-[10px] font-extrabold text-sky-400 shrink-0">Graf</span></div>`).join('')}
+                            </div>
+                        </div>
+                    `;
                 }).join('');
             } else if (cockpitActiveTab === 'logs') {
                 const checkinsOnly = filteredLogs.filter(l => ['morning_checkin', 'weekly_checkin'].includes(l.log_type));
@@ -3488,43 +3567,96 @@
             } catch (e) {}
         }
 
+        function requestNotificationPermissionSafe() {
+            try {
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission().catch(() => {});
+                }
+            } catch (e) {}
+        }
+
+        function sendBackgroundTimerNotification(title, body) {
+            try {
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification(title, { body, tag: 'mmlab-timer', renotify: true });
+                }
+            } catch (e) {}
+        }
+
         // =====================================================================
-        // PAUZOVAČ, ODPOČET, ROZOHRIATIE & DETAIL CVIKU
+        // PAUZOVAČ, ODPOČET (FUNKČNÝ AJ PO NÁVRATE Z POZADIA), ROZOHRIATIE & DETAIL CVIKU
         // =====================================================================
+        let restTimerEndTime = parseInt(localStorage.getItem('fitlog_rest_end_time') || '0', 10) || 0;
+
+        function tickRestTimerFromClock() {
+            if (!restTimerEndTime) return;
+            const rem = Math.ceil((restTimerEndTime - Date.now()) / 1000);
+            if (rem <= 0) {
+                stopRestTimer();
+                playBeepTone(980, 0.35, true);
+                sendBackgroundTimerNotification('MM LAB – Pauza skončila', 'Čas na ďalšiu sériu!');
+                showToast('Pauza skončila');
+            } else {
+                if (rem !== restTimerRemaining && rem <= 3) playBeepTone(620, 0.14, false);
+                restTimerRemaining = rem;
+                document.getElementById('floating-rest-timer').classList.remove('hidden');
+                updateRestTimerDisplay();
+            }
+        }
+
         function startRestTimer(seconds = 90) {
+            requestNotificationPermissionSafe();
+            restTimerEndTime = Date.now() + seconds * 1000;
+            localStorage.setItem('fitlog_rest_end_time', String(restTimerEndTime));
             restTimerRemaining = seconds;
             document.getElementById('floating-rest-timer').classList.remove('hidden');
             updateRestTimerDisplay();
             if (restTimerInterval) clearInterval(restTimerInterval);
-            restTimerInterval = setInterval(() => {
-                restTimerRemaining--;
-                if (restTimerRemaining <= 0) { stopRestTimer(); playBeepTone(980, 0.35, true); showToast('Pauza skončila'); }
-                else { if (restTimerRemaining <= 3) playBeepTone(620, 0.14, false); updateRestTimerDisplay(); }
-            }, 1000);
+            restTimerInterval = setInterval(tickRestTimerFromClock, 500);
         }
-        function adjustRestTimer(deltaSec) { restTimerRemaining = Math.max(5, restTimerRemaining + deltaSec); updateRestTimerDisplay(); }
-        function stopRestTimer() { if (restTimerInterval) clearInterval(restTimerInterval); restTimerInterval = null; document.getElementById('floating-rest-timer').classList.add('hidden'); }
+        function adjustRestTimer(deltaSec) {
+            if (!restTimerEndTime) restTimerEndTime = Date.now() + restTimerRemaining * 1000;
+            restTimerEndTime = Math.max(Date.now() + 5000, restTimerEndTime + deltaSec * 1000);
+            localStorage.setItem('fitlog_rest_end_time', String(restTimerEndTime));
+            restTimerRemaining = Math.max(5, Math.ceil((restTimerEndTime - Date.now()) / 1000));
+            updateRestTimerDisplay();
+        }
+        function stopRestTimer() {
+            if (restTimerInterval) clearInterval(restTimerInterval);
+            restTimerInterval = null;
+            restTimerEndTime = 0;
+            localStorage.removeItem('fitlog_rest_end_time');
+            document.getElementById('floating-rest-timer').classList.add('hidden');
+        }
         function updateRestTimerDisplay() {
             const m = Math.floor(restTimerRemaining / 60), s = restTimerRemaining % 60;
             document.getElementById('rest-timer-value').textContent = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
+        function tickLiveCountdownFromClock() {
+            if (!liveCountdownState.interval || liveCountdownState.paused || !liveCountdownState.endTime) return;
+            const rem = Math.ceil((liveCountdownState.endTime - Date.now()) / 1000);
+            if (rem <= 0) {
+                finishLiveCountdownNow();
+            } else {
+                liveCountdownState.remaining = rem;
+                updateLiveCountdownUI();
+            }
+        }
+
         function startLiveSetCountdown(exIdx, setIdx) {
             const ex = activeWorkout[exIdx], set = ex?.sets[setIdx];
             if (!set) return;
+            requestNotificationPermissionSafe();
             if (liveCountdownState.interval) clearInterval(liveCountdownState.interval);
-            liveCountdownState = { exIdx, setIdx, remaining: parseInt(set.duration) || 30, paused: false, interval: null };
+            const dur = Math.max(1, parseInt(set.duration) || 30);
+            liveCountdownState = { exIdx, setIdx, remaining: dur, endTime: Date.now() + dur * 1000, paused: false, interval: null };
             document.getElementById('countdown-ex-name').textContent = ex.name;
             document.getElementById('countdown-set-label').textContent = `Séria ${setIdx + 1} • Cieľ: ${formatDuration(set.duration)}`;
             document.getElementById('countdown-toggle-btn').textContent = 'Pozastaviť';
             updateLiveCountdownUI();
             document.getElementById('modal-live-countdown').classList.remove('hidden');
-            liveCountdownState.interval = setInterval(() => {
-                if (liveCountdownState.paused) return;
-                liveCountdownState.remaining--;
-                if (liveCountdownState.remaining <= 0) finishLiveCountdownNow();
-                else updateLiveCountdownUI();
-            }, 1000);
+            liveCountdownState.interval = setInterval(tickLiveCountdownFromClock, 400);
         }
         function updateLiveCountdownUI() {
             const m = Math.floor(liveCountdownState.remaining / 60), s = liveCountdownState.remaining % 60;
@@ -3532,19 +3664,45 @@
         }
         function toggleLiveCountdownPause() {
             liveCountdownState.paused = !liveCountdownState.paused;
+            if (liveCountdownState.paused) {
+                liveCountdownState.remaining = Math.max(1, Math.ceil((liveCountdownState.endTime - Date.now()) / 1000));
+            } else {
+                liveCountdownState.endTime = Date.now() + liveCountdownState.remaining * 1000;
+            }
             document.getElementById('countdown-toggle-btn').textContent = liveCountdownState.paused ? 'Pokračovať' : 'Pozastaviť';
         }
         function finishLiveCountdownNow() {
             if (liveCountdownState.interval) clearInterval(liveCountdownState.interval);
             const { exIdx, setIdx } = liveCountdownState;
+            liveCountdownState.interval = null;
+            liveCountdownState.endTime = null;
             document.getElementById('modal-live-countdown').classList.add('hidden');
             playBeepTone(980, 0.35, true);
+            sendBackgroundTimerNotification('MM LAB – Séria splnená', 'Časový interval skončil ✓');
             if (exIdx !== null && setIdx !== null && activeWorkout[exIdx]?.sets[setIdx]) {
                 activeWorkout[exIdx].sets[setIdx].completed = true;
                 saveState(); renderActiveWorkout(); startRestTimer(60); showToast('Séria splnená ✓');
             }
         }
-        function closeLiveCountdown() { if (liveCountdownState.interval) clearInterval(liveCountdownState.interval); document.getElementById('modal-live-countdown').classList.add('hidden'); }
+        function closeLiveCountdown() {
+            if (liveCountdownState.interval) clearInterval(liveCountdownState.interval);
+            liveCountdownState.interval = null;
+            liveCountdownState.endTime = null;
+            document.getElementById('modal-live-countdown').classList.add('hidden');
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                tickRestTimerFromClock();
+                tickLiveCountdownFromClock();
+                updateTimerDisplay();
+            }
+        });
+        window.addEventListener('focus', () => {
+            tickRestTimerFromClock();
+            tickLiveCountdownFromClock();
+            updateTimerDisplay();
+        });
 
         function openWarmupModal(suggestedWeight) {
             document.getElementById('warmup-target-weight').value = parseFloat(suggestedWeight) || 60;
@@ -4326,7 +4484,7 @@
         }
         function addIngredientToMealBuilder() {
             const foodId = document.getElementById('mb-food-select').value;
-            const qty = parseFloat(document.getElementById('mb-food-grams').value) || 0;
+            const qty = parseFlexFloat(document.getElementById('mb-food-grams').value, 0.1) || 0;
             const food = getAllFoodsList().find(f => f.id === foodId);
             if (!food || qty <= 0) return;
 
@@ -4353,8 +4511,9 @@
         function updateDraftIngredientQty(idx, newQtyRaw) {
             const item = draftMealIngredients[idx];
             if (!item) return;
-            const newQty = Math.max(0.5, parseFloat(newQtyRaw) || 0);
-            if (newQty <= 0) return;
+            const parsed = parseFlexFloat(newQtyRaw, 0.5);
+            if (isNaN(parsed) || parsed <= 0) return;
+            const newQty = parsed;
             const oldGrams = Math.max(1, item.grams || 100);
             const newGrams = item.unit === 'ks' ? Math.round(newQty * (item.unitGrams || Math.round(oldGrams / Math.max(0.5, item.qty || 1)))) : Math.round(newQty);
             const ratio = newGrams / oldGrams;
@@ -4413,7 +4572,7 @@
                         <div class="text-[10px] text-zinc-400">B:${item.p}g • S:${item.c}g • T:${item.f}g</div>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <input type="number" step="any" min="0.5" value="${item.qty}" onchange="updateDraftIngredientQty(${idx}, this.value)" class="w-16 bg-dark-900 border border-zinc-700 rounded-lg px-1.5 py-1 text-center text-xs font-extrabold text-brand-400">
+                        <input type="text" inputmode="decimal" value="${item.qty}" onchange="updateDraftIngredientQty(${idx}, this.value)" class="w-16 bg-dark-900 border border-zinc-700 rounded-lg px-1.5 py-1 text-center text-xs font-extrabold text-brand-400">
                         <span class="text-[10.5px] font-bold text-zinc-400 w-5">${item.unit || 'g'}</span>
                         <button type="button" onclick="removeIngredientFromMealBuilder(${idx})" class="text-rose-400 p-1">✕</button>
                     </div>
@@ -5044,13 +5203,20 @@
             const m = Math.floor(sec / 60), s = sec % 60;
             el.textContent = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
         }
+        function parseFlexFloat(val, min = 0) {
+            if (val === '' || val === null || val === undefined) return NaN;
+            const normalized = String(val).trim().replace(/,/g, '.');
+            const num = parseFloat(normalized);
+            if (isNaN(num)) return NaN;
+            return min !== null ? Math.max(min, num) : num;
+        }
         function calculateTotalVolume(list) {
             let total = 0;
             (list || []).forEach(ex => {
                 const done = (ex.sets || []).filter(s => s.completed);
                 const toSum = done.length > 0 ? done : (ex.sets || []);
                 toSum.forEach(s => {
-                    const w = parseFloat(s.weight) || 0;
+                    const w = parseFlexFloat(s.weight, 0) || 0;
                     if (w <= 0) return;
                     total += s.mode === 'time' ? w : w * (parseInt(s.reps) || 0);
                 });
@@ -5528,15 +5694,44 @@
         }
         function updateSetField(exIdx, setIdx, field, value) {
             if (!activeWorkout[exIdx]?.sets[setIdx]) return;
-            activeWorkout[exIdx].sets[setIdx][field] = value;
+            if (field === 'weight') {
+                let clean = String(value).replace(/-/g, '').replace(/[^0-9.,]/g, '');
+                const parts = clean.split(/[.,]/);
+                if (parts.length > 2) clean = parts[0] + '.' + parts.slice(1).join('');
+                activeWorkout[exIdx].sets[setIdx].weight = clean;
+            } else if (field === 'reps') {
+                let clean = String(value).replace(/-/g, '').replace(/\D/g, '');
+                activeWorkout[exIdx].sets[setIdx].reps = clean;
+            } else {
+                activeWorkout[exIdx].sets[setIdx][field] = value;
+            }
+            saveState(); updateWorkoutStatsHeader();
+        }
+        function normalizeSetInputOnBlur(exIdx, setIdx, field, inputEl) {
+            const set = activeWorkout[exIdx]?.sets[setIdx];
+            if (!set) return;
+            if (field === 'weight') {
+                if (set.weight === '') return;
+                const parsed = parseFlexFloat(set.weight, 0);
+                set.weight = isNaN(parsed) ? '' : Math.round(parsed * 100) / 100;
+                if (inputEl) inputEl.value = set.weight;
+            } else if (field === 'reps') {
+                if (set.reps === '') return;
+                const parsed = Math.max(0, parseInt(String(set.reps).replace(/\D/g, ''), 10) || 0);
+                set.reps = parsed;
+                if (inputEl) inputEl.value = set.reps;
+            }
             saveState(); updateWorkoutStatsHeader();
         }
         function adjustSetNumber(exIdx, setIdx, field, delta, minVal = 0) {
             const set = activeWorkout[exIdx]?.sets[setIdx];
             if (!set) return;
-            const fallback = field === 'weight' ? (parseFloat(set.prevWeight) || 0) : (parseInt(set.prevReps) || 0);
-            const current = set[field] === '' || set[field] === undefined ? fallback : parseFloat(set[field]) || 0;
-            set[field] = Math.max(minVal, Math.round((current + delta) * 10) / 10);
+            const rawPrev = field === 'weight' ? parseFlexFloat(set.prevWeight, 0) : parseInt(set.prevReps, 10);
+            const fallback = Math.max(minVal, isNaN(rawPrev) ? 0 : rawPrev);
+            const parsedCur = field === 'weight' ? parseFlexFloat(set[field], 0) : parseInt(set[field], 10);
+            const current = (set[field] === '' || set[field] === undefined || isNaN(parsedCur)) ? fallback : Math.max(minVal, parsedCur);
+            const nextVal = Math.max(minVal, Math.round((current + delta) * 100) / 100);
+            set[field] = nextVal;
             saveState(); renderActiveWorkout();
         }
         function toggleSetMode(exIdx, setIdx) {
@@ -5601,7 +5796,7 @@
                             <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Váha (kg)</label>
                             <div class="flex items-center bg-dark-900 border border-zinc-800 rounded-xl overflow-hidden">
                                 <button type="button" onclick="adjustSetNumber(${exIdx}, ${setIdx}, 'weight', -2.5, 0)" class="px-2 py-2 text-zinc-400 hover:text-white font-black text-sm">−</button>
-                                <input type="number" step="0.5" placeholder="${set.prevWeight || '0'}" value="${set.weight}" oninput="updateSetField(${exIdx}, ${setIdx}, 'weight', this.value)" class="w-full min-w-0 bg-transparent py-2 text-center text-sm font-extrabold text-white placeholder-zinc-600 focus:outline-none">
+                                <input type="text" inputmode="decimal" placeholder="${set.prevWeight || '0'}" value="${set.weight}" oninput="updateSetField(${exIdx}, ${setIdx}, 'weight', this.value)" onblur="normalizeSetInputOnBlur(${exIdx}, ${setIdx}, 'weight', this)" class="w-full min-w-0 bg-transparent py-2 text-center text-sm font-extrabold text-white placeholder-zinc-600 focus:outline-none">
                                 <button type="button" onclick="adjustSetNumber(${exIdx}, ${setIdx}, 'weight', 2.5, 0)" class="px-2 py-2 text-brand-400 font-black text-sm">+</button>
                             </div>
                         </div>
@@ -5613,7 +5808,7 @@
                                 <label class="block text-[10px] font-bold uppercase text-zinc-400 mb-1">Opakovania</label>
                                 <div class="flex items-center bg-dark-900 border border-zinc-800 rounded-xl overflow-hidden">
                                     <button type="button" onclick="adjustSetNumber(${exIdx}, ${setIdx}, 'reps', -1, 0)" class="px-2 py-2 text-zinc-400 hover:text-white font-black text-sm">−</button>
-                                    <input type="number" placeholder="${set.prevReps || '0'}" value="${set.reps}" oninput="updateSetField(${exIdx}, ${setIdx}, 'reps', this.value)" class="w-full min-w-0 bg-transparent py-2 text-center text-sm font-extrabold text-white placeholder-zinc-600 focus:outline-none">
+                                    <input type="text" inputmode="numeric" placeholder="${set.prevReps || '0'}" value="${set.reps}" oninput="updateSetField(${exIdx}, ${setIdx}, 'reps', this.value)" onblur="normalizeSetInputOnBlur(${exIdx}, ${setIdx}, 'reps', this)" class="w-full min-w-0 bg-transparent py-2 text-center text-sm font-extrabold text-white placeholder-zinc-600 focus:outline-none">
                                     <button type="button" onclick="adjustSetNumber(${exIdx}, ${setIdx}, 'reps', 1, 0)" class="px-2 py-2 text-brand-400 font-black text-sm">+</button>
                                 </div>
                             `}
@@ -5887,13 +6082,27 @@
         function renderHistory() {
             const container = document.getElementById('history-list'), badge = document.getElementById('history-count-badge');
             if (!container) return;
-            const list = workoutHistory.filter(w => (w.profileId || 'me') === activeProfileId);
-            badge.textContent = `${list.length}`;
-            renderHistoryPRSummary(list);
-            if (list.length === 0) { container.innerHTML = `<div class="text-center py-10 px-4 card-surface border-dashed text-xs text-zinc-400">Zatiaľ žiadne uložené tréningy.</div>`; return; }
-            container.innerHTML = list.map((w, idx) => {
+            const allProfileWorkouts = workoutHistory.filter(w => (w.profileId || 'me') === activeProfileId);
+            badge.textContent = `${allProfileWorkouts.length}`;
+            renderHistoryCalendar(allProfileWorkouts);
+            renderHistoryPRSummary(allProfileWorkouts);
+
+            const list = selectedHistoryDateISO
+                ? allProfileWorkouts.filter(w => getWorkoutISO(w) === selectedHistoryDateISO)
+                : allProfileWorkouts;
+
+            if (allProfileWorkouts.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 px-4 card-surface border-dashed text-xs text-zinc-400">Zatiaľ žiadne uložené tréningy.</div>`;
+                return;
+            }
+            if (list.length === 0 && selectedHistoryDateISO) {
+                container.innerHTML = `<div class="text-center py-8 px-4 card-surface border-dashed text-xs text-zinc-400 space-y-2"><div>V deň ${formatNutriDateHuman(selectedHistoryDateISO)} nemáš zapísaný žiadny tréning.</div><button type="button" onclick="selectHistoryCalendarDate(null)" class="px-3 py-1.5 rounded-lg bg-brand-500 text-zinc-950 font-extrabold text-[11px]">Zobraziť všetky tréningy</button></div>`;
+                return;
+            }
+            container.innerHTML = list.map((w) => {
+                const fullIdx = allProfileWorkouts.findIndex(item => item.id === w.id);
                 const vol = w.totalVolume !== undefined ? w.totalVolume : calculateTotalVolume(w.exercises || []);
-                const prevSame = list.slice(idx + 1).find(old => old.title === w.title);
+                const prevSame = fullIdx >= 0 ? allProfileWorkouts.slice(fullIdx + 1).find(old => old.title === w.title) : null;
                 const prevVol = prevSame ? (prevSame.totalVolume !== undefined ? prevSame.totalVolume : calculateTotalVolume(prevSame.exercises || [])) : null;
                 const volDiff = (prevVol !== null && vol > 0 && prevVol > 0) ? Math.round(vol - prevVol) : null;
                 const diffBadge = volDiff !== null && volDiff !== 0
@@ -5920,6 +6129,103 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        let historyCalendarYear = new Date().getFullYear();
+        let historyCalendarMonth = new Date().getMonth();
+        let selectedHistoryDateISO = null;
+
+        function getWorkoutISO(w) {
+            if (w && w.isoDate) return w.isoDate;
+            if (!w || !w.date) return '';
+            const parts = String(w.date).split('.').map(p => p.trim()).filter(Boolean);
+            if (parts.length === 3) {
+                const [d, m, y] = parts;
+                return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            }
+            return '';
+        }
+
+        function shiftHistoryCalendarMonth(delta) {
+            historyCalendarMonth += delta;
+            if (historyCalendarMonth < 0) { historyCalendarMonth = 11; historyCalendarYear--; }
+            if (historyCalendarMonth > 11) { historyCalendarMonth = 0; historyCalendarYear++; }
+            renderHistory();
+        }
+
+        function selectHistoryCalendarDate(iso) {
+            selectedHistoryDateISO = (selectedHistoryDateISO === iso) ? null : iso;
+            renderHistory();
+        }
+
+        function renderHistoryCalendar(profileWorkouts) {
+            const card = document.getElementById('history-calendar-card');
+            if (!card) return;
+            const monthNames = ['Január', 'Február', 'Marec', 'Apríl', 'Máj', 'Jún', 'Júl', 'August', 'September', 'Október', 'November', 'December'];
+            const workoutsByISO = {};
+            (profileWorkouts || []).forEach(w => {
+                const iso = getWorkoutISO(w);
+                if (!iso) return;
+                if (!workoutsByISO[iso]) workoutsByISO[iso] = [];
+                workoutsByISO[iso].push(w);
+            });
+
+            const firstDay = new Date(historyCalendarYear, historyCalendarMonth, 1);
+            const startWeekday = (firstDay.getDay() + 6) % 7; // Po=0 .. Ne=6
+            const daysInMonth = new Date(historyCalendarYear, historyCalendarMonth + 1, 0).getDate();
+            const todayISO = getTodayISO();
+
+            let monthWorkoutsCount = 0;
+            for (let d = 1; d <= daysInMonth; d++) {
+                const iso = `${historyCalendarYear}-${String(historyCalendarMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                if (workoutsByISO[iso]) monthWorkoutsCount += workoutsByISO[iso].length;
+            }
+
+            const cells = [];
+            for (let i = 0; i < startWeekday; i++) {
+                cells.push(`<div class="h-9"></div>`);
+            }
+            for (let d = 1; d <= daysInMonth; d++) {
+                const iso = `${historyCalendarYear}-${String(historyCalendarMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const dayWorkouts = workoutsByISO[iso] || [];
+                const hasW = dayWorkouts.length > 0;
+                const isSelected = selectedHistoryDateISO === iso;
+                const isToday = todayISO === iso;
+
+                let cls = 'h-9 rounded-xl flex flex-col items-center justify-center text-xs transition relative ';
+                if (isSelected) cls += 'bg-amber-400 text-zinc-950 font-black ring-2 ring-amber-300';
+                else if (hasW) cls += 'bg-brand-500/20 border border-brand-500/50 text-white font-extrabold hover:bg-brand-500/30';
+                else if (isToday) cls += 'bg-dark-850 border border-zinc-700 text-sky-300 font-bold';
+                else cls += 'text-zinc-400 hover:bg-dark-850';
+
+                cells.push(`
+                    <button type="button" onclick="selectHistoryCalendarDate('${iso}')" class="${cls}">
+                        <span class="leading-none">${d}</span>
+                        ${hasW ? `<span class="w-1.5 h-1.5 rounded-full mt-0.5 ${isSelected ? 'bg-zinc-950' : 'bg-brand-400'}"></span>` : ''}
+                    </button>
+                `);
+            }
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="shiftHistoryCalendarMonth(-1)" class="w-8 h-8 rounded-lg bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-200 flex items-center justify-center">${svgIcon('chev-l', 'w-3.5 h-3.5')}</button>
+                        <span class="text-xs sm:text-sm font-extrabold text-white px-1">${monthNames[historyCalendarMonth]} ${historyCalendarYear}</span>
+                        <button type="button" onclick="shiftHistoryCalendarMonth(1)" class="w-8 h-8 rounded-lg bg-dark-850 hover:bg-dark-800 border border-zinc-800 text-zinc-200 flex items-center justify-center">${svgIcon('chev-r', 'w-3.5 h-3.5')}</button>
+                    </div>
+                    <span class="text-[11px] font-bold text-brand-400">${monthWorkoutsCount} tréningov</span>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold uppercase text-zinc-500">
+                    <div>Po</div><div>Ut</div><div>St</div><div>Št</div><div>Pi</div><div>So</div><div>Ne</div>
+                </div>
+                <div class="grid grid-cols-7 gap-1">${cells.join('')}</div>
+                ${selectedHistoryDateISO ? `
+                    <div class="pt-2 border-t border-zinc-800/80 flex items-center justify-between gap-2 text-xs">
+                        <span class="text-amber-300 font-bold">Deň: ${formatNutriDateHuman(selectedHistoryDateISO)}</span>
+                        <button type="button" onclick="selectHistoryCalendarDate(null)" class="px-2.5 py-1 rounded-lg bg-dark-850 border border-zinc-700 text-zinc-200 font-bold text-[11px]">Zobraziť všetky</button>
+                    </div>
+                ` : ''}
+            `;
         }
 
         function openBackupModal() { document.getElementById('modal-backup').classList.remove('hidden'); }
@@ -5984,6 +6290,10 @@
             renderCategoryPills(); renderDatabase(); renderSplits(); renderActiveWorkout(); renderHistory();
             renderDynamicBottomNav('training', 'workout');
             startWorkoutTimer();
+            if (restTimerEndTime > Date.now()) {
+                tickRestTimerFromClock();
+                restTimerInterval = setInterval(tickRestTimerFromClock, 500);
+            }
 
             checkTesterAccessOnStartup().then(() => {
                 renderSplits();
